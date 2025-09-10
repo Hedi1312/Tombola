@@ -1,43 +1,28 @@
 "use client";
 import { useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
-
-function CheckoutForm({ tickets }: { tickets: number }) {
-    const stripe = useStripe();
-    const elements = useElements();
+export default function Acheter() {
+    const [tickets, setTickets] = useState(1);
+    const [loading, setLoading] = useState(false); // <- important
 
     const handlePayment = async () => {
-        if (!stripe || !elements) return;
-
-        const res = await fetch("http://localhost:4242/create-checkout-session", {
+        setLoading(true);
+        const res = await fetch("/api/create-checkout-session", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ tickets }),
         });
 
         const data = await res.json();
-        const result = await stripe.redirectToCheckout({ sessionId: data.id });
+        setLoading(false);
 
-        if (result.error) {
-            alert(result.error.message);
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            alert("Erreur lors de la création de la session de paiement.");
+            console.error(data.error);
         }
     };
-
-    return (
-        <button
-            onClick={handlePayment}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
-        >
-            💳 Payer CB / Apple Pay
-        </button>
-    );
-}
-
-export default function Acheter() {
-    const [tickets, setTickets] = useState(1);
 
     return (
         <main className="flex flex-col items-center p-6 min-h-screen bg-gray-50">
@@ -57,9 +42,13 @@ export default function Acheter() {
                     />
                 </label>
 
-                <Elements stripe={stripePromise}>
-                    <CheckoutForm tickets={tickets} />
-                </Elements>
+                <button
+                    onClick={handlePayment}
+                    disabled={loading}
+                    className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700"
+                >
+                    {loading ? "Redirection..." : "💳 Payer vos tickets"}
+                </button>
             </div>
         </main>
     );

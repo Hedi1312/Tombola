@@ -24,7 +24,8 @@ export async function POST(req: NextRequest) {
             cancel_url: `${process.env.NEXT_PUBLIC_URL}/acheter`,
         });
 
-        return NextResponse.json({ id: session.id });
+        // Renvoie l'URL de redirection
+        return NextResponse.json({ url: session.url });
     } catch (err: unknown) {
         if (err instanceof Error) {
             console.error("Erreur Stripe :", err.message);
@@ -32,5 +33,4 @@ export async function POST(req: NextRequest) {
         }
         return NextResponse.json({ error: "Erreur inconnue" }, { status: 500 });
     }
-
 }

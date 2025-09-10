@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Tombola au Maroc",
+    title: "Tombola pour le Maroc",
     description: "Site de tombola pour notre projet scolaire",
 };
 
