@@ -3,7 +3,7 @@ import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements, useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 
-const stripePromise = loadStripe("VOTRE_PUBLIC_KEY_STRIPE");
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 
 function CheckoutForm({ tickets }: { tickets: number }) {
     const stripe = useStripe();
