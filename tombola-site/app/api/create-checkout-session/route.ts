@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-    apiVersion: "2022-11-15",
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: NextRequest) {
     const { tickets } = await req.json();
@@ -27,7 +25,12 @@ export async function POST(req: NextRequest) {
         });
 
         return NextResponse.json({ id: session.id });
-    } catch (err: any) {
-        return NextResponse.json({ error: err.message }, { status: 500 });
+    } catch (err: unknown) {
+        if (err instanceof Error) {
+            console.error("Erreur Stripe :", err.message);
+            return NextResponse.json({ error: err.message }, { status: 500 });
+        }
+        return NextResponse.json({ error: "Erreur inconnue" }, { status: 500 });
     }
+
 }
