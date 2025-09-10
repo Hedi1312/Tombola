@@ -14,13 +14,13 @@ export async function POST(req: NextRequest) {
                     price_data: {
                         currency: "eur",
                         product_data: { name: "Ticket de tombola 🎟️" },
-                        unit_amount: 500, // 5€ par ticket
+                        unit_amount: 200, // 5€ par ticket
                     },
                     quantity: tickets,
                 },
             ],
             mode: "payment",
-            success_url: `${process.env.NEXT_PUBLIC_URL}/mes-tickets/123`,
+            success_url: `${process.env.NEXT_PUBLIC_URL}/mes-tickets`,
             cancel_url: `${process.env.NEXT_PUBLIC_URL}/acheter`,
         });
 
