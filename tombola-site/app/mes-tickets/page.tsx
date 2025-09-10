@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 interface Ticket {
     id: string;
@@ -10,7 +9,6 @@ interface Ticket {
 }
 
 export default function MesTicketsPage() {
-    const router = useRouter();
     const [tickets, setTickets] = useState<Ticket[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -37,7 +35,7 @@ export default function MesTicketsPage() {
                     <p className="text-gray-600 text-lg md:text-xl">Chargement de vos tickets...</p>
                 ) : tickets.length === 0 ? (
                     <p className="text-gray-700 text-lg md:text-xl">
-                        Vous n'avez encore acheté aucun ticket.
+                        Vous n&apos;avez encore acheté aucun ticket.
                     </p>
                 ) : (
                     <div className="flex flex-col gap-4">

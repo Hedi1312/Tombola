@@ -71,7 +71,7 @@ export default function Acheter() {
                 </button>
 
                 <p className="text-sm text-gray-500 text-center">
-                    Le prix est de <span className="font-bold">2€ par ticket</span>. Tout l'argent récolté soutient notre projet.
+                    Le prix est de <span className="font-bold">2€ par ticket</span>. Tout l&apos;argent récolté soutient notre projet.
                 </p>
             </div>
         </main>

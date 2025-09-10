@@ -10,7 +10,7 @@ export default function Navbar() {
     return (
         <nav className="bg-white shadow-md w-full">
             <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-                <a href="/" className="text-2xl font-bold text-gray-800">🎟️ Tombola pour le Maroc 🇲🇦</a>
+                <Link href="/" className="text-2xl font-bold text-gray-800">🎟️ Tombola pour le Maroc 🇲🇦</Link>
 
                 {/* Menu desktop */}
                 <div className="hidden md:flex gap-6">

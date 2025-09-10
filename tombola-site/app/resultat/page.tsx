@@ -7,7 +7,7 @@ export default function ResultatPage() {
                 </h1>
 
                 <p className="text-gray-700 text-lg md:text-xl mb-6">
-                    Le tirage au sort n'a pas encore été fait.
+                    Le tirage au sort n&apos;a pas encore été fait.
                 </p>
 
                 <div className="flex justify-center gap-4 text-3xl md:text-4xl">
