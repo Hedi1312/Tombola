@@ -1,56 +1,84 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { supabase } from "../../lib/supabase"; // <-- importe ton client existant
 
-interface Ticket {
-    id: string;
-    name: string;
-    quantity: number;
-    color: string; // Couleur du ticket
-}
+export default function MesTickets() {
+    const [email, setEmail] = useState("");
+    const [tickets, setTickets] = useState<number[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
-export default function MesTicketsPage() {
-    const [tickets, setTickets] = useState<Ticket[]>([]);
-    const [loading, setLoading] = useState(true);
+    const handleSearch = async () => {
+        setLoading(true);
+        setError("");
+        setTickets([]);
 
-    useEffect(() => {
-        // Simuler un appel API pour récupérer les tickets de l'utilisateur
-        setTimeout(() => {
-            setTickets([
-                { id: "TKT001", name: "Ticket de tombola 🎟️", quantity: 2, color: "bg-blue-100" },
-                { id: "TKT002", name: "Ticket de tombola 🎟️", quantity: 1, color: "bg-pink-100" },
-                { id: "TKT003", name: "Ticket de tombola 🎟️", quantity: 3, color: "bg-green-100" },
-            ]);
-            setLoading(false);
-        }, 1000);
-    }, []);
+        const { data, error } = await supabase
+            .from("tickets")
+            .select("ticket_number, created_at")
+            .eq("email", email)
+            .order("created_at", { ascending: false });
+
+        setLoading(false);
+
+        if (error) {
+            console.error(error);
+            setError("Une erreur est survenue lors de la recherche.");
+            return;
+        }
+
+        if (!data || data.length === 0) {
+            setError("Aucun ticket trouvé pour cet email.");
+        } else {
+            setTickets(data.map((t) => t.ticket_number));
+        }
+    };
 
     return (
-        <main className="min-h-screen bg-gray-50 p-4 md:p-6 flex flex-col items-center">
-            <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-6 md:p-8 text-center">
-                <h1 className="text-3xl md:text-4xl font-extrabold mb-6 text-gray-800">
+        <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6">
+            <div className="max-w-lg w-full bg-white rounded-3xl shadow-xl p-10 flex flex-col gap-6">
+                <h2 className="text-3xl font-extrabold text-gray-800 text-center">
                     🎟️ Mes Tickets
-                </h1>
+                </h2>
+                <p className="text-gray-600 text-center">
+                    Entrez l’email utilisé pour l’achat afin de retrouver vos tickets.
+                </p>
 
-                {loading ? (
-                    <p className="text-gray-600 text-lg md:text-xl">Chargement de vos tickets...</p>
-                ) : tickets.length === 0 ? (
-                    <p className="text-gray-700 text-lg md:text-xl">
-                        Vous n&apos;avez encore acheté aucun ticket.
-                    </p>
-                ) : (
-                    <div className="flex flex-col gap-4">
-                        {tickets.map((ticket) => (
-                            <div
-                                key={ticket.id}
-                                className={`${ticket.color} flex justify-between items-center p-4 rounded-xl shadow-md`}
-                            >
-                                <span className="font-semibold text-gray-800">{ticket.name}</span>
+                <input
+                    type="email"
+                    placeholder="Votre email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="text-gray-700 text-lg px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
 
-                            </div>
-                        ))}
+                <button
+                    onClick={handleSearch}
+                    disabled={loading || !email}
+                    className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition duration-200"
+                >
+                    {loading ? "Recherche..." : "🔎 Rechercher mes tickets"}
+                </button>
+
+                {error && <p className="text-red-500 text-center">{error}</p>}
+
+                {tickets.length > 0 && (
+                    <div className="mt-6">
+                        <h3 className="text-xl font-bold mb-2 text-gray-800 text-center">
+                            Vos tickets :
+                        </h3>
+                        <ul className="grid grid-cols-2 gap-3">
+                            {tickets.map((ticket, idx) => (
+                                <li
+                                    key={idx}
+                                    className="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg text-center font-mono"
+                                >
+                                    #{ticket}
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 )}
-
             </div>
         </main>
     );
