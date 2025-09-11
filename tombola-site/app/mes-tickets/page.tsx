@@ -26,6 +26,7 @@ export default function MesTickets() {
         }
 
         let interval: NodeJS.Timeout;
+        let timeout: NodeJS.Timeout;
 
         async function fetchTickets() {
             try {
@@ -41,6 +42,7 @@ export default function MesTickets() {
                 } else if (data && data.length > 0) {
                     setTickets(data as Ticket[]);
                     clearInterval(interval); // ✅ stoppe le polling dès qu’on a trouvé
+                    clearTimeout(timeout);
                 }
             } catch (err) {
                 console.error(err);
@@ -55,7 +57,19 @@ export default function MesTickets() {
         // Relance toutes les 2s tant que pas trouvé
         interval = setInterval(fetchTickets, 2000);
 
-        return () => clearInterval(interval); // nettoie l’interval
+        // Stoppe au bout de 30s max
+        timeout = setTimeout(() => {
+            clearInterval(interval);
+            if (!tickets || tickets.length === 0) {
+                setError("Les billets ne sont pas encore disponibles. Réessayez dans quelques instants.");
+                setLoading(false);
+            }
+        }, 30000);
+
+        return () => {
+            clearInterval(interval);
+            clearTimeout(timeout);
+        };
     }, []);
 
     return (
