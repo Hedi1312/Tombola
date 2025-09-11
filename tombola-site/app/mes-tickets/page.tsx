@@ -89,7 +89,12 @@ export default function MesTickets() {
                                 </li>
                             ))}
                         </ul>
+                        <p className="text-gray-600 text-center">
+                            Participez à notre tombola pour soutenir notre projet scolaire et tentez de gagner un super lot !
+                        </p>
+
                     </div>
+
                 )}
             </div>
         </main>

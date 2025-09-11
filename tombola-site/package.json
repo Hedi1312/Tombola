@@ -17,9 +17,11 @@
     "next": "15.5.2",
     "nodemailer": "^7.0.6",
     "react": "19.1.0",
+    "react-confetti": "^6.4.0",
     "react-dom": "19.1.0",
     "react-icons": "^5.5.0",
     "react-paypal-js": "^0.0.1-security",
+    "react-use": "^17.6.0",
     "stripe": "^18.5.0",
     "uuid": "^13.0.0"
   },

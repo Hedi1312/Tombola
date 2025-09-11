@@ -33,7 +33,7 @@ export default function Home() {
                         🎟️ Tombola
                     </h1>
                     <p className="text-base md:text-lg mb-6">
-                        Participez à notre tombola pour soutenir notre projet scolaire.<br />
+                        Participez à notre tombola pour soutenir notre projet scolaire.<br /> <br/>
                         Un super lot à gagner et une bonne action à la clé !<br/>
                     </p>
                     <Link href="/acheter">
