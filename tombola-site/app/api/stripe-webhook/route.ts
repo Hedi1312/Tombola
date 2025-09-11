@@ -89,9 +89,9 @@ export async function POST(req: NextRequest) {
           <h1>Merci ${full_name} pour votre participation !</h1>
           <p>Voici vos tickets :</p>
           <p><strong>${ticketNumbers.join(", ")}</strong></p>
-          <p>Vous pouvez aussi consulter vos billets ici : 
-               <a href="${process.env.NEXT_PUBLIC_URL}/mes-billets?token=${accessToken}">
-               Voir mes billets
+          <p>Vous pouvez aussi consulter vos tickets ici : 
+               <a href="${process.env.NEXT_PUBLIC_URL}/mes-tickets?token=${accessToken}">
+               Voir mes tickets
                </a>
             </p>
           <p>Bonne chance pour le tirage au sort 🍀</p>

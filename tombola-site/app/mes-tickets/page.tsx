@@ -20,24 +20,30 @@ export default function MesTickets() {
         const token = urlParams.get("token");
 
         if (!token) {
-            setError("Token manquant. Entrez votre email pour rechercher vos billets.");
+            setError("Erreur. Vous devez utiliser le lien reçu par email.");
             setLoading(false);
             return;
         }
 
         async function fetchTickets() {
             try {
-                const { data, error } = await supabase
+                // On crée une promesse qui force un délai minimum de 5 secondes
+                const minDelay = new Promise((resolve) => setTimeout(resolve, 5000));
+
+                const fetchData = supabase
                     .from("tickets")
                     .select("*")
                     .eq("access_token", token)
                     .order("created_at", { ascending: false });
 
+                // Attendre **les deux promesses** : récupération + délai minimum
+                const [{ data, error }] = await Promise.all([fetchData, minDelay]);
+
                 if (error) {
                     console.error(error);
                     setError("Erreur lors de la récupération des billets.");
                 } else if (!data || data.length === 0) {
-                    setError("Aucun billet trouvé pour ce token.");
+                    setError("Aucun billet trouvé pour cet url.");
                 } else {
                     setTickets(data as Ticket[]);
                 }

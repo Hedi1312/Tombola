@@ -16,7 +16,7 @@ export default function Navbar() {
                 <div className="hidden md:flex gap-6">
                     <Link href="/" className="text-gray-700 hover:text-blue-600 transition"><FaHome size={24} /></Link>
                     <Link href="/acheter" className="text-gray-700 hover:text-blue-600 transition">Acheter</Link>
-                    <Link href="/mes-tickets" className="text-gray-700 hover:text-blue-600 transition">Mes tickets</Link>
+                    <Link href="/lot" className="text-gray-700 hover:text-blue-600 transition">Lot à gagner</Link>
                     <Link href="/resultat" className="text-gray-700 hover:text-blue-600 transition">Résultat</Link>
                     <Link href="https://www.cotizup.com/voyage-peda-eje-rabat" className="text-gray-700 hover:text-blue-600 transition">Cagnotte</Link>
                     <Link href="https://www.tiktok.com/@futureejetrip" className="text-gray-700 hover:text-blue-600 transition"><FaTiktok size={22} /></Link>
@@ -36,7 +36,7 @@ export default function Navbar() {
                 <div className="md:hidden px-6 pb-4 flex flex-col gap-2">
                     <Link href="/" className="text-gray-700 hover:text-blue-600 transition" onClick={handleLinkClick}><FaHome size={22} /></Link>
                     <Link href="/acheter" className="text-gray-700 hover:text-blue-600 transition" onClick={handleLinkClick}>Acheter</Link>
-                    <Link href="/mes-tickets" className="text-gray-700 hover:text-blue-600 transition" onClick={handleLinkClick}>Mes tickets</Link>
+                    <Link href="/lot" className="text-gray-700 hover:text-blue-600 transition" onClick={handleLinkClick}>Lot à gagner</Link>
                     <Link href="/resultat" className="text-gray-700 hover:text-blue-600 transition" onClick={handleLinkClick}>Résultat</Link>
                     <Link href="https://www.cotizup.com/voyage-peda-eje-rabat" className="text-gray-700 hover:text-blue-600 transition">Cagnotte</Link>
                     <Link href="https://www.tiktok.com/@futureejetrip" className="text-gray-700 hover:text-blue-600 transition"><FaTiktok size={22} /></Link>
