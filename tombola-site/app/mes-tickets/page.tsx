@@ -1,38 +1,56 @@
 "use client";
-import { useState } from "react";
-import { supabase } from "../../lib/supabase"; // <-- importe ton client existant
 
-export default function MesTickets() {
-    const [email, setEmail] = useState("");
-    const [tickets, setTickets] = useState<number[]>([]);
-    const [loading, setLoading] = useState(false);
+import { useEffect, useState } from "react";
+import { supabase } from "../../lib/supabase";
+
+interface Ticket {
+    id: number;
+    ticket_number: number;
+    full_name: string;
+    created_at: string;
+}
+
+export default function MesTickets({ searchParams }: { searchParams?: { token?: string } }) {
+    const [tickets, setTickets] = useState<Ticket[] | null>(null);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const handleSearch = async () => {
-        setLoading(true);
-        setError("");
-        setTickets([]);
+    const token = searchParams?.token;
 
-        const { data, error } = await supabase
-            .from("tickets")
-            .select("ticket_number, created_at")
-            .eq("email", email)
-            .order("created_at", { ascending: false });
-
-        setLoading(false);
-
-        if (error) {
-            console.error(error);
-            setError("Une erreur est survenue lors de la recherche.");
+    useEffect(() => {
+        if (!token) {
+            setError("Token manquant. Entrez votre email pour rechercher vos billets.");
+            setLoading(false);
             return;
         }
 
-        if (!data || data.length === 0) {
-            setError("Aucun ticket trouvé pour cet email.");
-        } else {
-            setTickets(data.map((t) => t.ticket_number));
+        async function fetchTickets() {
+            try {
+                const { data, error } = await supabase
+                    .from("tickets")
+                    .select("*")
+                    .eq("access_token", token)
+                    .order("created_at", { ascending: false });
+
+                if (error) {
+                    console.error(error);
+                    setError("Erreur lors de la récupération des billets.");
+                } else if (!data || data.length === 0) {
+                    setError("Aucun billet trouvé pour ce token.");
+                } else {
+                    const tickets: Ticket[] = data as Ticket[];
+                    setTickets(tickets);
+                }
+            } catch (err) {
+                console.error(err);
+                setError("Erreur inconnue lors de la récupération des billets.");
+            } finally {
+                setLoading(false);
+            }
         }
-    };
+
+        fetchTickets();
+    }, [token]);
 
     return (
         <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
@@ -40,40 +58,28 @@ export default function MesTickets() {
                 <h2 className="text-3xl font-extrabold text-gray-800 text-center">
                     🎟️ Mes Tickets
                 </h2>
-                <p className="text-gray-600 text-center">
-                    Entrez l’email utilisé pour l’achat afin de retrouver vos tickets.
-                </p>
 
-                <input
-                    type="email"
-                    placeholder="Votre email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="text-gray-700 text-lg px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+                {loading && (
+                    <div className="flex flex-col items-center gap-4 mt-6">
+                        <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                        <p className="text-gray-700 text-lg">Récupération de vos billets… 🍀</p>
+                    </div>
+                )}
 
-                <button
-                    onClick={handleSearch}
-                    disabled={loading || !email}
-                    className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition duration-200"
-                >
-                    {loading ? "Recherche..." : "🔎 Rechercher mes tickets"}
-                </button>
+                {!loading && error && <p className="text-red-500 text-center">{error}</p>}
 
-                {error && <p className="text-red-500 text-center">{error}</p>}
-
-                {tickets.length > 0 && (
+                {!loading && tickets && tickets.length > 0 && (
                     <div className="mt-6">
                         <h3 className="text-xl font-bold mb-2 text-gray-800 text-center">
                             Vos tickets :
                         </h3>
                         <ul className="grid grid-cols-2 gap-3">
-                            {tickets.map((ticket, idx) => (
+                            {tickets.map((ticket) => (
                                 <li
-                                    key={idx}
+                                    key={ticket.id}
                                     className="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg text-center font-mono"
                                 >
-                                    #{ticket}
+                                    #{ticket.ticket_number}
                                 </li>
                             ))}
                         </ul>
