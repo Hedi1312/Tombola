@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid"; // 🔹 importer uuid
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: NextRequest) {
-    const { tickets, email, fullName } = await req.json();
+    const { tickets, email, full_name } = await req.json();
 
     // 🔹 Générer le token unique avant Stripe
     const accessToken = uuidv4();
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
             mode: "payment",
             customer_email: email,
             metadata: {
-                fullName,
+                full_name,
                 accessToken, // 🔹 stocker le token pour le webhook
             },
             success_url: `${process.env.NEXT_PUBLIC_URL}/mes-billets?token=${accessToken}`, // 🔹 redirection directe

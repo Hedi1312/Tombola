@@ -10,11 +10,11 @@ function CheckoutForm() {
     const elements = useElements();
     const [tickets, setTickets] = useState(1);
     const [email, setEmail] = useState("");
-    const [fullName, setFullName] = useState("");
+    const [full_name, setFullName] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handlePayment = async () => {
-        if (!email || !fullName) {
+        if (!email || !full_name) {
             alert("Veuillez saisir votre nom complet et votre e-mail.");
             return;
         }
@@ -23,7 +23,7 @@ function CheckoutForm() {
         const res = await fetch("/api/create-checkout-session", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ tickets, email, full_name: fullName }),
+            body: JSON.stringify({ tickets, email, full_name: full_name }),
         });
 
         const data = await res.json();
@@ -44,7 +44,7 @@ function CheckoutForm() {
                 <input
                     type="text"
                     placeholder="Prénom Nom"
-                    value={fullName}
+                    value={full_name}
                     onChange={(e) => setFullName(e.target.value)}
                     className="mt-2 px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />

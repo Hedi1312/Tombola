@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
     if (event.type === "checkout.session.completed") {
         const session = event.data.object as Stripe.Checkout.Session;
         const email = session.customer_email;
-        const fullName = session.metadata?.full_name;
+        const full_name = session.metadata?.full_name;
         const amount = session.amount_total || 0;
         const tickets = amount / 200; // 2€ par ticket
 
@@ -60,12 +60,18 @@ export async function POST(req: NextRequest) {
         const accessToken = session.metadata?.accessToken;
 
 
+        console.log({
+            email,
+            full_name: session.metadata?.full_name,
+            accessToken,
+            tickets
+        });
 
         // Sauvegarder dans Supabase
         const { error } = await supabaseAdmin.from("tickets").insert(
             ticketNumbers.map((num) => ({
                 email,
-                fullName,
+                full_name,
                 ticket_number: num,
                 access_token: accessToken,
                 created_at: new Date().toISOString(),
@@ -80,7 +86,7 @@ export async function POST(req: NextRequest) {
                 to: email,
                 subject: "🎟️ Vos tickets de tombola",
                 html: `
-          <h1>Merci ${fullName} pour votre participation !</h1>
+          <h1>Merci ${full_name} pour votre participation !</h1>
           <p>Voici vos tickets :</p>
           <p><strong>${ticketNumbers.join(", ")}</strong></p>
           <p>Vous pouvez aussi consulter vos billets ici : 
