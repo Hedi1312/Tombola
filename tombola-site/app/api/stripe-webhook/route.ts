@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import nodemailer from "nodemailer";
-import { v4 as uuidv4 } from "uuid";
 
 
 // Stripe
@@ -77,6 +76,11 @@ export async function POST(req: NextRequest) {
                 created_at: new Date().toISOString(),
             }))
         );
+
+        if (error) {
+            console.error("Erreur Supabase insert:", error.message);
+        }
+
 
 
         // Envoyer le mail

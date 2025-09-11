@@ -2,98 +2,95 @@
 
 import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
+
+// 👇 Définis ici le gagnant si le tirage est fait
+const winnerName = "";
+const winnerTicket = 0;
+
+// ⚡ Tirage fixé au 11 octobre 2025 à 18h (Paris)
+const DRAW_DATE = new Date("2025-10-11T18:00:00+02:00");
 
 export default function ResultatPage() {
-    // 👇 Remplace ici par le nom et le numéro du vainqueur si tirage fait
-    const winnerName = "";
-    const winnerTicket = 0;
-
+    const { width, height } = useWindowSize();
     const [mounted, setMounted] = useState(false);
-    const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
-    const [countdown, setCountdown] = useState(10); // suspense tirage fait
-    const [timeLeft, setTimeLeft] = useState(0); // suspense tirage pas fait
+    const [timeLeft, setTimeLeft] = useState<number>(0);
     const [showWinner, setShowWinner] = useState(false);
-
-    // Date du tirage : 1 mois à partir d'aujourd'hui
-    const drawDate = new Date();
-    drawDate.setMonth(drawDate.getMonth() + 1);
+    const [countdown10s, setCountdown10s] = useState<number>(10);
 
     useEffect(() => {
-        // Montage côté client
         setMounted(true);
-        setWindowSize({ width: window.innerWidth, height: window.innerHeight });
     }, []);
 
     useEffect(() => {
+        if (!mounted) return;
+
+        let endTime: number;
+
         if (winnerName && winnerTicket) {
-            // Tirage déjà fait → compte à rebours 10s
-            const interval = setInterval(() => {
-                setCountdown((prev) => {
+            // Si gagnant défini → déclenche le compte à rebours de 10 secondes
+            setTimeLeft(10);
+            const interval10s = setInterval(() => {
+                setCountdown10s((prev) => {
                     if (prev <= 1) {
-                        clearInterval(interval);
+                        clearInterval(interval10s);
                         setShowWinner(true);
                         return 0;
                     }
                     return prev - 1;
                 });
             }, 1000);
-            return () => clearInterval(interval);
         } else {
-            // Tirage pas fait → compte à rebours jusqu'au tirage réel
-            const updateCountdown = () => {
-                const now = new Date();
-                const diff = drawDate.getTime() - now.getTime();
+            // Sinon date du tirage
+            endTime = DRAW_DATE.getTime();
+            const interval = setInterval(() => {
+                const diff = Math.floor((endTime - Date.now()) / 1000);
                 setTimeLeft(diff > 0 ? diff : 0);
-            };
-            updateCountdown();
-            const interval = setInterval(updateCountdown, 1000);
+            }, 1000);
+
             return () => clearInterval(interval);
         }
-    }, [winnerName, winnerTicket]);
+    }, [mounted]);
 
-    const formatTime = (ms: number) => {
-        const totalSeconds = Math.floor(ms / 1000);
-        const days = Math.floor(totalSeconds / (3600 * 24));
-        const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-        const minutes = Math.floor((totalSeconds % 3600) / 60);
-        const seconds = totalSeconds % 60;
-        return `${days}j ${hours}h ${minutes}m ${seconds}s`;
+    const formatTime = (seconds: number) => {
+        const d = Math.floor(seconds / (60 * 60 * 24));
+        const h = Math.floor((seconds % (60 * 60 * 24)) / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        const s = seconds % 60;
+        return `${d}j ${h}h ${m}m ${s}s`;
     };
 
+    if (!mounted) return null;
+
     return (
-        <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
-            {mounted && (
-                <Confetti
-                    width={windowSize.width}
-                    height={windowSize.height}
-                    recycle={true}
-                    numberOfPieces={200}
-                />
-            )}
+        <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50 relative overflow-hidden">
+            <Confetti width={width} height={height} recycle={true} numberOfPieces={300} />
 
             <div className="w-full max-w-lg bg-white rounded-3xl shadow-xl p-10 flex flex-col gap-6 text-center">
                 <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800">
-                    🎉 Résultat de la tombola <br/> <br/>
+                    🎉 Résultat de la Tombola <br/><br/>
                 </h1>
 
-                {!winnerName || !winnerTicket ? (
-                    <p className="text-gray-700 text-lg md:text-xl">
-                        Le tirage au sort n&apos;a pas encore été effectué. <br /><br/>
-                        Le tirage aura lieu dans <strong>{formatTime(timeLeft)}</strong> 🍀
-                    </p>
-                ) : !showWinner ? (
-                    <p className="text-gray-700 text-lg md:text-xl">
-                        🎲 Suspense… Le vainqueur sera dévoilé dans {countdown} seconde{countdown > 1 ? "s" : ""} !
-                    </p>
-                ) : (
-                    <>
+                {winnerName && winnerTicket ? (
+                    !showWinner ? (
                         <p className="text-gray-700 text-lg md:text-xl">
-                            Félicitations au vainqueur ! 🏆
+                            Suspense…Révélation du gagnant dans <strong>{countdown10s}s</strong> 🍀
                         </p>
-                        <div className="mt-4 bg-green-100 text-green-800 px-6 py-4 rounded-lg text-center font-mono text-xl animate-pulse">
-                            {winnerName} – Ticket #{winnerTicket}
-                        </div>
-                    </>
+                    ) : (
+                        <>
+                            <p className="text-gray-700 text-lg md:text-xl">
+                                Félicitations au vainqueur ! 🏆
+                            </p>
+                            <div className="mt-4 bg-green-100 text-green-800 px-6 py-4 rounded-lg text-center font-mono text-xl animate-pulse">
+                                {winnerName} – Ticket #{winnerTicket}
+                            </div>
+                        </>
+                    )
+                ) : (
+                    <p className="text-gray-700 text-lg md:text-xl">
+                        ⏳ Le tirage n’a pas encore eu lieu. <br/> <br/>
+                        Tirage prévu dans <strong>{formatTime(timeLeft)}</strong>
+                    </p>
                 )}
             </div>
         </main>

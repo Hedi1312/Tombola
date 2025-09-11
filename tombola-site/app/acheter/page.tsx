@@ -1,13 +1,11 @@
 "use client";
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
-import { Elements, useStripe, useElements } from "@stripe/react-stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 
 function CheckoutForm() {
-    const stripe = useStripe();
-    const elements = useElements();
     const [tickets, setTickets] = useState(1);
     const [email, setEmail] = useState("");
     const [full_name, setFullName] = useState("");
