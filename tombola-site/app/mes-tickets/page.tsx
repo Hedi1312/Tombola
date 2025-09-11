@@ -79,7 +79,7 @@ export default function MesTickets() {
                 {!loading && tickets && tickets.length > 0 && (
                     <div className="mt-6">
                         <h3 className="text-xl font-bold mb-2 text-gray-800 text-center">
-                            Vos tickets :
+                            Vos tickets :<br/> <br/>
                         </h3>
                         <ul className="grid grid-cols-2 gap-3">
                             {tickets.map((ticket) => (
@@ -91,9 +91,8 @@ export default function MesTickets() {
                                 </li>
                             ))}
                         </ul>
-                        <p className="text-gray-600 text-center mt-4">
-                            Participez à notre tombola pour soutenir notre projet scolaire et
-                            tentez de gagner un super lot !
+                        <p className="text-center text-gray-700 mt-4">
+                           <br/> <br/><strong>⚠️ Pensez à garder ce lien envoyé par mail pour retrouver vos billets plus tard.</strong>
                         </p>
                     </div>
                 )}
