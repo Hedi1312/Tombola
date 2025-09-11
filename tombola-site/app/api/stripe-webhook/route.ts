@@ -23,9 +23,6 @@ const transporter = nodemailer.createTransport({
 
 export async function POST(req: NextRequest) {
 
-    const { data, error } = await supabaseAdmin.from("tickets").select("*").limit(1);
-    console.log("Test connexion Supabase :", data, error);
-
     const sig = req.headers.get("stripe-signature")!;
     const body = await req.text();
 
@@ -45,6 +42,7 @@ export async function POST(req: NextRequest) {
     if (event.type === "checkout.session.completed") {
         const session = event.data.object as Stripe.Checkout.Session;
         const email = session.customer_email;
+        const fullName = session.metadata?.full_name;
         const amount = session.amount_total || 0;
         const tickets = amount / 200; // 2€ par ticket
 
@@ -66,17 +64,12 @@ export async function POST(req: NextRequest) {
         const { error } = await supabaseAdmin.from("tickets").insert(
             ticketNumbers.map((num) => ({
                 email,
+                fullName,
                 ticket_number: num,
                 access_token: accessToken,
                 created_at: new Date().toISOString(),
             }))
         );
-
-        if (error) {
-            console.error("❌ Erreur Supabase :", error);
-        } else {
-            console.log("✅ Tickets insérés :", ticketNumbers);
-        }
 
 
         // Envoyer le mail
@@ -86,9 +79,14 @@ export async function POST(req: NextRequest) {
                 to: email,
                 subject: "🎟️ Vos tickets de tombola",
                 html: `
-          <h1>Merci pour votre participation !</h1>
+          <h1>Merci ${fullName} pour votre participation !</h1>
           <p>Voici vos tickets :</p>
           <p><strong>${ticketNumbers.join(", ")}</strong></p>
+          <p>Vous pouvez aussi consulter vos billets ici : 
+               <a href="${process.env.NEXT_PUBLIC_URL}/mes-billets?token=${accessToken}">
+               Voir mes billets
+               </a>
+            </p>
           <p>Bonne chance pour le tirage au sort 🍀</p>
         `,
             });

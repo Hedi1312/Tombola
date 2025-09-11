@@ -4,7 +4,7 @@ import Stripe from "stripe";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: NextRequest) {
-    const { tickets, email } = await req.json();
+    const { tickets, email, fullName } = await req.json();
 
     try {
         const session = await stripe.checkout.sessions.create({
@@ -21,6 +21,9 @@ export async function POST(req: NextRequest) {
             ],
             mode: "payment",
             customer_email: email,
+            metadata: {
+                fullName, // 🔹 stocké dans Stripe pour récupérer dans le webhook
+            },
             success_url: `${process.env.NEXT_PUBLIC_URL}/mes-tickets`,
             cancel_url: `${process.env.NEXT_PUBLIC_URL}/acheter`,
         });
