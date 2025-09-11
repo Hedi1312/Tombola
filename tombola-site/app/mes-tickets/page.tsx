@@ -25,27 +25,22 @@ export default function MesTickets() {
             return;
         }
 
+        let interval: NodeJS.Timeout;
+
         async function fetchTickets() {
             try {
-                // On crée une promesse qui force un délai minimum de 5 secondes
-                const minDelay = new Promise((resolve) => setTimeout(resolve, 5000));
-
-                const fetchData = supabase
+                const { data, error } = await supabase
                     .from("tickets")
                     .select("*")
                     .eq("access_token", token)
                     .order("created_at", { ascending: false });
 
-                // Attendre **les deux promesses** : récupération + délai minimum
-                const [{ data, error }] = await Promise.all([fetchData, minDelay]);
-
                 if (error) {
                     console.error(error);
                     setError("Erreur lors de la récupération des billets.");
-                } else if (!data || data.length === 0) {
-                    setError("Aucun billet trouvé pour cet url.");
-                } else {
+                } else if (data && data.length > 0) {
                     setTickets(data as Ticket[]);
+                    clearInterval(interval); // ✅ stoppe le polling dès qu’on a trouvé
                 }
             } catch (err) {
                 console.error(err);
@@ -55,7 +50,12 @@ export default function MesTickets() {
             }
         }
 
+        // Premier appel
         fetchTickets();
+        // Relance toutes les 2s tant que pas trouvé
+        interval = setInterval(fetchTickets, 2000);
+
+        return () => clearInterval(interval); // nettoie l’interval
     }, []);
 
     return (
@@ -89,12 +89,10 @@ export default function MesTickets() {
                                 </li>
                             ))}
                         </ul>
-                        <p className="text-gray-600 text-center">
-                            Participez à notre tombola pour soutenir notre projet scolaire et tentez de gagner un super lot !
+                        <p className="text-gray-600 text-center mt-4">
+                            Merci de soutenir notre projet scolaire 🎓 Bonne chance pour le tirage ! 🍀
                         </p>
-
                     </div>
-
                 )}
             </div>
         </main>
