@@ -34,7 +34,7 @@ export default function Home() {
                     </h1>
                     <p className="text-base md:text-lg mb-6">
                         Participez à notre tombola pour soutenir notre projet scolaire.<br />
-                        De super lots à gagner et une bonne action à la clé !
+                        Un super lot à gagner et une bonne action à la clé !<br/>
                     </p>
                     <Link href="/acheter">
                         <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition">

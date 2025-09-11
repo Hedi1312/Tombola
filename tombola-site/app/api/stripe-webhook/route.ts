@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createClient } from "@supabase/supabase-js";
 import nodemailer from "nodemailer";
+import { v4 as uuidv4 } from "uuid";
+
 
 // Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -57,11 +58,16 @@ export async function POST(req: NextRequest) {
             Math.floor(100000 + Math.random() * 900000) // 6 chiffres
         );
 
+        // Générer un token unique pour cet achat
+        const accessToken = uuidv4();
+
+
         // Sauvegarder dans Supabase
         const { error } = await supabaseAdmin.from("tickets").insert(
             ticketNumbers.map((num) => ({
                 email,
                 ticket_number: num,
+                access_token: accessToken,
                 created_at: new Date().toISOString(),
             }))
         );
@@ -72,9 +78,6 @@ export async function POST(req: NextRequest) {
             console.log("✅ Tickets insérés :", ticketNumbers);
         }
 
-        if (error) {
-            console.error("❌ Erreur Supabase :", error.message);
-        }
 
         // Envoyer le mail
         try {

@@ -35,8 +35,8 @@ export default function MesTickets() {
     };
 
     return (
-        <main className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 p-6">
-            <div className="max-w-lg w-full bg-white rounded-3xl shadow-xl p-10 flex flex-col gap-6">
+        <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
+            <div className="max-w-lg w-full bg-white rounded-3xl shadow-xl p-8 flex flex-col gap-6">
                 <h2 className="text-3xl font-extrabold text-gray-800 text-center">
                     🎟️ Mes Tickets
                 </h2>
