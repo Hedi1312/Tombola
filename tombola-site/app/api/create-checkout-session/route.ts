@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
                 full_name,
                 accessToken, // 🔹 stocker le token pour le webhook
             },
-            success_url: `${process.env.NEXT_PUBLIC_URL}/mes-billets?token=${accessToken}`, // 🔹 redirection directe
+            success_url: `${process.env.NEXT_PUBLIC_URL}/mes-tickets?token=${accessToken}`, // 🔹 redirection directe
             cancel_url: `${process.env.NEXT_PUBLIC_URL}/acheter`,
         });
 
