@@ -57,7 +57,8 @@ export async function POST(req: NextRequest) {
         );
 
         // Générer un token unique pour cet achat
-        const accessToken = uuidv4();
+        const accessToken = session.metadata?.accessToken;
+
 
 
         // Sauvegarder dans Supabase
