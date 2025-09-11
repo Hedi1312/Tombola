@@ -10,14 +10,15 @@ interface Ticket {
     created_at: string;
 }
 
-export default function MesTickets({ searchParams }: { searchParams?: { token?: string } }) {
+export default function MesTickets() {
     const [tickets, setTickets] = useState<Ticket[] | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
-    const token = searchParams?.token;
-
     useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const token = urlParams.get("token");
+
         if (!token) {
             setError("Token manquant. Entrez votre email pour rechercher vos billets.");
             setLoading(false);
@@ -38,8 +39,7 @@ export default function MesTickets({ searchParams }: { searchParams?: { token?: 
                 } else if (!data || data.length === 0) {
                     setError("Aucun billet trouvé pour ce token.");
                 } else {
-                    const tickets: Ticket[] = data as Ticket[];
-                    setTickets(tickets);
+                    setTickets(data as Ticket[]);
                 }
             } catch (err) {
                 console.error(err);
@@ -50,7 +50,7 @@ export default function MesTickets({ searchParams }: { searchParams?: { token?: 
         }
 
         fetchTickets();
-    }, [token]);
+    }, []);
 
     return (
         <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
