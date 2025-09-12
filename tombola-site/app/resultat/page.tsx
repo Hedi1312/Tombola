@@ -8,8 +8,8 @@ import { useWindowSize } from "react-use";
 const winnerName = "";
 const winnerTicket = 0;
 
-// ⚡ Tirage fixé au 11 octobre 2025 à 18h (Paris)
-const DRAW_DATE = new Date("2025-10-11T18:00:00+02:00");
+// ⚡ Tirage fixé au 17 novembre 2025 à 18h (Paris)
+const DRAW_DATE = new Date("2025-11-17T20:00:00+01:00");
 
 export default function ResultatPage() {
     const { width, height } = useWindowSize();

@@ -72,7 +72,7 @@ function CheckoutForm() {
             <button
                 onClick={handlePayment}
                 disabled={loading}
-                className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition duration-200"
+                className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition duration-200 cursor-pointer"
             >
                 {loading ? "Redirection..." : "💳 Payer vos tickets"}
             </button>
