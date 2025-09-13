@@ -3,65 +3,56 @@ import { useState } from "react";
 import Link from "next/link";
 import { FaHome, FaTiktok } from "react-icons/fa";
 import Image from "next/image";
+import maroc from "../../ressources/img/maroc.png";
+import france from "../../ressources/img/france.png";
+import unitedKingdom from "../../ressources/img/unitedKingdom.png";
 import { useRouter } from "next/navigation";
-import { useLanguage } from "@/app/context/LanguageContext";
-import { translations } from "@/app/../lib/translations";
-import { routeMap } from "@/app/../lib/routeMap";
-import france from "@/app/ressources/img/france.png";
-import unitedKingdom from "@/app/ressources/img/unitedKingdom.png";
-import maroc from "@/app/ressources/img/maroc.png";
+import { useLanguage } from "../../context/LanguageContext";
 
-export default function Navbar() {
+export default function NavbarEn() {
+    const [isOpen, setIsOpen] = useState(false); // menu mobile
+    const [openDropdown, setOpenDropdown] = useState(false); // desktop dropdown
     const { selectedLang, setSelectedLang } = useLanguage();
     const router = useRouter();
-    const [isOpen, setIsOpen] = useState(false);
-    const [openDropdown, setOpenDropdown] = useState(false);
 
     const changeLang = (lang: "fr" | "en") => {
-        setSelectedLang(lang);
         setOpenDropdown(false);
-        // Redirection vers la home de la langue choisie
+        setIsOpen(false); // ferme le menu mobile si ouvert
+        setSelectedLang(lang);
         router.push(lang === "fr" ? "/fr" : "/en");
     };
-
-    const t = translations[selectedLang];
-    const r = routeMap[selectedLang];
 
     return (
         <nav className="bg-white shadow-md w-full">
             <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-                <Link href={r.home} className="flex items-center gap-2 text-2xl font-bold text-gray-800">
+                <Link href="/en" className="flex items-center gap-2 text-2xl font-bold text-gray-800">
                     <span>🎟️ Marocola</span>
                     <Image src={maroc} alt="Maroc" width={24} height={24} />
                 </Link>
 
                 {/* Menu desktop */}
-                <div className="hidden md:flex gap-5 items-center">
-                    <Link href={r.home} className="text-gray-700 hover:text-blue-600 transition">
+                <div className="hidden md:flex gap-6 items-center">
+                    <Link href="/en" className="text-gray-700 hover:text-blue-600 transition">
                         <FaHome size={24} />
                     </Link>
-                    <Link href={r.acheter} className="text-gray-700 hover:text-blue-600 transition">{t.acheter}</Link>
-                    <Link href={r.lot} className="text-gray-700 hover:text-blue-600 transition">{t.lot}</Link>
-                    <Link href={r.resultat} className="text-gray-700 hover:text-blue-600 transition">{t.resultat}</Link>
-                    <Link href={r.cagnotte} className="text-gray-700 hover:text-blue-600 transition">{t.cagnotte}</Link>
-                    <Link href={r.tiktok} className="text-gray-700 hover:text-blue-600 transition"><FaTiktok size={22} /></Link>
+                    <Link href="/en/buy" className="text-gray-700 hover:text-blue-600 transition">Buy a ticket</Link>
+                    <Link href="/en/prize" className="text-gray-700 hover:text-blue-600 transition">Prize</Link>
+                    <Link href="/en/result" className="text-gray-700 hover:text-blue-600 transition">Result</Link>
+                    <Link href="/en/donate" className="text-gray-700 hover:text-blue-600 transition">Donate</Link>
+                    <Link href="/en/tiktok" className="text-gray-700 hover:text-blue-600 transition">
+                        <FaTiktok size={22} />
+                    </Link>
                     <Link href="/admin" className="text-gray-700 hover:text-blue-600 transition">Admin</Link>
 
-                    {/* Sélecteur de langue */}
+                    {/* Dropdown langue */}
                     <div className="relative text-gray-700">
                         <button
                             className="flex items-center gap-2 border p-2 rounded cursor-pointer"
                             onClick={() => setOpenDropdown(!openDropdown)}
                         >
-                            <Image
-                                src={selectedLang === "fr" ? france : unitedKingdom}
-                                alt={selectedLang === "fr" ? "France" : "United Kingdom"}
-                                width={24}
-                                height={24}
-                            />
-                            <span>{selectedLang === "fr" ? "Français" : "English"}</span>
+                            <Image src={unitedKingdom} alt="United Kingdom" width={24} height={24}/>
+                            <span>English</span>
                         </button>
-
                         {openDropdown && (
                             <ul className="absolute mt-1 bg-white shadow-md rounded w-full z-10">
                                 <li
@@ -84,21 +75,31 @@ export default function Navbar() {
                 </div>
 
                 {/* Menu mobile toggle */}
-                <button className="md:hidden text-gray-800" onClick={() => setIsOpen(!isOpen)}>
+                <button
+                    className="md:hidden text-gray-800"
+                    onClick={() => setIsOpen(!isOpen)}
+                >
                     {isOpen ? "✖️" : "☰"}
                 </button>
             </div>
 
             {/* Menu mobile */}
             {isOpen && (
-                <div className="md:hidden px-6 pb-2 flex flex-col gap-2">
-                    <Link href={r.home} className="text-gray-700" onClick={() => setIsOpen(false)}><FaHome size={22} /></Link>
-                    <Link href={r.acheter} className="text-gray-700" onClick={() => setIsOpen(false)}>{t.acheter}</Link>
-                    <Link href={r.lot} className="text-gray-700" onClick={() => setIsOpen(false)}>{t.lot}</Link>
-                    <Link href={r.resultat} className="text-gray-700" onClick={() => setIsOpen(false)}>{t.resultat}</Link>
-                    <Link href={r.cagnotte} className="text-gray-700" onClick={() => setIsOpen(false)}>{t.cagnotte}</Link>
-                    <Link href={r.tiktok} className="text-gray-700" onClick={() => setIsOpen(false)}><FaTiktok size={22} /></Link>
+                <div className="md:hidden px-6 pb-4 flex flex-col gap-2">
+                    <Link href="/en" className="text-gray-700" onClick={() => setIsOpen(false)}>
+                        <FaHome size={22} />
+                    </Link>
+                    <Link href="/en/buy" className="text-gray-700" onClick={() => setIsOpen(false)}>Buy a ticket</Link>
+                    <Link href="/en/prize" className="text-gray-700" onClick={() => setIsOpen(false)}>Prize</Link>
+                    <Link href="/en/result" className="text-gray-700" onClick={() => setIsOpen(false)}>Result</Link>
+                    <Link href="/en/donate" className="text-gray-700" onClick={() => setIsOpen(false)}>Donate</Link>
+                    <Link href="/en/tiktok" className="text-gray-700" onClick={() => setIsOpen(false)}>
+                        <FaTiktok size={22} />
+                    </Link>
+                    <Link href="/admin" className="text-gray-700" onClick={() => setIsOpen(false)}>Admin</Link>
 
+
+                    {/* Sélecteur langue mobile */}
                     <div className="flex-col gap-2 mt-2 text-gray-700">
                         <button
                             className="flex items-center gap-2 border p-2 rounded cursor-pointer"

@@ -1,25 +1,21 @@
-"use client";
 import { FaTiktok } from "react-icons/fa";
-import { useLanguage } from "../context/LanguageContext";
 
-export default function Footer() {
-    const { selectedLang } = useLanguage();
-
+export default function FooterEn() {
     return (
         <footer className="bg-gray-100 text-gray-600 py-6 mt-12 text-center">
             <div className="flex justify-center gap-6 mb-2">
                 <a
-                    href={selectedLang === "fr" ? "/fr/tiktok" : "/en/tiktok"}
+                    href="/en/tiktok"
                     className="hover:text-black"
                 >
                     <FaTiktok size={24} />
                 </a>
-            </div>
+
 
             <p className="text-sm">
-                © {new Date().getFullYear()} Marocola.{" "}
-                {selectedLang === "fr" ? "Tous droits réservés." : "All rights reserved."}
+                © 2025 Marocola. All rights reserved.
             </p>
+            </div>
         </footer>
     );
 }

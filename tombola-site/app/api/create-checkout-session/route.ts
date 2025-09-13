@@ -5,10 +5,21 @@ import { v4 as uuidv4 } from "uuid"; // 🔹 importer uuid
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: NextRequest) {
-    const { tickets, email, full_name } = await req.json();
+    const { tickets, email, full_name, lang } = await req.json();
 
     // 🔹 Générer le token unique avant Stripe
     const accessToken = uuidv4();
+    let successUrl = "";
+    let cancelUrl = "";
+
+    if (lang === "fr") {
+        successUrl = `${process.env.NEXT_PUBLIC_URL}/fr/mes-tickets?token=${accessToken}`;
+        cancelUrl = `${process.env.NEXT_PUBLIC_URL}/fr/acheter`;
+    } else if (lang === "en") {
+        successUrl = `${process.env.NEXT_PUBLIC_URL}/en/buy?token=${accessToken}`;
+        cancelUrl = `${process.env.NEXT_PUBLIC_URL}/en/buy`;
+    }
+
 
     try {
         const session = await stripe.checkout.sessions.create({
@@ -29,8 +40,8 @@ export async function POST(req: NextRequest) {
                 full_name,
                 accessToken, // 🔹 stocker le token pour le webhook
             },
-            success_url: `${process.env.NEXT_PUBLIC_URL}/mes-tickets?token=${accessToken}`, // 🔹 redirection directe
-            cancel_url: `${process.env.NEXT_PUBLIC_URL}/acheter`,
+            success_url: successUrl,
+            cancel_url: cancelUrl,
         });
 
         return NextResponse.json({ url: session.url });
