@@ -19,7 +19,7 @@ export default function Home() {
                         Participez à notre tombola pour soutenir notre projet scolaire.<br /> <br />
                         Un super lot à gagner et une bonne action à la clé !<br />
                     </p>
-                    <Link href="/fr/acheter">
+                    <Link href="/acheter">
                         <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition cursor-pointer">
                             Acheter un ticket
                         </button>
