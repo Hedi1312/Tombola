@@ -19,8 +19,13 @@ export default function ChoixGagnantPage() {
             const res = await fetch("/api/choix-gagnant");
             const data = await res.json();
             if (data.success && data.winners) {
+                interface WinnerAPI {
+                    name: string;
+                    ticket: string | number;
+                }
+
                 setWinners(
-                    data.winners.map((w: any) => ({ name: w.name, ticket: String(w.ticket) }))
+                    data.winners.map((w: WinnerAPI) => ({ name: w.name, ticket: String(w.ticket) }))
                 );
             } else {
                 setWinners([

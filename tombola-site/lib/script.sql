@@ -14,7 +14,7 @@ create table if not exists tickets (
 );
 
 -- Table pour stocker la date du tirage
-create table draw_date if not exists tickets (
+create table  if not exists draw_date (
         id bigint generated always as identity primary key,
         draw_date timestamp not null
 );

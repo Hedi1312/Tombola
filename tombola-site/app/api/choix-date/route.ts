@@ -84,7 +84,8 @@ export async function POST(req: NextRequest) {
             success: true,
             drawDate: drawData?.[0]?.draw_date || null,
         });
-    } catch (err: any) {
-        return NextResponse.json({ success: false, error: err.message });
+    } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        return NextResponse.json({ success: false, error: errorMessage });
     }
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {ArrowLeft, Ticket} from "lucide-react";
+import {ArrowLeft} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function ChoixDatePage() {

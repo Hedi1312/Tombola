@@ -13,6 +13,9 @@ interface WinnerRow {
     rank: number;
 }
 
+
+
+
 // GET → récupérer les gagnants
 export async function GET() {
     const { data, error } = await supabase
@@ -38,18 +41,20 @@ export async function POST(req: NextRequest) {
         await supabase.from("winners").delete().neq("id", 0);
 
         // On insère les nouveaux gagnants avec le rang correspondant
-        const newWinners: Omit<WinnerRow, "id">[] = winners.map((w: any, index: number) => ({
-            name: w.name || "",
-            ticket: w.ticket || 0,
-            rank: index + 1,
-        }));
-
+        const newWinners: Omit<WinnerRow, "id">[] = winners.map(
+            (w: { name: string; ticket: string | number }, index: number) => ({
+                name: w.name || "",
+                ticket: Number(w.ticket) || 0,
+                rank: index + 1,
+            })
+        );
         const { data, error } = await supabase.from("winners").insert(newWinners).select("*");
 
         if (error) return NextResponse.json({ success: false, error: error.message });
 
         return NextResponse.json({ success: true, winners: data });
-    } catch (err: any) {
-        return NextResponse.json({ success: false, error: err.message });
+    } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        return NextResponse.json({ success: false, error: errorMessage });
     }
 }

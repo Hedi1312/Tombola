@@ -31,7 +31,8 @@ export async function GET() {
             drawDate: drawDateData?.draw_date || null,
             winners: winnersData || [],
         });
-    } catch (error: any) {
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        return NextResponse.json({ success: false, error: errorMessage });
     }
 }
