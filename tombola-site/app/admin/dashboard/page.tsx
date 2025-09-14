@@ -1,0 +1,70 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { CalendarDays, Trophy, Ticket, LogOut } from "lucide-react";
+
+export default function DashboardPage() {
+    const router = useRouter();
+
+    const handleLogout = () => {
+        sessionStorage.removeItem("admin_logged_in");
+        router.push("/admin-login");
+    };
+
+    const actions = [
+        {
+            title: "Voir tickets vendus",
+            description: "Consultez la liste des tickets déjà achetés",
+            icon: <Ticket className="h-8 w-8 text-green-600" />,
+            onClick: () => router.push("/admin/tickets-vendus"),
+        },
+        {
+            title: "Changer la date du tirage",
+            description: "Modifiez la date prévue pour le prochain tirage",
+            icon: <CalendarDays className="h-8 w-8 text-indigo-600" />,
+            onClick: () => router.push("/admin/choix-date"),
+        },
+        {
+            title: "Déterminer les gagnants",
+            description: "Ajouter les gagnants",
+            icon: <Trophy className="h-8 w-8 text-yellow-500" />,
+            onClick: () => router.push("/admin/choix-gagnant"),
+        },
+    ];
+
+    return (
+        <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
+            <div className="mx-auto max-w-5xl w-full">
+                {/* Titre + bouton logout */}
+                <div className="flex flex-col items-center lg:flex-row lg:justify-center lg:gap-4 mb-10 w-full relative">
+                    <h1 className="text-4xl font-bold text-gray-800 text-center">
+                        👨🏻‍💻 Espace Admin
+                    </h1>
+                    <button
+                        onClick={handleLogout}
+                        className="mt-4 lg:absolute lg:right-0 flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 font-medium text-white hover:bg-red-700 cursor-pointer"
+                    >
+                        <LogOut className="h-5 w-5" /> Déconnexion
+                    </button>
+                </div>
+
+                {/* Actions grid */}
+                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    {actions.map((action, index) => (
+                        <div
+                            key={index}
+                            onClick={action.onClick}
+                            className="cursor-pointer rounded-2xl bg-white p-6 shadow-md transition hover:scale-105 hover:shadow-xl"
+                        >
+                            <div className="flex items-center justify-center rounded-xl bg-gray-100 p-4">
+                                {action.icon}
+                            </div>
+                            <h2 className="mt-4 text-xl font-semibold text-gray-800">{action.title}</h2>
+                            <p className="mt-2 text-sm text-gray-600">{action.description}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </main>
+    );
+}

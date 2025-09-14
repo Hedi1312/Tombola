@@ -13,7 +13,7 @@ export default function Footer() {
 
 
             <p className="text-sm">
-                © 2025 Tombola pour le Maroc. Tous droits réservés.
+                © 2025 Marocola. Tous droits réservés.
             </p>
             </div>
         </footer>

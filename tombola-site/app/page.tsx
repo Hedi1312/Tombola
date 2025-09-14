@@ -1,26 +1,26 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
 
 
 export default function Home() {
+    const [expanded, setExpanded] = useState(false);
+
     return (
         <main className="min-h-screen bg-gray-50 p-6 flex items-start justify-center">
-
             {/* Conteneur principal en ligne */}
             <div className="flex flex-col md:flex-row gap-6 max-w-6xl w-full">
-
-
-
                 {/* Bloc tombola plus petit et hauteur automatique */}
                 <div className="md:w-2/5 bg-white rounded-2xl shadow-md p-8 text-center text-gray-700 self-start">
                     <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
                         🎟️ Tombola
                     </h1>
                     <p className="text-base md:text-lg mb-6">
-                        Participez à notre tombola pour soutenir notre projet scolaire.<br /> <br/>
-                        Un super lot à gagner et une bonne action à la clé !<br/>
+                        Participez à notre tombola pour soutenir notre projet scolaire.<br /> <br />
+                        Un super lot à gagner et une bonne action à la clé !<br />
                     </p>
-                    <Link href="/acheter">
-                        <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition cursor-pointer" >
+                    <Link href="/fr/acheter">
+                        <button className="px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg shadow hover:bg-blue-700 transition cursor-pointer">
                             Acheter un ticket
                         </button>
                     </Link>
@@ -31,7 +31,11 @@ export default function Home() {
                     <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
                         Présentation
                     </h1>
-                    <p className="text-base md:text-lg leading-relaxed">
+                    <p
+                        className={`text-base md:text-lg leading-relaxed transition-all duration-300 ${
+                            expanded ? "" : "line-clamp-5"
+                        }`}
+                    >
                         <br />
                         Nous sommes 3 étudiantes : Ménissa 🤍, Manon 🫶🏻 et Sarah ✌🏼. Nous effectuons des études d&apos;éducatrice de jeunes enfants au centre de formation Saint-Honoré et nous avons l&apos;opportunité d&apos;effectuer un voyage pédagogique de 5 jours en mars 2026.<br /><br />
                         A cette occasion, nous avons monté un projet pour rencontrer différents professionnels du domaine social à l&apos;étranger afin de découvrir une nouvelle culture et de nouvelles pratiques professionnelles.<br /><br />
@@ -43,8 +47,15 @@ export default function Home() {
                         Merci infiniment 🫱🏻‍🫲🏾<br />
                         Ménissa, Manon et Sarah !! 🥰
                     </p>
-                </div>
 
+                    {/* Bouton Lire plus / Réduire */}
+                    <button
+                        onClick={() => setExpanded(!expanded)}
+                        className="mt-4 text-blue-600 font-semibold hover:underline"
+                    >
+                        {expanded ? "Réduire" : "Lire plus"}
+                    </button>
+                </div>
             </div>
         </main>
     );
