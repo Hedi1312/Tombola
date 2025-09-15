@@ -107,7 +107,7 @@ export default function AddTicketForm() {
                             type="number"
                             inputMode="numeric"
                             pattern="[0-9]*"
-                            placeholder="1"
+                            placeholder="Nombre de ticket"
                             value={quantity}
                             onChange={(e) => setQuantity(parseInt(e.target.value))}
                             min={1}
