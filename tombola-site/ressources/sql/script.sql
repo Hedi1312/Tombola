@@ -8,7 +8,7 @@ create table if not exists tickets (
         id bigint generated always as identity primary key,
         email text not null,
         full_name text not null,
-        ticket_number bigint not null,
+        ticket_number bigint not null UNIQUE,
         access_token uuid not null,
         created_at timestamp with time zone default now()
 );
@@ -25,7 +25,7 @@ create table if not exists winners (
         id bigint generated always as identity primary key,
         name text not null,
         ticket char(6) not null UNIQUE,
-        rank int not null unique check (rank between 1 and 5)
+        rank int not null unique check (rank between 1 and 7)
 );
 
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
+import TicketCard from "@/app/components/TicketCard";
 
 interface Ticket {
     id: number;
@@ -34,7 +35,7 @@ export default function MesTickets() {
                     .from("tickets")
                     .select("*")
                     .eq("access_token", token)
-                    .order("created_at", { ascending: false });
+                    .order("id", { ascending: false });
 
                 const [{ data, error }] = await Promise.all([fetchData, minDelay]);
 
@@ -60,7 +61,7 @@ export default function MesTickets() {
 
     return (
         <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
-            <div className="max-w-lg w-full bg-white rounded-3xl shadow-xl p-8 flex flex-col gap-6">
+            <div className="w-full max-w-lg sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-8 flex flex-col gap-6">
                 <h2 className="text-3xl font-extrabold text-gray-800 text-center">
                     🎟️ Mes Tickets
                 </h2>
@@ -78,25 +79,23 @@ export default function MesTickets() {
 
                 {!loading && tickets && tickets.length > 0 && (
                     <div className="mt-6">
-                        <h3 className="text-xl font-bold mb-2 text-gray-800 text-center">
-                            Vos tickets :<br/> <br/>
+                        <h3 className="text-xl font-bold mb-4 text-gray-800 text-center">
+                            Vos tickets : {tickets.length}
                         </h3>
-                        <ul className="grid grid-cols-2 gap-3">
+                        <ul className="grid grid-cols-1 sm:grid-cols-3 gap-y-6 gap-x-6 justify-items-center">
                             {tickets.map((ticket) => (
-                                <li
-                                    key={ticket.id}
-                                    className="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg text-center font-mono"
-                                >
-                                    #{ticket.ticket_number}
+                                <li key={ticket.id}>
+                                    <TicketCard ticketNumber={ticket.ticket_number} />
                                 </li>
                             ))}
                         </ul>
                         <p className="text-center text-gray-700 mt-4">
-                           <br/> <br/><strong>⚠️ Pensez à garder ce lien envoyé par mail pour retrouver vos billets plus tard.</strong>
+                            <br/> <br/><strong>⚠️ Pensez à garder ce lien envoyé par mail pour retrouver vos billets plus tard.</strong>
                         </p>
                     </div>
                 )}
             </div>
         </main>
+
     );
 }

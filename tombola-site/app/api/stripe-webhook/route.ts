@@ -50,10 +50,13 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Email manquant" }, { status: 400 });
         }
 
-        // 🎟️ Générer des tickets aléatoires
-        const ticketNumbers = Array.from({ length: tickets }, () =>
-            Math.floor(100000 + Math.random() * 900000) // 6 chiffres
-        );
+
+        // 🎟️ Générer des tickets uniques à 6 chiffres
+        const ticketsCount = tickets; // nombre de tickets à générer
+        const pool = Array.from({ length: 900000 }, (_, i) => i + 100000);
+        pool.sort(() => Math.random() - 0.5);
+        const ticketNumbers = pool.slice(0, ticketsCount);
+
 
         // Générer un token unique pour cet achat
         const accessToken = session.metadata?.accessToken;

@@ -16,7 +16,7 @@ export default function ChoixGagnantPage() {
 
     useEffect(() => {
         const fetchWinners = async () => {
-            const res = await fetch("/api/choix-gagnant");
+            const res = await fetch("/api/admin/choix-gagnant");
             const data = await res.json();
             if (data.success && data.winners) {
                 interface WinnerAPI {
@@ -29,6 +29,8 @@ export default function ChoixGagnantPage() {
                 );
             } else {
                 setWinners([
+                    { name: "", ticket: "" },
+                    { name: "", ticket: "" },
                     { name: "", ticket: "" },
                     { name: "", ticket: "" },
                     { name: "", ticket: "" },
@@ -47,7 +49,7 @@ export default function ChoixGagnantPage() {
     };
 
     const handleAdd = () => {
-        if (winners.length < 5) setWinners([...winners, { name: "", ticket: "" }]);
+        if (winners.length < 7) setWinners([...winners, { name: "", ticket: "" }]);
     };
 
     const handleDelete = (index: number) => {
@@ -75,7 +77,7 @@ export default function ChoixGagnantPage() {
             return;
         }
 
-        const res = await fetch("/api/choix-gagnant", {
+        const res = await fetch("/api/admin/choix-gagnant", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ winners }),
@@ -110,7 +112,15 @@ export default function ChoixGagnantPage() {
                 </div>
 
                 {message && (
-                    <p className="mb-4 rounded-lg bg-blue-100 text-blue-800 p-2 text-center">{message}</p>
+                    <p
+                        className={`mb-4 rounded-lg text-center text-base p-2 ${
+                        message.startsWith("✅")
+                            ? "bg-green-100 text-green-700"
+                            : "bg-red-100 text-red-700"
+                        }`}
+                    >
+                        {message}
+                    </p>
                 )}
 
                 {winners.map((winner, index) => (
@@ -123,7 +133,7 @@ export default function ChoixGagnantPage() {
 
                             <input
                                 type="text"
-                                placeholder="Nom"
+                                placeholder="Prénom NOM"
                                 value={winner.name}
                                 onChange={(e) => handleChange(index, "name", e.target.value)}
                                 className="w-full sm:w-48 rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
@@ -153,7 +163,7 @@ export default function ChoixGagnantPage() {
                     </div>
                 ))}
 
-                {winners.length < 5 && (
+                {winners.length < 7 && (
                     <button
                         onClick={handleAdd}
                         className="w-full rounded-lg bg-green-600 px-4 py-2 text-white font-medium hover:bg-green-700 transition"

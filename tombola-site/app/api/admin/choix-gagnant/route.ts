@@ -15,7 +15,6 @@ interface WinnerRow {
 
 
 
-
 // GET → récupérer les gagnants
 export async function GET() {
     const { data, error } = await supabase

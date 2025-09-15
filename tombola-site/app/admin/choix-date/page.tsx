@@ -12,7 +12,7 @@ export default function ChoixDatePage() {
     // Charger la date actuelle depuis l'API
     useEffect(() => {
         const fetchDate = async () => {
-            const res = await fetch("/api/choix-date");
+            const res = await fetch("/api/admin/choix-date");
             const data = await res.json();
             if (data.success && data.drawDate) {
                 const dt = new Date(data.drawDate);
@@ -43,7 +43,7 @@ export default function ChoixDatePage() {
             localDate.getTime() - localDate.getTimezoneOffset() * 60 * 1000
         ).toISOString();
 
-        const res = await fetch("/api/choix-date", {
+        const res = await fetch("/api/admin/choix-date", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ newDate: utcDate }),
@@ -87,7 +87,13 @@ export default function ChoixDatePage() {
 
 
                 {message && (
-                    <p className="mb-4 rounded-lg bg-blue-100 text-blue-800 p-2 text-center">
+                    <p
+                        className={`mb-4 rounded-lg text-center text-base p-2 ${
+                            message.startsWith("✅")
+                                ? "bg-green-100 text-green-700"
+                                : "bg-red-100 text-red-700"
+                        }`}
+                    >
                         {message}
                     </p>
                 )}

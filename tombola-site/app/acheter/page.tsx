@@ -41,7 +41,7 @@ function CheckoutForm() {
                 Votre nom complet :
                 <input
                     type="text"
-                    placeholder="Prénom Nom"
+                    placeholder="Prénom NOM"
                     value={full_name}
                     onChange={(e) => setFullName(e.target.value)}
                     className="mt-2 px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -84,9 +84,7 @@ export default function Acheter() {
     return (
         <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
             <div className="max-w-lg w-full bg-white rounded-3xl shadow-xl p-8 flex flex-col gap-6">
-                <h2 className="text-3xl font-extrabold text-gray-800 text-center">
-                    🎟️ Acheter vos tickets à 2€
-                </h2>
+                <h2 className="text-3xl font-extrabold text-gray-800 text-center">Acheter vos tickets à 2€</h2>
                 <p className="text-gray-600 text-center">
                     Participez à notre tombola pour soutenir notre projet scolaire et tentez de gagner un super lot !
                 </p>

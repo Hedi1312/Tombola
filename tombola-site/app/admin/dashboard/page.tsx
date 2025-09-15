@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { CalendarDays, Trophy, Ticket, LogOut } from "lucide-react";
+import { CalendarDays, Trophy, Ticket, LogOut, CirclePlus } from "lucide-react";
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -15,8 +15,14 @@ export default function DashboardPage() {
         {
             title: "Voir tickets vendus",
             description: "Consultez la liste des tickets déjà achetés",
-            icon: <Ticket className="h-8 w-8 text-green-600" />,
+            icon: <Ticket className="h-8 w-8 text-red-500" />,
             onClick: () => router.push("/admin/tickets-vendus"),
+        },
+        {
+            title: "Ajouter des tickets",
+            description: "Ajouter des tickets à partir des infos de l'acheteur",
+            icon: <CirclePlus className="h-8 w-8 text-green-600" />,
+            onClick: () => router.push("/admin/ajouter-ticket"),
         },
         {
             title: "Changer la date du tirage",

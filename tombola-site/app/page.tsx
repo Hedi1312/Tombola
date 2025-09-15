@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import ticket from "@/ressources/img/ticket.png";
+import Image from "next/image";
 
 
 export default function Home() {
@@ -12,9 +14,13 @@ export default function Home() {
             <div className="flex flex-col md:flex-row gap-6 max-w-6xl w-full">
                 {/* Bloc tombola plus petit et hauteur automatique */}
                 <div className="md:w-2/5 bg-white rounded-2xl shadow-md p-8 text-center text-gray-700 self-start">
-                    <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
-                        🎟️ Tombola
-                    </h1>
+                    {/* Image + Titre alignés */}
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                        <Image src={ticket} alt="Ticket" width={80} height={80} />
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+                            Tombola
+                        </h1>
+                    </div>
                     <p className="text-base md:text-lg mb-6">
                         Participez à notre tombola pour soutenir notre projet scolaire.<br /> <br />
                         Un super lot à gagner et une bonne action à la clé !<br />

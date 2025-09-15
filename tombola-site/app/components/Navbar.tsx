@@ -3,7 +3,8 @@
 import Link from "next/link";
 import {FaHome, FaTiktok} from "react-icons/fa";
 import Image from "next/image";
-import maroc from "../ressources/img/maroc.png";
+import maroc from "@/ressources/img/maroc.png";
+import ticket from "@/ressources/img/ticket.png";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -36,7 +37,8 @@ export default function Navbar() {
         <nav className="bg-white shadow-md w-full">
             <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
                 <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-gray-800">
-                    <span>🎟️ Marocola</span>
+                    <Image src={ticket} alt="Ticket" width={100} height={100} />
+                    <span>Marocola</span>
                     <Image src={maroc} alt="Maroc" width={24} height={24} />
                 </Link>
 

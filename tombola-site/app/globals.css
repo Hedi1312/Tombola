@@ -12,6 +12,14 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@font-face {
+    font-family: 'Norwester';
+    src: url('../ressources/fonts/norwester.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
