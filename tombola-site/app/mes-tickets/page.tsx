@@ -82,6 +82,9 @@ export default function MesTickets() {
                         <h3 className="text-xl font-bold mb-4 text-gray-800 text-center">
                             Vos tickets : {tickets.length}
                         </h3>
+                        <p className="text-center text-gray-700 mt-4">
+                            <br/><strong>⚠️ Pensez à garder ce lien envoyé par mail pour retrouver vos billets plus tard.</strong><br/> <br/><br/>
+                        </p>
                         <ul className="grid grid-cols-1 sm:grid-cols-3 gap-y-6 gap-x-6 justify-items-center">
                             {tickets.map((ticket) => (
                                 <li key={ticket.id}>
@@ -89,9 +92,6 @@ export default function MesTickets() {
                                 </li>
                             ))}
                         </ul>
-                        <p className="text-center text-gray-700 mt-4">
-                            <br/> <br/><strong>⚠️ Pensez à garder ce lien envoyé par mail pour retrouver vos billets plus tard.</strong>
-                        </p>
                     </div>
                 )}
             </div>
