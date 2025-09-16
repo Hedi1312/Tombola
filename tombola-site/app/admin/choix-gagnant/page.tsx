@@ -6,13 +6,23 @@ import { useRouter } from "next/navigation";
 
 interface Winner {
     name: string;
+    email: string;
     ticket: string;
 }
+
+interface Ticket {
+    full_name: string;
+    email: string;
+    ticket_number: string;
+}
+
 
 export default function ChoixGagnantPage() {
     const router = useRouter();
     const [winners, setWinners] = useState<Winner[]>([]);
     const [message, setMessage] = useState<string>("");
+    const [winnerCount, setWinnerCount] = useState(0); // valeur par défaut 0 gagnants
+
 
     useEffect(() => {
         const fetchWinners = async () => {
@@ -21,21 +31,27 @@ export default function ChoixGagnantPage() {
             if (data.success && data.winners) {
                 interface WinnerAPI {
                     name: string;
-                    ticket: string | number;
+                    email: string;
+                    ticket: string;
                 }
 
-                setWinners(
-                    data.winners.map((w: WinnerAPI) => ({ name: w.name, ticket: String(w.ticket) }))
-                );
+                const existingWinners = data.winners.map((w: WinnerAPI) => ({
+                    name: w.name,
+                    email: w.email,
+                    ticket: String(w.ticket).padStart(6, "0"),
+                }));
+
+                setWinners(existingWinners);
+                setWinnerCount(existingWinners.length);
             } else {
                 setWinners([
-                    { name: "", ticket: "" },
-                    { name: "", ticket: "" },
-                    { name: "", ticket: "" },
-                    { name: "", ticket: "" },
-                    { name: "", ticket: "" },
-                    { name: "", ticket: "" },
-                    { name: "", ticket: "" },
+                    { name: "", email: "", ticket: "" },
+                    { name: "", email:"", ticket: "" },
+                    { name: "", email:"", ticket: "" },
+                    { name: "", email:"", ticket: "" },
+                    { name: "", email:"", ticket: "" },
+                    { name: "", email:"", ticket: "" },
+                    { name: "", email:"", ticket: "" },
                 ]);
             }
         };
@@ -48,21 +64,76 @@ export default function ChoixGagnantPage() {
         setWinners(newWinners);
     };
 
-    const handleAdd = () => {
-        if (winners.length < 7) setWinners([...winners, { name: "", ticket: "" }]);
-    };
-
     const handleDelete = (index: number) => {
         const newWinners = winners.filter((_, i) => i !== index);
         setWinners(newWinners);
+        setWinnerCount(newWinners.length);
     };
+
+    // Tirage aléatoire
+
+    // Fonction pour mélanger un tableau correctement
+    function shuffleArray<T>(array: T[]): T[] {
+        const arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]]; // échange
+        }
+        return arr;
+    }
+
+
+    const handleRandomize = async () => {
+        if (winnerCount <= 0) {
+            setMessage("❌ Veuillez choisir un nombre de gagnants supérieur à 0.");
+            return;
+        }
+
+        try {
+            // Récupérer tous les tickets
+            const res = await fetch("/api/admin/tickets-vendus");
+            const data = await res.json();
+
+            if (!data.success || !data.tickets || data.tickets.length === 0) {
+                setMessage("❌ Aucun ticket disponible pour le tirage.");
+                return;
+            }
+
+            // Mélanger les tickets aléatoirement
+            const shuffled = shuffleArray(data.tickets);
+
+            // Sélectionner uniquement le nombre de gagnants souhaité
+            const selected = shuffled.slice(0, winnerCount) as Ticket[];
+
+            // Créer les gagnants
+            const newWinners = selected.map((t: Ticket) => ({
+                name: t.full_name,
+                email: t.email,
+                ticket: String(t.ticket_number).padStart(6, "0"),
+            }));
+
+            setWinners(newWinners);
+            setMessage(`✅ ${newWinners.length} gagnant(s) tiré(s) au hasard !`);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+
+        } catch (err: unknown) {
+            if (err instanceof Error) {
+                setMessage(`❌ Erreur lors du tirage : ${err.message}`);
+            } else {
+                setMessage(`❌ Erreur lors du tirage : ${String(err)}`);
+            }
+        }
+    };
+
+
+
 
     const handleSave = async () => {
         // Vérification des lignes
         for (let i = 0; i < winners.length; i++) {
             const w = winners[i];
-            if (w.name.trim() === "" || !/^\d{6}$/.test(w.ticket)) {
-                setMessage(`❌ Ligne ${i + 1} invalide : nom requis et ticket doit être exactement 6 chiffres.`);
+            if (w.name.trim() === "" || !/^\d{6}$/.test(w.ticket) || w.email.trim() === "") {
+                setMessage(`❌ Ligne ${i + 1} invalide : nom, email requis et ticket doit être exactement 6 chiffres.`);
                 window.scrollTo({ top: 0, behavior: "smooth" }); // ← scroll vers le haut
                 return;
             }
@@ -123,6 +194,39 @@ export default function ChoixGagnantPage() {
                     </p>
                 )}
 
+                <div className="flex items-center gap-2 mb-4 text-gray-700">
+                    <label className="font-medium">Nombre de gagnants :</label>
+                    <input
+                        type="number"
+                        min={0}
+                        value={winnerCount}
+                        onChange={(e) => {
+                            const count = Number(e.target.value);
+                            setWinnerCount(count);
+
+                            // Ajuster le tableau winners
+                            const newWinners = [...winners];
+                            if (newWinners.length < count) {
+                                while (newWinners.length < count) {
+                                    newWinners.push({ name: "", email: "", ticket: "" });
+                                }
+                            } else if (newWinners.length > count) {
+                                newWinners.length = count;
+                            }
+                            setWinners(newWinners);
+                        }}
+                        className="w-16 rounded-lg border px-2 py-1"
+                    />
+                </div>
+
+                <button
+                    onClick={handleRandomize}
+                    className="w-full rounded-lg bg-yellow-500 px-4 py-2 text-white font-medium hover:bg-yellow-600 transition mb-4"
+                >
+                    Tirer au sort les gagnants
+                </button>
+
+
                 {winners.map((winner, index) => (
                     <div
                         key={index}
@@ -136,6 +240,14 @@ export default function ChoixGagnantPage() {
                                 placeholder="Prénom NOM"
                                 value={winner.name}
                                 onChange={(e) => handleChange(index, "name", e.target.value)}
+                                className="w-full sm:w-48 rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                            />
+
+                            <input
+                                type="email"
+                                placeholder="Adresse mail"
+                                value={winner.email}
+                                onChange={(e) => handleChange(index, "email", e.target.value)}
                                 className="w-full sm:w-48 rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
                             />
 
@@ -163,18 +275,9 @@ export default function ChoixGagnantPage() {
                     </div>
                 ))}
 
-                {winners.length < 7 && (
-                    <button
-                        onClick={handleAdd}
-                        className="w-full rounded-lg bg-green-600 px-4 py-2 text-white font-medium hover:bg-green-700 transition"
-                    >
-                        Ajouter un gagnant
-                    </button>
-                )}
-
                 <button
                     onClick={handleSave}
-                    className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 transition"
+                    className="w-full rounded-lg bg-green-600 px-4 py-2 text-white font-medium hover:bg-green-700 transition"
                 >
                     Enregistrer les gagnants
                 </button>

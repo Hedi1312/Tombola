@@ -2,7 +2,7 @@ import Image from "next/image";
 import ticket from "@/ressources/img/ticket.png";
 
 interface TicketCardProps {
-    ticketNumber: number;
+    ticketNumber: string;
 }
 
 export default function TicketCard({ ticketNumber }: TicketCardProps) {

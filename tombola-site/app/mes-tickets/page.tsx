@@ -3,10 +3,12 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import TicketCard from "@/app/components/TicketCard";
+import Image from "next/image";
+import ticket from "@/ressources/img/ticket.png";
 
 interface Ticket {
     id: number;
-    ticket_number: number;
+    ticket_number: string;
     full_name: string;
     created_at: string;
 }
@@ -61,10 +63,15 @@ export default function MesTickets() {
 
     return (
         <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
-            <div className="w-full max-w-lg sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-8 flex flex-col gap-6">
-                <h2 className="text-3xl font-extrabold text-gray-800 text-center">
-                    🎟️ Mes Tickets
-                </h2>
+            <div className="w-full max-w-lg sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-8 flex flex-col gap-6 mb-12">
+
+                {/* Image + Titre alignés */}
+                <div className="flex items-center justify-center gap-3 mb-4">
+                    <Image src={ticket} alt="Ticket" width={60} height={60} />
+                    <h2 className="text-3xl font-extrabold text-gray-800 text-center">
+                        Mes Tickets
+                    </h2>
+                </div>
 
                 {loading && (
                     <div className="flex flex-col items-center gap-4 mt-6">

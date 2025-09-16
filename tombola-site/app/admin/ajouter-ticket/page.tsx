@@ -88,7 +88,7 @@ export default function AddTicketForm() {
 
                     <input
                         type="email"
-                        placeholder="exemple@email.com"
+                        placeholder="Adresse mail"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required
