@@ -62,7 +62,7 @@ export default function MesTickets() {
     }, []); // on ne relance pas inutilement
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
+        <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
             <div className="w-full max-w-lg sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-8 flex flex-col gap-6 mb-12">
 
                 {/* Image + Titre alignés */}
@@ -102,7 +102,7 @@ export default function MesTickets() {
                     </div>
                 )}
             </div>
-        </main>
+        </section>
 
     );
 }

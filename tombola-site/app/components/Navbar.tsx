@@ -2,12 +2,13 @@
 
 import Link from "next/link";
 import {FaHome, FaTiktok} from "react-icons/fa";
+import { FiMenu, FiX } from "react-icons/fi";
 import Image from "next/image";
 import maroc from "@/ressources/img/maroc.png";
 import ticket from "@/ressources/img/ticket.png";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -58,18 +59,41 @@ export default function Navbar() {
                     </button>
                 </div>
 
-                {/* Menu mobile toggle */}
+                {/* Menu mobile toggle avec animation */}
                 <button
                     className="md:hidden text-gray-800"
                     onClick={() => setIsOpen(!isOpen)}
                 >
-                    {isOpen ? "✖️" : "☰"}
+                    <AnimatePresence mode="wait" initial={false}>
+                        {isOpen ? (
+                            <motion.span
+                                key="close"
+                                initial={{ rotate: -90, opacity: 0 }}
+                                animate={{ rotate: 0, opacity: 1 }}
+                                exit={{ rotate: 90, opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                <FiX size={32} />
+                            </motion.span>
+                        ) : (
+                            <motion.span
+                                key="menu"
+                                initial={{ rotate: 90, opacity: 0 }}
+                                animate={{ rotate: 0, opacity: 1 }}
+                                exit={{ rotate: -90, opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                <FiMenu size={32} />
+                            </motion.span>
+                        )}
+                    </AnimatePresence>
                 </button>
+
             </div>
 
             {/* Menu mobile */}
             {isOpen && (
-                <div className="md:hidden px-6 pb-4 flex flex-col gap-2">
+                <div className="md:hidden px-6 pb-4 flex flex-col gap-3 items-center">
                     <Link href="/" className="text-gray-700" onClick={handleLinkClick}><FaHome size={22} /></Link>
                     <Link href="/acheter" className="text-gray-700" onClick={handleLinkClick}>Acheter un ticket</Link>
                     <Link href="/lot-a-gagner" className="text-gray-700" onClick={handleLinkClick}>Lot à gagner</Link>

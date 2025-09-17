@@ -68,8 +68,8 @@ export default function ChoixDatePage() {
     };
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
-            <div className="w-full max-w-md rounded-2xl bg-white p-12 shadow-md">
+        <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
+            <div className="w-full max-w-md rounded-2xl bg-white p-12 shadow-md mb-12">
 
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-3 mb-6 w-full">
                     <h1 className="text-2xl font-bold text-gray-800 text-center md:text-left">
@@ -112,6 +112,6 @@ export default function ChoixDatePage() {
                     Enregistrer
                 </button>
             </div>
-        </main>
+        </section>
     );
 }

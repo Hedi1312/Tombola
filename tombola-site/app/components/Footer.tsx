@@ -2,7 +2,7 @@ import { FaTiktok } from "react-icons/fa";
 
 export default function Footer() {
     return (
-        <footer className="bg-gray-100 text-gray-600 py-6 mt-12 text-center">
+        <footer className="bg-gray-100 text-gray-600 py-6 mt-10 text-center">
             <div className="flex justify-center gap-6 mb-2">
                 <a
                     href="/tiktok"

@@ -9,7 +9,7 @@ export default function Home() {
     const [expanded, setExpanded] = useState(false);
 
     return (
-        <main className="min-h-screen bg-gray-50 p-6 flex items-start justify-center">
+        <section className="min-h-screen bg-gray-50 p-6 flex items-start justify-center">
             {/* Conteneur principal en ligne */}
             <div className="flex flex-col md:flex-row gap-6 max-w-6xl w-full">
                 {/* Bloc tombola plus petit et hauteur automatique */}
@@ -63,6 +63,6 @@ export default function Home() {
                     </button>
                 </div>
             </div>
-        </main>
+        </section>
     );
 }

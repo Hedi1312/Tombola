@@ -39,8 +39,8 @@ export default function DashboardPage() {
     ];
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
-            <div className="mx-auto max-w-5xl w-full">
+        <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
+            <div className="mx-auto max-w-5xl w-full mb-12">
                 {/* Titre + bouton logout */}
                 <div className="flex flex-col items-center lg:flex-row lg:justify-center lg:gap-4 mb-10 w-full relative">
                     <h1 className="text-4xl font-bold text-gray-800 text-center">
@@ -71,6 +71,6 @@ export default function DashboardPage() {
                     ))}
                 </div>
             </div>
-        </main>
+        </section>
     );
 }

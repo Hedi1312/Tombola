@@ -95,7 +95,7 @@ export default function ResultatPage() {
     if (!mounted) return null;
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50 relative overflow-hidden">
+        <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50 relative overflow-hidden">
             {(phase === 'revealing' || phase === 'revealed') && (
                 <Confetti width={width} height={height} recycle={true} numberOfPieces={300} />
             )}
@@ -165,6 +165,6 @@ export default function ResultatPage() {
                 {!drawDate && mounted && <p className="text-gray-700 text-lg md:text-xl">⏳ En attente de la date du tirage...</p>}
 
             </div>
-        </main>
+        </section>
     );
 }

@@ -42,8 +42,8 @@ export default function AddTicketForm() {
     };
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
-            <div className="w-full max-w-lg md:max-w-2xl bg-white rounded-2xl p-6 md:p-10 shadow-md flex flex-col gap-6">
+        <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
+            <div className="w-full max-w-lg md:max-w-2xl bg-white rounded-2xl p-6 md:p-10 shadow-md flex flex-col gap-6 mb-12">
 
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 w-full">
@@ -107,7 +107,7 @@ export default function AddTicketForm() {
                             type="number"
                             inputMode="numeric"
                             pattern="[0-9]*"
-                            placeholder="Nombre de ticket"
+                            placeholder="Nombre de tickets"
                             value={quantity}
                             onChange={(e) => setQuantity(parseInt(e.target.value))}
                             min={1}
@@ -125,6 +125,6 @@ export default function AddTicketForm() {
                     </button>
                 </form>
             </div>
-        </main>
+        </section>
     );
 }

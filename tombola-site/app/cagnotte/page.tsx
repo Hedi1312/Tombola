@@ -12,19 +12,21 @@ export default function TikTokRedirect() {
     }, []);
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-start bg-gray-50 p-6">
-            <h1 className="text-2xl font-bold mb-4 text-center text-gray-700">
-                Vous allez être redirigé vers notre cagnotte 💰
-            </h1>
-            <p className="text-gray-600 text-center">
-                Préparez-vous à faire chauffer la CB !
-            </p>
+        <section className="min-h-screen bg-gray-50 flex flex-col items-center justify-start pt-16 px-4 md:px-6">
+            <div className="w-full max-w-lg bg-white rounded-3xl shadow-xl p-8 md:p-10 text-center mx-auto mb-12">
+                <h1 className="text-2xl font-bold mb-4 text-center text-gray-700">
+                    Vous allez être redirigé vers notre cagnotte 💰
+                </h1>
+                <p className="text-gray-600 text-center">
+                    Préparez-vous à faire chauffer la CB !
+                </p>
 
-
-            <div className="flex flex-col items-center gap-4 mt-6">
-                <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-gray-700 text-lg">Redirection en cours...</p>
+                <div className="flex flex-col items-center gap-4 mt-6">
+                    <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-gray-700 text-lg">Redirection en cours...</p>
+                </div>
             </div>
-        </div>
+        </section>
+
     );
 }

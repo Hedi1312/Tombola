@@ -46,7 +46,7 @@ export default function TicketsPage() {
     );
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
+        <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
             <div className="w-full max-w-4xl mx-auto rounded-2xl bg-white p-6 md:p-8 shadow-md mb-12">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
@@ -152,6 +152,6 @@ export default function TicketsPage() {
                     </>
                 )}
             </div>
-        </main>
+        </section>
     );
 }

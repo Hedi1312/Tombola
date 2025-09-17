@@ -166,8 +166,8 @@ export default function ChoixGagnantPage() {
     };
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
-            <div className="w-full max-w-lg md:max-w-3xl bg-white rounded-2xl p-6 md:p-12 shadow-md flex flex-col gap-6">
+        <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
+            <div className="w-full max-w-lg md:max-w-3xl bg-white rounded-2xl p-6 md:p-12 shadow-md flex flex-col gap-6 mb-12">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-3 mb-6 w-full">
                     <h1 className="text-2xl font-bold text-gray-800 text-center md:text-left">
                         Choisir les gagnants
@@ -198,6 +198,8 @@ export default function ChoixGagnantPage() {
                     <label className="font-medium">Nombre de gagnants :</label>
                     <input
                         type="number"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
                         min={0}
                         value={winnerCount}
                         onChange={(e) => {
@@ -282,6 +284,6 @@ export default function ChoixGagnantPage() {
                     Enregistrer les gagnants
                 </button>
             </div>
-        </main>
+        </section>
     );
 }
