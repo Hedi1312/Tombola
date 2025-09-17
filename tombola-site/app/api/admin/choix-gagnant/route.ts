@@ -16,7 +16,7 @@ interface WinnerRow {
 
 
 // Fonction utilitaire pour récupérer les tickets
-export async function GET_Tickets() {
+async function GET_Tickets() {
     const { data, error } = await supabase
         .from("tickets")
         .select("full_name, email, ticket_number")
