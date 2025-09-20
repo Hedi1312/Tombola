@@ -1,14 +1,10 @@
 // app/api/tickets-vendus/route.ts
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 export async function GET() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
         .from("tickets")
         .select("*")
         .order("id", { ascending: false });

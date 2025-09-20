@@ -1,19 +1,32 @@
-import nodemailer from "nodemailer";
+import nodemailer, { SendMailOptions } from "nodemailer";
 
-export const sendEmail = async (to: string, subject: string, text: string) => {
-    const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || "2525"),
-        auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
-        },
-    });
+type Attachment = NonNullable<SendMailOptions["attachments"]>[number];
 
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD,
+    },
+});
+
+export const sendEmail = async (
+    to: string,
+    subject: string,
+    html: string,
+    text?: string,
+    attachments?: Attachment[],
+    replyTo?: string
+) => {
     await transporter.sendMail({
-        from: '"🎟️ Tombola" <no-reply@tombola.com>',
+        from: `"🎟️ Marocola" <${process.env.GMAIL_USER}>`,
         to,
         subject,
+        html,
         text,
+        attachments,
+        replyTo,
     });
+
+    console.log("📩 Mail envoyé à:", to);
 };

@@ -1,10 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 interface WinnerRow {
     id: number;
@@ -17,7 +12,7 @@ interface WinnerRow {
 
 // Fonction utilitaire pour récupérer les tickets
 async function GET_Tickets() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
         .from("tickets")
         .select("full_name, email, ticket_number")
         .order("id", { ascending: false });
@@ -34,7 +29,7 @@ async function GET_Tickets() {
 
 // GET → récupérer les gagnants
 export async function GET() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
         .from("winners")
         .select("*")
         .order("rank", { ascending: true });
@@ -76,7 +71,7 @@ export async function POST(req: NextRequest) {
         }
 
         // On supprime tous les anciens gagnants
-        await supabase.from("winners").delete().neq("id", 0);
+        await supabaseAdmin.from("winners").delete().neq("id", 0);
 
         // On insère les nouveaux gagnants avec le rang correspondant
         const newWinners: Omit<WinnerRow, "id">[] = winners.map(
@@ -87,7 +82,7 @@ export async function POST(req: NextRequest) {
                 rank: index + 1,
             })
         );
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from("winners")
             .insert(newWinners)
             .select("*");

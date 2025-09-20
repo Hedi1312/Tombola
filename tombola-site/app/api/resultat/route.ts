@@ -1,15 +1,11 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY! // attention : clé sécurisée côté serveur
-);
 
 export async function GET() {
     try {
         // Récupérer la date du tirage
-        const { data: drawDateData, error: drawDateError } = await supabase
+        const { data: drawDateData, error: drawDateError } = await supabaseAdmin
             .from("draw_date")
             .select("draw_date")
             .order("id", { ascending: false })
@@ -19,7 +15,7 @@ export async function GET() {
         if (drawDateError) throw drawDateError;
 
         // Récupérer les gagnants triés par rank
-        const { data: winnersData, error: winnersError } = await supabase
+        const { data: winnersData, error: winnersError } = await supabaseAdmin
             .from("winners")
             .select("name, ticket, rank")
             .order("rank", { ascending: true });

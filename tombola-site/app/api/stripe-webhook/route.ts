@@ -1,24 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import nodemailer from "nodemailer";
+import { sendEmail } from "@/lib/email";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
+//import { generateTicketImage } from "@/lib/generateTicketImage";
+
 
 
 // Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-// Supabase
-import { supabaseAdmin } from "../../../lib/supabaseAdmin";
 
-
-// Mail (Mailtrap / SMTP)
-const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT || "587"),
-    auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-    },
-});
 
 export async function POST(req: NextRequest) {
 
@@ -85,14 +76,12 @@ export async function POST(req: NextRequest) {
         }
 
 
-
         // Envoyer le mail
         try {
-            await transporter.sendMail({
-                from: `"Tombola Projet" <${process.env.SMTP_USER}>`,
-                to: email,
-                subject: "🎟️ Vos tickets de tombola",
-                html: `
+            await sendEmail(
+                email,
+                "🎟️ Vos tickets de tombola",
+                `
           <h1>Merci ${full_name} pour votre participation !</h1>
           <p>Voici vos tickets :</p>
           <p><strong>${ticketNumbers.join(", ")}</strong></p>
@@ -100,10 +89,10 @@ export async function POST(req: NextRequest) {
                <a href="${process.env.NEXT_PUBLIC_URL}/mes-tickets?token=${accessToken}">
                Voir mes tickets
                </a>
-            </p>
+          </p>
           <p>Bonne chance pour le tirage au sort 🍀</p>
-        `,
-            });
+        `
+            );
             console.log(`📩 Email envoyé à ${email}`);
         } catch (mailError) {
             console.error("❌ Erreur lors de l'envoi du mail :", mailError);

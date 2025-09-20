@@ -7,7 +7,7 @@ interface TicketCardProps {
 
 export default function TicketCard({ ticketNumber }: TicketCardProps) {
     return (
-        <div className="relative w-72 h-40 mr-4">
+        <div data-ticket className="relative w-72 h-40 mr-4">
             {/* Image du ticket */}
             <Image
                 src={ticket}

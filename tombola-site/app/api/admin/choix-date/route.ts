@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
-const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
 
 interface DrawDateRow {
     id: number;
@@ -13,7 +9,7 @@ interface DrawDateRow {
 
 // GET → récupérer la date
 export async function GET() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
         .from("draw_date")
         .select("draw_date")
         .order("id", { ascending: false })
@@ -41,7 +37,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Vérifier si une date existe déjà
-        const { data: existing, error: fetchError } = await supabase
+        const { data: existing, error: fetchError } = await supabaseAdmin
             .from("draw_date")
             .select("id")
             .order("id", { ascending: false })
@@ -55,7 +51,7 @@ export async function POST(req: NextRequest) {
 
         if (existing && existing.length > 0) {
             // ⚡ Update la date existante
-            const { data, error } = await supabase
+            const { data, error } = await supabaseAdmin
                 .from("draw_date")
                 .update({ draw_date: newDate })
                 .eq("id", existing[0].id)
@@ -68,7 +64,7 @@ export async function POST(req: NextRequest) {
             drawData = data as DrawDateRow[] | null;
         } else {
             // ⚡ Insérer une nouvelle date
-            const { data, error } = await supabase
+            const { data, error } = await supabaseAdmin
                 .from("draw_date")
                 .insert({ draw_date: newDate })
                 .select("draw_date");

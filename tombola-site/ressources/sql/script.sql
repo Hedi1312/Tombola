@@ -1,6 +1,6 @@
-drop table tickets cascade;
-drop table draw_date cascade;
-drop table winners cascade;
+drop table if exists tickets cascade;
+drop table if exists draw_date cascade;
+drop table if exists winners cascade;
 
 
 -- Table pour stocker les tickets achetés

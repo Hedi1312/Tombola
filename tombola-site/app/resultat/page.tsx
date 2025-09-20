@@ -51,7 +51,7 @@ export default function ResultatPage() {
     useEffect(() => {
         if (timeLeft === 0 && winners.length >0 && phase === 'countdown') {
             setPhase('suspense');
-            setPreCountdown(10);
+            setPreCountdown(5);
         }
     }, [timeLeft, winners, phase]);
 

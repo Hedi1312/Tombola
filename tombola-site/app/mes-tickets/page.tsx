@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "../../lib/supabase";
 import TicketCard from "@/app/components/TicketCard";
 import Image from "next/image";
 import ticket from "@/ressources/img/ticket.png";
@@ -30,24 +29,19 @@ export default function MesTickets() {
 
         async function fetchTickets() {
             try {
-                // délai min 3 secondes
+                // délai minimum 3 secondes pour l’effet visuel
                 const minDelay = new Promise((resolve) => setTimeout(resolve, 3000));
 
-                const fetchData = supabase
-                    .from("tickets")
-                    .select("*")
-                    .eq("access_token", token)
-                    .order("id", { ascending: false });
+                const fetchReq = fetch(`/api/mes-tickets?token=${token}`).then(res => res.json());
 
-                const [{ data, error }] = await Promise.all([fetchData, minDelay]);
+                const [result] = await Promise.all([fetchReq, minDelay]);
 
-                if (error) {
-                    console.error(error);
-                    setError("Erreur lors de la récupération des billets.");
-                } else if (!data || data.length === 0) {
-                    setError("Aucun billet trouvé pour cet url.");
+                if (!result.success) {
+                    setError(result.error || "Erreur inconnue lors de la récupération des billets.");
+                } else if (!result.tickets || result.tickets.length === 0) {
+                    setError("Aucun billet trouvé pour cet URL.");
                 } else {
-                    setTickets(data as Ticket[]);
+                    setTickets(result.tickets);
                 }
             } catch (err) {
                 console.error(err);
@@ -90,7 +84,7 @@ export default function MesTickets() {
                             Vos tickets : {tickets.length}
                         </h3>
                         <p className="text-center text-gray-700 mt-4">
-                            <br/><strong>⚠️ Pensez à garder ce lien envoyé par mail pour retrouver vos billets plus tard.</strong><br/> <br/><br/>
+                            <br/><strong>⚠️ Vous allez recevoir un mail avec vos tickets et un lien pour pouvoir les retrouver !</strong><br/> <br/><br/>
                         </p>
                         <ul className="grid grid-cols-1 sm:grid-cols-3 gap-y-6 gap-x-6 justify-items-center">
                             {tickets.map((ticket) => (

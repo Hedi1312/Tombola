@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import {FaHome, FaTiktok} from "react-icons/fa";
+import {FaHome, FaTiktok, FaUserShield, FaDonate, FaGifts, FaShoppingBasket } from "react-icons/fa";
+import { GiTrophy } from 'react-icons/gi';
+import { MdHelp } from "react-icons/md";
 import { FiMenu, FiX } from "react-icons/fi";
 import Image from "next/image";
 import maroc from "@/ressources/img/maroc.png";
@@ -9,6 +11,8 @@ import ticket from "@/ressources/img/ticket.png";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+
+
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
@@ -45,18 +49,17 @@ export default function Navbar() {
 
                 {/* Menu desktop */}
                 <div className="hidden md:flex gap-6">
-                    <Link href="/" className="text-gray-700 hover:text-blue-600 transition"><FaHome size={24} /></Link>
-                    <Link href="/acheter" className="text-gray-700 hover:text-blue-600 transition">Acheter un ticket</Link>
-                    <Link href="/lot-a-gagner" className="text-gray-700 hover:text-blue-600 transition">Lot à gagner</Link>
-                    <Link href="/resultat" className="text-gray-700 hover:text-blue-600 transition">Résultat</Link>
-                    <Link href="/cagnotte" className="text-gray-700 hover:text-blue-600 transition">Cagnotte</Link>
-                    <Link href="/tiktok" className="text-gray-700 hover:text-blue-600 transition"><FaTiktok size={22} /></Link>
+                    <Link href="/" className="text-gray-700 hover:text-blue-600 transition"><FaHome size={32} /></Link>
+                    <Link href="/acheter" className="text-gray-700 hover:text-blue-600 transition"><FaShoppingBasket size={30} /></Link>
+                    <Link href="/lot-a-gagner" className="text-gray-700 hover:text-blue-600 transition"><FaGifts  size={30} /></Link>
+                    <Link href="/resultat" className="text-gray-700 hover:text-blue-600 transition"><GiTrophy  size={30} /></Link>
+                    <Link href="/cagnotte" className="text-gray-700 hover:text-blue-600 transition"><FaDonate size={30} /></Link>
+                    <Link href="/tiktok" className="text-gray-700 hover:text-blue-600 transition"><FaTiktok size={30} /></Link>
+                    <Link href="/contact" className="text-gray-700 hover:text-blue-600 transition"><MdHelp size={30} /></Link>
                     <button
                         onClick={handleAdminClick}
                         className="text-gray-700 hover:text-blue-600 transition font-medium cursor-pointer"
-                    >
-                        Admin
-                    </button>
+                    ><FaUserShield size={30} /></button>
                 </div>
 
                 {/* Menu mobile toggle avec animation */}
@@ -93,14 +96,15 @@ export default function Navbar() {
 
             {/* Menu mobile */}
             {isOpen && (
-                <div className="md:hidden px-6 pb-4 flex flex-col gap-3 items-center">
-                    <Link href="/" className="text-gray-700" onClick={handleLinkClick}><FaHome size={22} /></Link>
-                    <Link href="/acheter" className="text-gray-700" onClick={handleLinkClick}>Acheter un ticket</Link>
-                    <Link href="/lot-a-gagner" className="text-gray-700" onClick={handleLinkClick}>Lot à gagner</Link>
-                    <Link href="/resultat" className="text-gray-700" onClick={handleLinkClick}>Résultat</Link>
-                    <Link href="/cagnotte" className="text-gray-700" onClick={handleLinkClick}>Cagnotte</Link>
-                    <Link href="/tiktok" className="text-gray-700" onClick={handleLinkClick}><FaTiktok size={22} /></Link>
-                    <button onClick={() => {handleAdminClick();handleLinkClick();}} className="text-gray-700 text-left">Admin</button>
+                <div className="md:hidden px-6 pb-4 flex flex-col gap-4 items-center">
+                    <Link href="/" className="text-gray-700" onClick={handleLinkClick}><FaHome size={24} /></Link>
+                    <Link href="/acheter" className="text-gray-700" onClick={handleLinkClick}><FaShoppingBasket size={24} /></Link>
+                    <Link href="/lot-a-gagner" className="text-gray-700" onClick={handleLinkClick}><FaGifts size={24} /></Link>
+                    <Link href="/resultat" className="text-gray-700" onClick={handleLinkClick}><GiTrophy size={24} /></Link>
+                    <Link href="/cagnotte" className="text-gray-700" onClick={handleLinkClick}><FaDonate size={24} /></Link>
+                    <Link href="/tiktok" className="text-gray-700" onClick={handleLinkClick}><FaTiktok size={24} /></Link>
+                    <Link href="/contact" className="text-gray-700" onClick={handleLinkClick}><MdHelp size={24} /></Link>
+                    <button onClick={() => {handleAdminClick();handleLinkClick();}} className="text-gray-700 text-left"><FaUserShield size={24} /></button>
                 </div>
             )}
         </nav>

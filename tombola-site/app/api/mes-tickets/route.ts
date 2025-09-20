@@ -1,0 +1,33 @@
+import { NextRequest, NextResponse } from "next/server";
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
+
+export async function GET(req: NextRequest) {
+    try {
+        const token = req.nextUrl.searchParams.get("token");
+
+        if (!token) {
+            return NextResponse.json({ success: false, error: "Token manquant" }, { status: 400 });
+        }
+
+        const { data, error } = await supabaseAdmin
+            .from("tickets")
+            .select("id, ticket_number, full_name, created_at")
+            .eq("access_token", token)
+            .order("id", { ascending: false });
+
+        if (error) {
+            console.error("Erreur Supabase:", error);
+            return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        }
+
+        if (!data || data.length === 0) {
+            return NextResponse.json({ success: false, error: "Aucun billet trouvé pour ce token." }, { status: 404 });
+        }
+
+        return NextResponse.json({ success: true, tickets: data });
+    } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
+        console.error("Erreur inconnue:", errorMessage);
+        return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
+    }
+}
