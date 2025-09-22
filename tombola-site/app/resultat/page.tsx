@@ -19,7 +19,7 @@ export default function ResultatPage() {
     const [timeLeft, setTimeLeft] = useState<number>(0);
 
     const [phase, setPhase] = useState<'countdown' | 'suspense' | 'revealing' | 'revealed'>('countdown');
-    const [preCountdown, setPreCountdown] = useState<number>(10);
+    const [preCountdown, setPreCountdown] = useState<number>(5);    //Temps du compte à rebours
     const [revealedWinners, setRevealedWinners] = useState<Winner[]>([]);
 
     useEffect(() => {
@@ -51,7 +51,6 @@ export default function ResultatPage() {
     useEffect(() => {
         if (timeLeft === 0 && winners.length >0 && phase === 'countdown') {
             setPhase('suspense');
-            setPreCountdown(5);
         }
     }, [timeLeft, winners, phase]);
 
@@ -67,10 +66,10 @@ export default function ResultatPage() {
         return () => clearTimeout(timer);
     }, [preCountdown, phase]);
 
-    // Révélation un par un
+    // Révélation un par un du dernier au premier
     useEffect(() => {
         if (phase !== 'revealing') return;
-        const sorted = [...winners].sort((a, b) => a.rank - b.rank).reverse(); // 5 → 1
+        const sorted = [...winners].sort((a, b) => a.rank - b.rank).reverse();
         if (revealedWinners.length >= sorted.length) {
             setPhase('revealed');
             return;

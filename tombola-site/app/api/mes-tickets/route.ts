@@ -13,15 +13,15 @@ export async function GET(req: NextRequest) {
             .from("tickets")
             .select("id, ticket_number, full_name, created_at")
             .eq("access_token", token)
-            .order("id", { ascending: false });
+            .order("id", { ascending: true });
 
         if (error) {
             console.error("Erreur Supabase:", error);
-            return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+            return NextResponse.json({ success: false, error: "Veuillez utiliser l'URL reçu par mail." }, { status: 500 });
         }
 
         if (!data || data.length === 0) {
-            return NextResponse.json({ success: false, error: "Aucun billet trouvé pour ce token." }, { status: 404 });
+            return NextResponse.json({ success: false, error: "Vous n'avez aucun tickets." }, { status: 404 });
         }
 
         return NextResponse.json({ success: true, tickets: data });

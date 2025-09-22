@@ -18,7 +18,7 @@ function CheckoutForm() {
         }
 
         setLoading(true);
-        const res = await fetch("/api/create-checkout-session", {
+        const res = await fetch("/api/create-checkout-session-stripe", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ tickets, email, full_name: full_name }),

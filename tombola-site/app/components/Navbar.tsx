@@ -41,7 +41,7 @@ export default function Navbar() {
     return (
         <nav className="bg-white shadow-md w-full">
             <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-                <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-gray-800">
+                <Link href="/" className="flex items-center gap-2 text-3xl font-bold text-gray-800">
                     <Image src={ticket} alt="Ticket" width={100} height={100} />
                     <span>Marocola</span>
                     <Image src={maroc} alt="Maroc" width={24} height={24} />

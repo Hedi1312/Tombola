@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Ticket, ArrowLeft, Search } from "lucide-react";
+import { Ticket, ArrowLeft, Search, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface TicketData {
@@ -13,37 +13,121 @@ interface TicketData {
     created_at: string;
 }
 
+// Composant de popup confirmation
+function ConfirmModal({
+    isOpen,
+    onConfirm,
+    onCancel,
+    message,
+    }: {
+        isOpen: boolean;
+        onConfirm: () => void;
+        onCancel: () => void;
+        message?: string;
+    }) {
+    if (!isOpen) return null;
+
+    return (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+            <div className="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full text-center">
+                <p className="text-gray-800 mb-6">{message || "Êtes-vous sûr ?"}</p>
+                <div className="flex justify-center gap-4">
+                    <button
+                        onClick={onConfirm}
+                        className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
+                    >
+                        <Trash2 size={16} />
+                        Supprimer
+                    </button>
+                    <button
+                        onClick={onCancel}
+                        className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 transition cursor-pointer"
+                    >
+                        Annuler
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+
 
 export default function TicketsPage() {
     const [tickets, setTickets] = useState<TicketData[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedTicket, setSelectedTicket] = useState<TicketData | null>(null);
     const router = useRouter();
+    const [message, setMessage] = useState<string>("");
+
+
+    // Bloquer le scroll derrière le modal
+    useEffect(() => {
+        if (modalOpen) {
+            document.body.style.overflow = "hidden"; // bloque le scroll
+        } else {
+            document.body.style.overflow = "auto"; // réactive le scroll
+        }
+
+        return () => {
+            document.body.style.overflow = "auto"; // nettoyage au cas où
+        };
+    }, [modalOpen]);
+
 
     useEffect(() => {
-        const fetchTickets = async () => {
-            const res = await fetch("/api/admin/tickets-vendus");
-
-            const data = await res.json();
-
-            if (data.success) {
-                setTickets(data.tickets || []);
-            } else {
-                console.error("Erreur API:", data.error);
-            }
-            setLoading(false);
-        };
-
         fetchTickets();
     }, []);
 
-    // Filtrage par recherche
+    async function fetchTickets() {
+        setLoading(true);
+        const res = await fetch("/api/admin/tickets-vendus");
+        const data = await res.json();
+        if (data.success) setTickets(data.tickets || []);
+        else console.error("Erreur API:", data.error);
+        setLoading(false);
+    }
+
+    function openModal(ticket: TicketData) {
+        setSelectedTicket(ticket);
+        setModalOpen(true);
+    }
+
+
+    async function handleDelete(id: number) {
+        try {
+            const res = await fetch(`/api/admin/tickets-vendus/${id}`, { method: "DELETE" });
+            if (!res.ok) {
+                console.error("Erreur HTTP", res.status, await res.text());
+                return;
+            }
+            const data = await res.json();
+            if (data.success) {
+                setTickets(prev => prev.filter(t => t.id !== id));
+                setMessage(`✅ Le ticket suivant est supprimé : ID: ${selectedTicket!.id}, Numéro: ${selectedTicket!.ticket_number}, Email: ${selectedTicket!.email}`);
+                setModalOpen(false);      // ← ferme le modal ici
+                setSelectedTicket(null);  // ← réinitialise le ticket sélectionné
+            }
+            else {
+                setMessage(`❌ Erreur : ${data.error}`);
+            }
+        } catch (err) {
+            console.error(err);
+            setMessage(`❌ Erreur lors de la suppression du ticket`);
+        }
+
+    }
+
+
     const filteredTickets = tickets.filter(
         (t) =>
             t.full_name.toLowerCase().includes(search.toLowerCase()) ||
             t.email.toLowerCase().includes(search.toLowerCase()) ||
             String(t.ticket_number).includes(search)
     );
+
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
@@ -54,7 +138,7 @@ export default function TicketsPage() {
                         <Ticket className="h-8 w-8 text-green-600" />
                         <h1 className="text-2xl font-bold text-gray-800">
                             Tickets vendus{" "}
-                            <span className="text-indigo-600">({tickets.length})</span>
+                            <span className="text-indigo-600">({filteredTickets.length}/{tickets.length})</span>
                         </h1>
                     </div>
                     <button
@@ -78,6 +162,19 @@ export default function TicketsPage() {
                     />
                 </div>
 
+                {message && (
+                    <p
+                        className={`mb-4 rounded-lg text-center text-base p-2 ${
+                            message.startsWith("✅")
+                                ? "bg-green-100 text-green-700"
+                                : "bg-red-100 text-red-700"
+                        }`}
+                    >
+                        {message}
+                    </p>
+                )}
+
+
                 {/* Contenu */}
                 {loading ? (
                     <p className="mt-6 text-center text-gray-600">
@@ -99,6 +196,7 @@ export default function TicketsPage() {
                                     <th className="px-4 py-2">Email</th>
                                     <th className="px-4 py-2">Numéro du ticket</th>
                                     <th className="px-4 py-2">Date achat</th>
+                                    <th className="px-4 py-2">Supprimer</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -117,6 +215,16 @@ export default function TicketsPage() {
                                                 timeStyle: "short",
                                             })}
                                         </td>
+                                        <td className="px-4 py-2">
+                                            <button
+                                                onClick={() => openModal(ticket)}
+                                                className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
+                                            >
+                                                <Trash2 size={16} />
+                                                Supprimer
+                                            </button>
+
+                                        </td>
                                     </tr>
                                 ))}
                                 </tbody>
@@ -130,6 +238,9 @@ export default function TicketsPage() {
                                     key={ticket.id}
                                     className="p-4 border rounded-lg shadow-sm bg-gray-50"
                                 >
+                                    <p>
+                                        <strong>Id :</strong> {ticket.id}
+                                    </p>
                                     <p>
                                         <strong>Nom :</strong> {ticket.full_name}
                                     </p>
@@ -146,11 +257,34 @@ export default function TicketsPage() {
                                             timeStyle: "short",
                                         })}
                                     </p>
+                                    <button
+                                        onClick={() => openModal(ticket)}
+                                        className="mt-3 flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
+                                    >
+                                        <Trash2 size={16} />
+                                        Supprimer
+                                    </button>
                                 </div>
                             ))}
                         </div>
                     </>
                 )}
+
+                {/* Modal réutilisé */}
+                <ConfirmModal
+                    isOpen={modalOpen && selectedTicket !== null}
+                    onConfirm={() => {
+                        if (selectedTicket) handleDelete(selectedTicket!.id);
+                    }}
+                    onCancel={() => setModalOpen(false)}
+                    message={
+                        selectedTicket
+                            ? `⚠️ Voulez-vous vraiment supprimer le ticket ? ID: ${selectedTicket!.id}, Numéro: ${selectedTicket!.ticket_number}, Email: ${selectedTicket!.email}`
+                            : ""
+                    }
+                />
+
+
             </div>
         </section>
     );

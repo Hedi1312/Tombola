@@ -22,7 +22,7 @@ export default function MesTickets() {
         const token = urlParams.get("token");
 
         if (!token) {
-            setError("Erreur. Vous devez utiliser le lien reçu par email.");
+            setError("Erreur. Veuillez utiliser l'URL reçu par mail..");
             setLoading(false);
             return;
         }
@@ -37,15 +37,15 @@ export default function MesTickets() {
                 const [result] = await Promise.all([fetchReq, minDelay]);
 
                 if (!result.success) {
-                    setError(result.error || "Erreur inconnue lors de la récupération des billets.");
+                    setError(result.error || "Erreur inconnue lors de la récupération des tickets.");
                 } else if (!result.tickets || result.tickets.length === 0) {
-                    setError("Aucun billet trouvé pour cet URL.");
+                    setError("Vous n'avez aucun ticket.");
                 } else {
                     setTickets(result.tickets);
                 }
             } catch (err) {
                 console.error(err);
-                setError("Erreur inconnue lors de la récupération des billets.");
+                setError("Erreur inconnue lors de la récupération des tickets.");
             } finally {
                 setLoading(false);
             }
@@ -71,12 +71,12 @@ export default function MesTickets() {
                     <div className="flex flex-col items-center gap-4 mt-6">
                         <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                         <p className="text-gray-700 text-lg">
-                            Récupération de vos billets... 🍀
+                            Récupération de vos tickets... 🍀
                         </p>
                     </div>
                 )}
 
-                {!loading && error && <p className="text-red-500 text-center">{error}</p>}
+                {!loading && error && <p className="mb-4 rounded-lg text-center text-base p-2 bg-red-100 text-red-700">{error}</p>}
 
                 {!loading && tickets && tickets.length > 0 && (
                     <div className="mt-6">
@@ -84,7 +84,7 @@ export default function MesTickets() {
                             Vos tickets : {tickets.length}
                         </h3>
                         <p className="text-center text-gray-700 mt-4">
-                            <br/><strong>⚠️ Vous allez recevoir un mail avec vos tickets et un lien pour pouvoir les retrouver !</strong><br/> <br/><br/>
+                            <br/><strong>⚠️ Vous allez recevoir un mail avec vos tickets et un lien pour pouvoir les retrouver plus tard !</strong><br/> <br/><br/>
                         </p>
                         <ul className="grid grid-cols-1 sm:grid-cols-3 gap-y-6 gap-x-6 justify-items-center">
                             {tickets.map((ticket) => (

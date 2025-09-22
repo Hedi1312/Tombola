@@ -34,8 +34,10 @@ export default function AddTicketForm() {
             } else {
                 setMessage(`❌ Erreur: ${data.error}`);
             }
+            window.scrollTo({ top: 0, behavior: "smooth" }); // ← scroll vers le haut
         } catch {
             setMessage("❌ Erreur réseau");
+            window.scrollTo({ top: 0, behavior: "smooth" }); // ← scroll vers le haut
         }
 
         setLoading(false);

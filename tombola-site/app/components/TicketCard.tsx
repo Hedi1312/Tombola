@@ -1,5 +1,5 @@
 import Image from "next/image";
-import ticket from "@/ressources/img/ticket.png";
+import ticket from "@/ressources/img/ticket_number.png";
 
 interface TicketCardProps {
     ticketNumber: string;
