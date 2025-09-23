@@ -26,6 +26,7 @@ export default function AddTicketForm() {
 
             const data = await res.json();
 
+
             if (data.success) {
                 setMessage(`✅ ${data.tickets.length} ticket(s) créé(s) avec succès !`);
                 setFullName("");
@@ -34,12 +35,12 @@ export default function AddTicketForm() {
             } else {
                 setMessage(`❌ Erreur: ${data.error}`);
             }
-            window.scrollTo({ top: 0, behavior: "smooth" }); // ← scroll vers le haut
+
         } catch {
             setMessage("❌ Erreur réseau");
-            window.scrollTo({ top: 0, behavior: "smooth" }); // ← scroll vers le haut
         }
 
+        window.scrollTo({ top: 0, behavior: "smooth" }); // ← scroll vers le haut
         setLoading(false);
     };
 

@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
 
     if (event.type === "checkout.session.completed") {
         const session = event.data.object as Stripe.Checkout.Session;
+        console.log("✅ Metadata reçu depuis Stripe :", session.metadata);
         const email = session.customer_email ?? "";
         const full_name = session.metadata?.full_name ??"";
 
@@ -44,6 +45,11 @@ export async function POST(req: NextRequest) {
             console.error("❌ Le montant payé ne correspond pas à la quantité !");
             return NextResponse.json({ error: "Montant incorrect" }, { status: 400 });
         }
+
+
+        console.log("🎯 Webhook checkout.session.completed");
+        console.log("📦 Metadata Stripe reçu :", session.metadata);
+        console.log("🔑 AccessToken passé au generateTickets :", accessToken);
 
 
         try {

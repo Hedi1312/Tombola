@@ -10,6 +10,9 @@ export async function POST(req: NextRequest) {
     // 🔹 Générer le token unique avant Stripe
     const accessToken = uuidv4();
 
+    console.log("🎟️ Token généré pour la session :", accessToken);
+
+
     try {
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ["card"],

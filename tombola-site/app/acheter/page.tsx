@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 
@@ -10,8 +11,9 @@ function CheckoutForm() {
     const [email, setEmail] = useState("");
     const [full_name, setFullName] = useState("");
     const [loading, setLoading] = useState(false);
+    const [paypalSuccess, setPaypalSuccess] = useState(false);
 
-    const handlePayment = async () => {
+    const handleStripePayment = async () => {
         if (!email || !full_name) {
             alert("Veuillez saisir votre nom complet et votre e-mail.");
             return;
@@ -72,13 +74,59 @@ function CheckoutForm() {
                 />
             </label>
 
-            <button
-                onClick={handlePayment}
-                disabled={loading}
-                className="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition duration-200 cursor-pointer"
-            >
-                {loading ? "Redirection..." : "💳 Payer vos tickets"}
-            </button>
+            {/* Boutons Stripe + PayPal sur une seule ligne, identiques */}
+            <div className="flex flex-row gap-4 mt-4">
+                {/* Bouton Stripe */}
+                <div className="flex-1">
+                    <button
+                        onClick={handleStripePayment}
+                        disabled={loading}
+                        className="w-full h-12 px-6 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition duration-200 cursor-pointer"
+                    >
+                        {loading ? "Redirection..." : "💳 Paiement par CB"}
+                    </button>
+                </div>
+
+                {/* Bouton PayPal (compte uniquement, style natif) */}
+                <PayPalScriptProvider
+                    options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!, currency: "EUR" }}
+                >
+
+                <div className="flex-1 h-12">
+                        <PayPalButtons
+                            fundingSource="paypal"
+                            style={{
+                                layout: "vertical",
+                                height: 48, // ajuste la hauteur pour correspondre au bouton Stripe
+                                shape: "pill",    // bordure arrondie
+                            }}
+                            createOrder={async (_, actions) => {
+                                const res = await fetch("/api/create-checkout-session-paypal", {
+                                    method: "POST",
+                                    headers: { "Content-Type": "application/json" },
+                                    body: JSON.stringify({ amount: tickets * 2 }),
+                                });
+                                const data = await res.json();
+                                return data.orderID;
+                            }}
+                            onApprove={async (_, actions) => {
+                                const details = await actions.order?.capture();
+                                console.log("Paiement PayPal réussi :", details);
+                                setPaypalSuccess(true);
+                            }}
+                        />
+                    </div>
+                </PayPalScriptProvider>
+            </div>
+
+            {paypalSuccess && (
+                <p className="text-green-600 font-semibold text-center mt-2">
+                    Paiement PayPal réussi ! Merci 😎
+                </p>
+            )}
+
+
+
         </div>
     );
 }

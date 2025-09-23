@@ -10,13 +10,17 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, error: "Champs invalides" }, { status: 400 });
         }
 
-        const { tickets, accessToken } = await generateTickets({
+        const result = await generateTickets({
             full_name,
             email,
             quantity,
         });
 
-        return NextResponse.json({ success: true, tickets, accessToken });
+        return NextResponse.json({
+            success: true,
+            tickets: result.tickets,
+            accessToken: result.accessToken, // ← garanti d’être le token généré
+        });
 
     } catch (err: unknown) {
         if (err instanceof Error) {

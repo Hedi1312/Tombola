@@ -11,6 +11,10 @@ type GenerateTicketInput = {
 };
 
 export async function generateTickets({ full_name, email, quantity, accessToken }: GenerateTicketInput) {
+
+    console.log("🛠️ generateTickets lancé avec accessToken :", accessToken);
+
+
     if (!full_name || !email || !quantity || quantity < 1) {
         throw new Error("Champs invalides");
     }
@@ -71,7 +75,7 @@ export async function generateTickets({ full_name, email, quantity, accessToken 
                     Vous pouvez aussi consulter vos tickets ici :
                 </p>
                 <p style="margin-top: 30px;">
-                    <a href="${process.env.NEXT_PUBLIC_URL}/mes-tickets?token=${accessToken}"
+                    <a href="${process.env.NEXT_PUBLIC_URL}/mes-tickets?token=${token}"
                         style="display: inline-block; background-color: #3498db; color: #fff; padding: 16px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 18px;">
                         Voir mes tickets
                     </a>
@@ -103,6 +107,7 @@ export async function generateTickets({ full_name, email, quantity, accessToken 
     }
 
     // Sauvegarde en base
+    console.log("🎫 Insertion tickets avec token :", token);
     const { data, error } = await supabaseAdmin
         .from("tickets")
         .insert(ticketsToInsert)
@@ -110,5 +115,5 @@ export async function generateTickets({ full_name, email, quantity, accessToken 
 
     if (error) throw error;
 
-    return { ticketNumbers, accessToken, tickets: data };
+    return { ticketNumbers, accessToken: token, tickets: data };
 }
