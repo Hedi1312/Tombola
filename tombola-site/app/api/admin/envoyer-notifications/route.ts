@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
-import { notifyParticipants } from "@/app/api/notifications/route";
+import { notifyParticipants } from "@/lib/notifyParticipants";
 
 export async function GET() {
     try {

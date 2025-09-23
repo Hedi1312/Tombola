@@ -100,7 +100,7 @@ function CheckoutForm() {
                                 height: 48, // ajuste la hauteur pour correspondre au bouton Stripe
                                 shape: "pill",    // bordure arrondie
                             }}
-                            createOrder={async (_, actions) => {
+                            createOrder={async () => {
                                 const res = await fetch("/api/create-checkout-session-paypal", {
                                     method: "POST",
                                     headers: { "Content-Type": "application/json" },
@@ -109,7 +109,7 @@ function CheckoutForm() {
                                 const data = await res.json();
                                 return data.orderID;
                             }}
-                            onApprove={async (_, actions) => {
+                            onApprove={async (_event, actions) => {
                                 const details = await actions.order?.capture();
                                 console.log("Paiement PayPal réussi :", details);
                                 setPaypalSuccess(true);
