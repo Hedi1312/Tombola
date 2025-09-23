@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { CalendarDays, Trophy, Ticket, LogOut, CirclePlus } from "lucide-react";
+import { CalendarDays, Trophy, Ticket, LogOut, CirclePlus, BellRing } from "lucide-react";
 
 export default function DashboardPage() {
     const router = useRouter();
@@ -19,6 +19,12 @@ export default function DashboardPage() {
             onClick: () => router.push("/admin/tickets-vendus"),
         },
         {
+            title: "Déterminer les gagnants",
+            description: "Choisir le nombre de gagnants et les ajouter",
+            icon: <Trophy className="h-8 w-8 text-yellow-500" />,
+            onClick: () => router.push("/admin/choix-gagnant"),
+        },
+        {
             title: "Ajouter des tickets",
             description: "Ajouter des tickets à partir des infos de l'acheteur",
             icon: <CirclePlus className="h-8 w-8 text-green-600" />,
@@ -31,10 +37,10 @@ export default function DashboardPage() {
             onClick: () => router.push("/admin/choix-date"),
         },
         {
-            title: "Déterminer les gagnants",
-            description: "Choisir le nombre de gagnants et les ajouter",
-            icon: <Trophy className="h-8 w-8 text-yellow-500" />,
-            onClick: () => router.push("/admin/choix-gagnant"),
+            title: "Prévenir les participants",
+            description: "Prévenir les participants inscrits que le tirage a eu lieu",
+            icon: <BellRing className="h-8 w-8 text-yellow-500" />,
+            onClick: () => router.push("/admin/envoyer-notifications"),
         },
     ];
 

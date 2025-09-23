@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Confetti from "react-confetti";
 import TicketCard from "@/app/components/TicketCard";
 import { useWindowSize } from "react-use";
+import { HiOutlineBellAlert } from "react-icons/hi2";
+import NotificationsForm from "@/app/components/NotificationsForm";
 
 interface Winner {
     name: string;
@@ -21,6 +23,7 @@ export default function ResultatPage() {
     const [phase, setPhase] = useState<'countdown' | 'suspense' | 'revealing' | 'revealed'>('countdown');
     const [preCountdown, setPreCountdown] = useState<number>(5);    //Temps du compte à rebours
     const [revealedWinners, setRevealedWinners] = useState<Winner[]>([]);
+    const [notifyOpen, setNotifyOpen] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -36,6 +39,18 @@ export default function ResultatPage() {
     }, []);
 
 
+    // Bloquer le scroll derrière le modal
+    useEffect(() => {
+        if (notifyOpen) {
+            document.body.style.overflow = "hidden"; // bloque le scroll
+        } else {
+            document.body.style.overflow = "auto";   // réactive le scroll
+        }
+
+        return () => {
+            document.body.style.overflow = "auto"; // nettoyage au cas où
+        };
+    }, [notifyOpen]);
 
     // Compte à rebours jusqu'au tirage
     useEffect(() => {
@@ -103,6 +118,24 @@ export default function ResultatPage() {
                 <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800">
                     🎉 Résultat de la Tombola
                 </h1>
+
+
+                <div className="mt-5 mb-8">
+                    <button
+                        onClick={() => setNotifyOpen(true)}
+                        className="text-4xl text-yellow-500 hover:text-yellow-600 transition cursor-pointer"
+                        aria-label="Notifications"
+                    >
+                        <HiOutlineBellAlert />
+                    </button>
+                    <p className="text-sm text-gray-600 mt-1 text-center">
+                        🔔 Cliquez sur la cloche pour recevoir un mail après le tirage
+                    </p>
+                </div>
+
+                {notifyOpen && <NotificationsForm onClose={() => setNotifyOpen(false)} />}
+
+
 
                 {phase === 'revealing' && revealedWinners.length < winners.length && (
                     <p className="text-gray-700 text-lg md:text-xl mt-4">

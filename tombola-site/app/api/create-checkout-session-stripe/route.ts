@@ -28,6 +28,7 @@ export async function POST(req: NextRequest) {
             metadata: {
                 full_name,
                 accessToken, // 🔹 stocker le token pour le webhook
+                quantity: tickets.toString(),
             },
             success_url: `${process.env.NEXT_PUBLIC_URL}/mes-tickets?token=${accessToken}`, // 🔹 redirection directe
             cancel_url: `${process.env.NEXT_PUBLIC_URL}/acheter`,

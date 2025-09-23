@@ -182,7 +182,7 @@ export default function TicketsPage() {
                     </p>
                 ) : filteredTickets.length === 0 ? (
                     <p className="mt-6 text-center text-gray-600">
-                        Aucun ticket trouvé.
+                        Aucun ticket trouvé pour le moment.
                     </p>
                 ) : (
                     <>

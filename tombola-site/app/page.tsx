@@ -9,9 +9,9 @@ export default function Home() {
     const [expanded, setExpanded] = useState(false);
 
     return (
-        <section className="min-h-screen bg-gray-50 p-6 flex items-start justify-center">
+        <section className="min-h-screen bg-gray-50 flex flex-col items-center justify-start pt-16 px-4 md:px-6">
             {/* Conteneur principal en ligne */}
-            <div className="flex flex-col md:flex-row gap-6 max-w-6xl w-full">
+            <div className="flex flex-col md:flex-row gap-6 max-w-6xl w-full mb-12">
                 {/* Bloc tombola plus petit et hauteur automatique */}
                 <div className="md:w-2/5 bg-white rounded-2xl shadow-md p-8 text-center text-gray-700 self-start">
                     {/* Image + Titre alignés */}

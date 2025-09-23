@@ -8,12 +8,10 @@ import { generateTickets } from "@/lib/generateTicket";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 
-
 export async function POST(req: NextRequest) {
 
     const sig = req.headers.get("stripe-signature")!;
     const body = await req.text();
-
     let event: Stripe.Event;
 
     try {
@@ -31,12 +29,20 @@ export async function POST(req: NextRequest) {
         const session = event.data.object as Stripe.Checkout.Session;
         const email = session.customer_email ?? "";
         const full_name = session.metadata?.full_name ??"";
-        const amount = session.amount_total || 0;
-        const quantity = amount / 200; // 2€ par ticket
+
+        const pricePerTicket = 200; // 2€ par ticket
+        const quantity = Number(session.metadata?.quantity ?? 0);
+        const expectedAmount = quantity * pricePerTicket;
+        const accessToken = session.metadata?.accessToken; // <- récupérer le token pré-généré
 
         if (!email) {
             console.error("❌ Pas d'email dans la session Stripe");
             return NextResponse.json({ error: "Email manquant" }, { status: 400 });
+        }
+
+        if (session.amount_total !== expectedAmount) {
+            console.error("❌ Le montant payé ne correspond pas à la quantité !");
+            return NextResponse.json({ error: "Montant incorrect" }, { status: 400 });
         }
 
 
@@ -45,6 +51,7 @@ export async function POST(req: NextRequest) {
                 full_name,
                 email,
                 quantity,
+                accessToken,
             });
 
             console.log(`✅ Tickets générés pour ${email}`, result.ticketNumbers);

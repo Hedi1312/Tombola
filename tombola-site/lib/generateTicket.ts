@@ -7,15 +7,16 @@ type GenerateTicketInput = {
     full_name: string;
     email: string;
     quantity: number;
+    accessToken?: string; // optionnel
 };
 
-export async function generateTickets({ full_name, email, quantity }: GenerateTicketInput) {
+export async function generateTickets({ full_name, email, quantity, accessToken }: GenerateTicketInput) {
     if (!full_name || !email || !quantity || quantity < 1) {
         throw new Error("Champs invalides");
     }
 
-    // Générer un token unique pour ce lot
-    const accessToken = uuidv4();
+    // Générer un token unique si non fourni
+    const token = accessToken ?? uuidv4();
 
     // Générer des tickets uniques à partir d'un pool
     const pool = Array.from({ length: 900000 }, (_, i) => i + 100000); // 100000 → 999999
@@ -26,7 +27,7 @@ export async function generateTickets({ full_name, email, quantity }: GenerateTi
         full_name,
         email,
         ticket_number: num,
-        access_token: accessToken,
+        access_token: token,
     }));
 
     // Générer les images pour l'email
@@ -45,7 +46,12 @@ export async function generateTickets({ full_name, email, quantity }: GenerateTi
     // Construire le contenu HTML
     const htmlContent = `
             <div style="font-family: Arial, sans-serif; text-align: center; background-color: #f7f7f7; padding-top: 50px; padding-bottom: 50px;">
-                <h1 style="margin-bottom: 40px;">🎟️ Marocola</h1>
+                <h1 style="margin-bottom: 40px;">
+                    <a href="${process.env.NEXT_PUBLIC_URL}" 
+                    style="text-decoration: none; color: #000;">
+                    🎟️ Marocola
+                    </a>
+                </h1>
                 <p style="margin-bottom: 30px; font-size: 18px;">Bonjour <strong>${full_name}</strong> et merci pour votre participation !</p>
                 <p style="margin-bottom: 30px; font-size: 18px; font-weight: bold;">Voici vos tickets :</p>
             
@@ -68,6 +74,13 @@ export async function generateTickets({ full_name, email, quantity }: GenerateTi
                     <a href="${process.env.NEXT_PUBLIC_URL}/mes-tickets?token=${accessToken}"
                         style="display: inline-block; background-color: #3498db; color: #fff; padding: 16px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 18px;">
                         Voir mes tickets
+                    </a>
+                </p>
+                
+                <p style="margin-top: 40px;">
+                    <a href="${process.env.NEXT_PUBLIC_URL}"
+                    style="display: inline-block; background-color: #2ecc71; color: #fff; padding: 16px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 18px;">
+                    🌐 Aller sur le site Marocola
                     </a>
                 </p>
                 <p style="margin-top: 30px; font-size: 18px;">Bonne chance pour le tirage au sort 🍀</p>

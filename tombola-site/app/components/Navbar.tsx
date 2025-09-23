@@ -49,16 +49,16 @@ export default function Navbar() {
 
                 {/* Menu desktop */}
                 <div className="hidden md:flex gap-6">
-                    <Link href="/" className="text-gray-700 hover:text-blue-600 transition"><FaHome size={32} /></Link>
-                    <Link href="/acheter" className="text-gray-700 hover:text-blue-600 transition"><FaShoppingBasket size={30} /></Link>
-                    <Link href="/lot-a-gagner" className="text-gray-700 hover:text-blue-600 transition"><FaGifts  size={30} /></Link>
-                    <Link href="/resultat" className="text-gray-700 hover:text-blue-600 transition"><GiTrophy  size={30} /></Link>
-                    <Link href="/cagnotte" className="text-gray-700 hover:text-blue-600 transition"><FaDonate size={30} /></Link>
-                    <Link href="/tiktok" className="text-gray-700 hover:text-blue-600 transition"><FaTiktok size={30} /></Link>
-                    <Link href="/contact" className="text-gray-700 hover:text-blue-600 transition"><MdHelp size={30} /></Link>
+                    <Link href="/" className="text-gray-500 hover:text-gray-700 transition"><FaHome size={32} /></Link>
+                    <Link href="/acheter" className="text-gray-500 hover:text-gray-700 transition"><FaShoppingBasket size={30} /></Link>
+                    <Link href="/lot-a-gagner" className="text-gray-500 hover:text-gray-700 transition"><FaGifts  size={30} /></Link>
+                    <Link href="/resultat" className="text-gray-500 hover:text-gray-700 transition"><GiTrophy  size={30} /></Link>
+                    <Link href="/cagnotte" className="text-gray-500 hover:text-gray-700 transition"><FaDonate size={30} /></Link>
+                    <Link href="/tiktok" className="text-gray-500 hover:text-gray-700 transition"><FaTiktok size={30} /></Link>
+                    <Link href="/contact" className="text-gray-500 hover:text-gray-700 transition"><MdHelp size={30} /></Link>
                     <button
                         onClick={handleAdminClick}
-                        className="text-gray-700 hover:text-blue-600 transition font-medium cursor-pointer"
+                        className="text-gray-500 hover:text-gray-700 transition font-medium cursor-pointer"
                     ><FaUserShield size={30} /></button>
                 </div>
 
