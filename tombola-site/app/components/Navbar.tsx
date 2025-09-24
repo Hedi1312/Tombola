@@ -49,16 +49,16 @@ export default function Navbar() {
 
                 {/* Menu desktop */}
                 <div className="hidden md:flex gap-6">
-                    <Link href="/" className="text-gray-500 hover:text-gray-700 transition"><FaHome size={32} /></Link>
-                    <Link href="/acheter" className="text-gray-500 hover:text-gray-700 transition"><FaShoppingBasket size={30} /></Link>
-                    <Link href="/lot-a-gagner" className="text-gray-500 hover:text-gray-700 transition"><FaGifts  size={30} /></Link>
-                    <Link href="/resultat" className="text-gray-500 hover:text-gray-700 transition"><GiTrophy  size={30} /></Link>
-                    <Link href="/cagnotte" className="text-gray-500 hover:text-gray-700 transition"><FaDonate size={30} /></Link>
-                    <Link href="/tiktok" className="text-gray-500 hover:text-gray-700 transition"><FaTiktok size={30} /></Link>
-                    <Link href="/contact" className="text-gray-500 hover:text-gray-700 transition"><MdHelp size={30} /></Link>
+                    <Link href="/" className="text-gray-600 hover:text-gray-700 transition"><FaHome size={32} /></Link>
+                    <Link href="/acheter" className="text-gray-600 hover:text-gray-700 transition"><FaShoppingBasket size={30} /></Link>
+                    <Link href="/lot-a-gagner" className="text-gray-600 hover:text-gray-700 transition"><FaGifts  size={30} /></Link>
+                    <Link href="/resultat" className="text-gray-600 hover:text-gray-700 transition"><GiTrophy  size={30} /></Link>
+                    <Link href="/cagnotte" className="text-gray-600 hover:text-gray-700 transition"><FaDonate size={30} /></Link>
+                    <Link href="/tiktok" className="text-gray-600 hover:text-gray-700 transition"><FaTiktok size={30} /></Link>
+                    <Link href="/contact" className="text-gray-600 hover:text-gray-700 transition"><MdHelp size={30} /></Link>
                     <button
                         onClick={handleAdminClick}
-                        className="text-gray-500 hover:text-gray-700 transition font-medium cursor-pointer"
+                        className="text-gray-600 hover:text-gray-700 transition font-medium cursor-pointer"
                     ><FaUserShield size={30} /></button>
                 </div>
 
@@ -74,7 +74,7 @@ export default function Navbar() {
                                 initial={{ rotate: -90, opacity: 0 }}
                                 animate={{ rotate: 0, opacity: 1 }}
                                 exit={{ rotate: 90, opacity: 0 }}
-                                transition={{ duration: 0.2 }}
+                                transition={{ duration: 0.1 }}
                             >
                                 <FiX size={32} />
                             </motion.span>
@@ -84,7 +84,7 @@ export default function Navbar() {
                                 initial={{ rotate: 90, opacity: 0 }}
                                 animate={{ rotate: 0, opacity: 1 }}
                                 exit={{ rotate: -90, opacity: 0 }}
-                                transition={{ duration: 0.2 }}
+                                transition={{ duration: 0.1 }}
                             >
                                 <FiMenu size={32} />
                             </motion.span>
@@ -96,15 +96,20 @@ export default function Navbar() {
 
             {/* Menu mobile */}
             {isOpen && (
-                <div className="md:hidden px-6 pb-4 flex flex-col gap-4 items-center">
-                    <Link href="/" className="text-gray-700" onClick={handleLinkClick}><FaHome size={24} /></Link>
-                    <Link href="/acheter" className="text-gray-700" onClick={handleLinkClick}><FaShoppingBasket size={24} /></Link>
-                    <Link href="/lot-a-gagner" className="text-gray-700" onClick={handleLinkClick}><FaGifts size={24} /></Link>
-                    <Link href="/resultat" className="text-gray-700" onClick={handleLinkClick}><GiTrophy size={24} /></Link>
-                    <Link href="/cagnotte" className="text-gray-700" onClick={handleLinkClick}><FaDonate size={24} /></Link>
-                    <Link href="/tiktok" className="text-gray-700" onClick={handleLinkClick}><FaTiktok size={24} /></Link>
-                    <Link href="/contact" className="text-gray-700" onClick={handleLinkClick}><MdHelp size={24} /></Link>
-                    <button onClick={() => {handleAdminClick();handleLinkClick();}} className="text-gray-700 text-left"><FaUserShield size={24} /></button>
+                <div className="md:hidden">
+                    {/* Trait séparateur */}
+                    <div className="border-t border-gray-700 my-4"></div>
+
+                    <div className="md:hidden px-6 pt-2 pb-6 grid grid-cols-4 gap-8 text-center">
+                        <Link href="/" className="text-gray-700" onClick={handleLinkClick}><FaHome size={36} /></Link>
+                        <Link href="/acheter" className="text-gray-700" onClick={handleLinkClick}><FaShoppingBasket size={36} /></Link>
+                        <Link href="/lot-a-gagner" className="text-gray-700" onClick={handleLinkClick}><FaGifts size={36} /></Link>
+                        <Link href="/resultat" className="text-gray-700" onClick={handleLinkClick}><GiTrophy size={36} /></Link>
+                        <Link href="/cagnotte" className="text-gray-700" onClick={handleLinkClick}><FaDonate size={36} /></Link>
+                        <Link href="/tiktok" className="text-gray-700" onClick={handleLinkClick}><FaTiktok size={36} /></Link>
+                        <Link href="/contact" className="text-gray-700" onClick={handleLinkClick}><MdHelp size={36} /></Link>
+                        <button onClick={() => {handleAdminClick();handleLinkClick();}} className="text-gray-700 text-left"><FaUserShield size={36} /></button>
+                    </div>
                 </div>
             )}
         </nav>

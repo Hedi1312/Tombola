@@ -3,7 +3,6 @@ import Stripe from "stripe";
 import { generateTickets } from "@/lib/generateTicket";
 
 
-
 // Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -27,7 +26,6 @@ export async function POST(req: NextRequest) {
 
     if (event.type === "checkout.session.completed") {
         const session = event.data.object as Stripe.Checkout.Session;
-        console.log("✅ Metadata reçu depuis Stripe :", session.metadata);
         const email = session.customer_email ?? "";
         const full_name = session.metadata?.full_name ??"";
 
@@ -46,10 +44,6 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: "Montant incorrect" }, { status: 400 });
         }
 
-
-        console.log("🎯 Webhook checkout.session.completed");
-        console.log("📦 Metadata Stripe reçu :", session.metadata);
-        console.log("🔑 AccessToken passé au generateTickets :", accessToken);
 
 
         try {

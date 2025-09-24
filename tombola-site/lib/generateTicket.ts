@@ -12,9 +12,6 @@ type GenerateTicketInput = {
 
 export async function generateTickets({ full_name, email, quantity, accessToken }: GenerateTicketInput) {
 
-    console.log("🛠️ generateTickets lancé avec accessToken :", accessToken);
-
-
     if (!full_name || !email || !quantity || quantity < 1) {
         throw new Error("Champs invalides");
     }
@@ -107,7 +104,6 @@ export async function generateTickets({ full_name, email, quantity, accessToken 
     }
 
     // Sauvegarde en base
-    console.log("🎫 Insertion tickets avec token :", token);
     const { data, error } = await supabaseAdmin
         .from("tickets")
         .insert(ticketsToInsert)
