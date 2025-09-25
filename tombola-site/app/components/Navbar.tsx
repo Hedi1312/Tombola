@@ -6,8 +6,6 @@ import { GiTrophy } from 'react-icons/gi';
 import { MdHelp } from "react-icons/md";
 import { FiMenu, FiX } from "react-icons/fi";
 import Image from "next/image";
-import maroc from "@/ressources/img/maroc.png";
-import ticket from "@/ressources/img/ticket.png";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -42,9 +40,9 @@ export default function Navbar() {
         <nav className="bg-white shadow-md w-full">
             <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
                 <Link href="/" className="flex items-center gap-2 text-3xl font-bold text-gray-800">
-                    <Image src={ticket} alt="Ticket" width={100} height={100} />
+                    <Image src="/img/ticket/ticket.png" alt="Ticket" width={100} height={100} />
                     <span>Marocola</span>
-                    <Image src={maroc} alt="Maroc" width={24} height={24} />
+                    <Image src="/img/ui/maroc.png" alt="Maroc" width={24} height={24} />
                 </Link>
 
                 {/* Menu desktop */}

@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import ticket from "@/ressources/img/ticket.png";
 import Image from "next/image";
 
 
@@ -13,10 +12,10 @@ export default function Home() {
             {/* Conteneur principal en ligne */}
             <div className="flex flex-col md:flex-row gap-6 max-w-6xl w-full mb-12">
                 {/* Bloc tombola plus petit et hauteur automatique */}
-                <div className="md:w-2/5 bg-white rounded-2xl shadow-md p-8 text-center text-gray-700 self-start">
+                <div className="md:w-2/5 bg-white rounded-2xl shadow-md p-8 text-center text-gray-700">
                     {/* Image + Titre alignés */}
                     <div className="flex items-center justify-center gap-3 mb-4">
-                        <Image src={ticket} alt="Ticket" width={80} height={80} />
+                        <Image src="/img/ticket/ticket.png" alt="Ticket" width={80} height={80} />
                         <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
                             Tombola
                         </h1>
@@ -33,7 +32,7 @@ export default function Home() {
                 </div>
 
                 {/* Bloc présentation centré */}
-                <div className="flex-1 bg-white rounded-2xl shadow-md p-8 text-gray-700 flex flex-col justify-center items-center text-center">
+                <div className="flex-1 bg-white rounded-2xl shadow-md p-8 text-gray-700 flex flex-col justify-start items-center text-center">
                     <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
                         Présentation
                     </h1>

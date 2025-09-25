@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import TicketCard from "@/app/components/TicketCard";
 import Image from "next/image";
-import ticket from "@/ressources/img/ticket.png";
+
 
 interface Ticket {
     id: number;
@@ -61,7 +61,7 @@ export default function MesTickets() {
 
                 {/* Image + Titre alignés */}
                 <div className="flex items-center justify-center gap-3 mb-4">
-                    <Image src={ticket} alt="Ticket" width={60} height={60} />
+                    <Image src="/img/ticket/ticket.png" alt="Ticket" width={60} height={60} />
                     <h2 className="text-3xl font-extrabold text-gray-800 text-center">
                         Mes Tickets
                     </h2>
