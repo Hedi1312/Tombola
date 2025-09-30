@@ -17,6 +17,13 @@ export default function MesTickets() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+    // validation UUID v4 (format attendu pour token)
+    const isValidUuid = (s: string | null) => {
+        if (!s) return false;
+        // regex simple pour v4 UUID 36 chars with dashes
+        return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s);
+    };
+
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get("token");
@@ -27,10 +34,17 @@ export default function MesTickets() {
             return;
         }
 
+        // token format validation (fast fail)
+        if (!isValidUuid(token)) {
+            setError("Erreur. Veuillez utiliser l'URL reçu par mail.");
+            setLoading(false);
+            return;
+        }
+
         let elapsedTime = 0;
         const pollingInterval = 2000; // toutes les 2 secondes
-        const minDelay = 1000; // délai minimum 3 secondes
-        const maxTime = 60000; // 30 secondes maximum
+        const minDelay = 3000; // délai minimum 3 secondes
+        const maxTime = 30000; // 30 secondes maximum
 
         const startTime = Date.now();
 
@@ -53,7 +67,7 @@ export default function MesTickets() {
                 } else {
                     elapsedTime += pollingInterval;
                     if (elapsedTime >= maxTime) {
-                        setError("Vos tickets ne sont pas encore disponibles. Actualisé la page ou attendez de les recevoir par mail.");
+                        setError("Vos tickets ne sont pas encore disponibles. Actualisez la page ou attendez de les recevoir par mail.");
                         setLoading(false);
                         clearInterval(intervalId);
                     }
