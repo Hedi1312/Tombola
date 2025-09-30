@@ -94,5 +94,3 @@ BEGIN
         RETURNING tn.ticket_number;
 END;
 $$ LANGUAGE plpgsql;
-
-

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { IoIosSend } from "react-icons/io";
 
 export default function Contact() {
     const [name, setName] = useState("");
@@ -93,10 +94,17 @@ export default function Contact() {
 
                     <button
                         type="submit"
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg disabled:opacity-50"
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
                         disabled={status === "loading"}
                     >
-                        {status === "loading" ? "Envoi..." : "Envoyer"}
+                        {status === "loading" ? (
+                            "Envoi..."
+                        ) : (
+                            <>
+                                Envoyer
+                                <IoIosSend className="text-white" size={24} />
+                            </>
+                        )}
                     </button>
                 </form>
             </div>

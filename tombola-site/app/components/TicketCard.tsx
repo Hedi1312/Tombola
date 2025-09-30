@@ -1,4 +1,5 @@
 import Image from "next/image";
+import ticketImg from "../../ressources/img/ticket_number.png";
 
 interface TicketCardProps {
     ticketNumber: string;
@@ -9,7 +10,7 @@ export default function TicketCard({ ticketNumber }: TicketCardProps) {
         <div data-ticket className="relative w-72 h-40 mr-4">
             {/* Image du ticket */}
             <Image
-                src="/img/ticket/ticket_number.png"
+                src={ticketImg}
                 alt="Ticket personnalisé"
                 fill
                 className="object-contain"

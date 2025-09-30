@@ -17,11 +17,25 @@ export default function MesTickets() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+    // validation UUID v4 (format attendu pour token)
+    const isValidUuid = (s: string | null) => {
+        if (!s) return false;
+        // regex simple pour v4 UUID 36 chars with dashes
+        return /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(s);
+    };
+
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const token = urlParams.get("token");
 
         if (!token) {
+            setError("Erreur. Veuillez utiliser l'URL reçu par mail.");
+            setLoading(false);
+            return;
+        }
+
+        // token format validation (fast fail)
+        if (!isValidUuid(token)) {
             setError("Erreur. Veuillez utiliser l'URL reçu par mail.");
             setLoading(false);
             return;

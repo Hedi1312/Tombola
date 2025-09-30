@@ -1,10 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import { Elements } from "@stripe/react-stripe-js";
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
 
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 
 function CheckoutForm() {
     const [tickets, setTickets] = useState(1);
@@ -12,8 +8,6 @@ function CheckoutForm() {
     const [full_name, setFullName] = useState("");
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
-    const [accessToken, setAccessToken] = useState<string>("");
-
 
 
     // 🔹 Effet pour cacher le message après 3 secondes
@@ -23,29 +17,14 @@ function CheckoutForm() {
         return () => clearTimeout(timer); // nettoyage si message change avant 3s
     }, [message]);
 
-    const handleStripePayment = async () => {
-        if (!email || !full_name) {
-            setMessage("❌ Veuillez remplir tous les champs avant de payer !");
-            return;
-        }
-
+    const handleClick = () => {
         setLoading(true);
-        const res = await fetch("/api/create-checkout-session-stripe", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ tickets, email, full_name: full_name }),
-        });
-
-        const data = await res.json();
-        setLoading(false);
-
-        if (data.url) {
-            window.location.href = data.url;
-        } else {
-            setMessage("❌ Erreur lors de la création de la session de paiement.");
-            console.error(data.error);
-        }
+        // Simule une action asynchrone
+        setTimeout(() => {
+            setLoading(false);
+        }, 1000);
     };
+
 
     return (
         <div className="flex flex-col gap-4">
@@ -104,66 +83,17 @@ function CheckoutForm() {
                 />
             </label>
 
-            {/* Boutons Stripe + PayPal sur une seule ligne, identiques */}
+
             <div className="flex flex-row gap-4 mt-4">
-                {/* Bouton Stripe */}
                 <div className="flex-1">
                     <button
-                        onClick={handleStripePayment}
+                        onClick={handleClick}
                         disabled={loading}
                         className="w-full h-12 px-6 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition duration-200 cursor-pointer"
                     >
                         {loading ? "Redirection..." : "💳 Paiement par CB"}
                     </button>
                 </div>
-
-                {/* Bouton PayPal (compte uniquement, style natif) */}
-                <PayPalScriptProvider
-                    options={{ clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!, currency: "EUR" }}
-                >
-
-                <div className="flex-1 h-12">
-                        <PayPalButtons
-                            fundingSource="paypal"
-                            style={{
-                                layout: "vertical",
-                                height: 48, // ajuste la hauteur pour correspondre au bouton Stripe
-                                shape: "pill",    // bordure arrondie
-                            }}
-                            createOrder={async () => {
-                                // Vérification des champs
-                                if (!email || tickets < 1 || !full_name) {
-                                    setMessage("❌ Veuillez remplir tous les champs avant de payer !");
-                                    // Renvoie un ordre invalide pour éviter l'ouverture du popup
-                                    throw new Error("Champs incomplets");
-                                }
-                                const res = await fetch("/api/create-checkout-session-paypal", {
-                                    method: "POST",
-                                    headers: { "Content-Type": "application/json" },
-                                    body: JSON.stringify({ tickets, email, full_name }),
-                                });
-                                const data = await res.json();
-                                setAccessToken(data.accessToken); // stocke le token pour la redirection
-                                return data.orderID;
-                            }}
-                            onApprove={async (_data, actions) => {
-                                try {
-                                    if (!actions.order) throw new Error("Order actions not available");
-
-                                    // 1️⃣ Capture le paiement
-                                    await actions.order.capture();
-
-                                    // 2️⃣ Redirection seulement une fois le paiement confirmé
-                                    window.location.href = `/mes-tickets?token=${accessToken}`;
-                                } catch (err) {
-                                    console.error("❌ Erreur lors de la capture PayPal :", err);
-                                    setMessage("❌ Une erreur est survenue lors du paiement PayPal.");
-                                }
-                            }}
-
-                        />
-                    </div>
-                </PayPalScriptProvider>
             </div>
 
         </div>
@@ -181,9 +111,8 @@ export default function Acheter() {
                     Participez à notre tombola pour soutenir notre projet scolaire et tentez de gagner un super lot !
                 </p>
 
-                <Elements stripe={stripePromise}>
-                    <CheckoutForm />
-                </Elements>
+                <CheckoutForm />
+
 
                 <p className="text-sm text-gray-500 text-center">
                     Le prix est de <span className="font-bold">2€ par ticket</span>. Tout l&apos;argent récolté soutient notre projet.

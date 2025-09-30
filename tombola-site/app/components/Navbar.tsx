@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import {FaHome, FaTiktok, FaUserShield, FaDonate, FaGifts, FaShoppingBasket } from "react-icons/fa";
+import { MailQuestionMark } from 'lucide-react';
 import { GiTrophy } from 'react-icons/gi';
-import { MdHelp } from "react-icons/md";
 import { FiMenu, FiX } from "react-icons/fi";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
 
 
 export default function Navbar() {
@@ -53,11 +52,11 @@ export default function Navbar() {
                     <Link href="/resultat" className="text-gray-600 hover:text-gray-700 transition"><GiTrophy  size={30} /></Link>
                     <Link href="/cagnotte" className="text-gray-600 hover:text-gray-700 transition"><FaDonate size={30} /></Link>
                     <Link href="/tiktok" className="text-gray-600 hover:text-gray-700 transition"><FaTiktok size={30} /></Link>
-                    <Link href="/contact" className="text-gray-600 hover:text-gray-700 transition"><MdHelp size={30} /></Link>
+                    <Link href="/contact" className="text-gray-600 hover:text-gray-700 transition"><MailQuestionMark size={32} /></Link>
                     <button
                         onClick={handleAdminClick}
                         className="text-gray-600 hover:text-gray-700 transition font-medium cursor-pointer"
-                    ><FaUserShield size={30} /></button>
+                    ><FaUserShield size={32} /></button>
                 </div>
 
                 {/* Menu mobile toggle avec animation */}
@@ -105,8 +104,8 @@ export default function Navbar() {
                         <Link href="/resultat" className="text-gray-700" onClick={handleLinkClick}><GiTrophy size={36} /></Link>
                         <Link href="/cagnotte" className="text-gray-700" onClick={handleLinkClick}><FaDonate size={36} /></Link>
                         <Link href="/tiktok" className="text-gray-700" onClick={handleLinkClick}><FaTiktok size={36} /></Link>
-                        <Link href="/contact" className="text-gray-700" onClick={handleLinkClick}><MdHelp size={36} /></Link>
-                        <button onClick={() => {handleAdminClick();handleLinkClick();}} className="text-gray-700 text-left"><FaUserShield size={36} /></button>
+                        <Link href="/contact" className="text-gray-700" onClick={handleLinkClick}><MailQuestionMark size={38} /></Link>
+                        <button onClick={() => {handleAdminClick();handleLinkClick();}} className="text-gray-700 text-left"><FaUserShield size={38} /></button>
                     </div>
                 </div>
             )}

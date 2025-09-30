@@ -1,13 +1,11 @@
 "use client";
 
-
 import Image from "next/image";
 import React, { useState } from "react";
 import { PRIZES, Prize } from "@/lib/lots";
 
-export default function LotAAgagnerPage() {
+export default function LotAGagnerPage() {
     const [selected, setSelected] = useState<Prize | null>(null);
-
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50 relative overflow-hidden">
@@ -19,8 +17,7 @@ export default function LotAAgagnerPage() {
                     </h1>
                 </div>
 
-
-                {/* Liste des lots */}
+                {/* Grille des lots */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                     {PRIZES.map((lot) => (
                         <article
@@ -28,7 +25,6 @@ export default function LotAAgagnerPage() {
                             className="bg-gradient-to-br from-indigo-50 to-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col"
                         >
                             <div className="relative h-48 w-full overflow-hidden">
-
                                 {lot.img ? (
                                     <Image
                                         src={lot.img}
@@ -43,17 +39,17 @@ export default function LotAAgagnerPage() {
                                 )}
                             </div>
 
-                            <div className="flex-1 p-4 flex flex-col">
-                                <h3 className="text-lg font-semibold text-gray-800 text-center">
+                            <div className="p-4 flex flex-col text-gray-700">
+                                <h3 className="text-lg font-semibold text-center text-indigo-700">
                                     {lot.title}
                                 </h3>
-                                <p className="text-sm text-gray-500 mt-2 line-clamp-3 mb-2">
+                                <p className="text-md font-bold mt-2 line-clamp-3 mb-2">
                                     {lot.description}
                                 </p>
 
-                                <div className="mt-auto flex items-center justify-between text-sm text-gray-600 pt-4 border-t">
-                                    <span className="italic">Quantité</span>
-                                    <span className="font-medium">x{lot.quantity ?? 1}</span>
+                                <div className="mt-auto flex items-center justify-between text-sm pt-4 border-t">
+                                    <span className="italic">Nombre d'éléments</span>
+                                    <span className="font-medium">{lot.items.length}</span>
                                 </div>
 
                                 <button
@@ -66,12 +62,11 @@ export default function LotAAgagnerPage() {
                         </article>
                     ))}
                 </div>
-
             </div>
 
             {/* Modal */}
             {selected && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 text-gray-700">
                     <div
                         className="absolute inset-0 bg-black/50"
                         onClick={() => setSelected(null)}
@@ -85,27 +80,33 @@ export default function LotAAgagnerPage() {
                         </button>
 
                         <div className="relative h-64 rounded-xl overflow-hidden mb-6 bg-gray-200">
-                            {selected.img ? (
+                            {selected.img && (
                                 <Image
                                     src={selected.img}
                                     alt={selected.title}
                                     fill
                                     className="w-full h-full object-cover"
                                 />
-                            ) : null}
+                            )}
                         </div>
 
-                        <h2 className="text-2xl font-bold text-indigo-700">
+                        <h2 className="text-2xl font-bold text-indigo-700 text-center">
                             {selected.title}
                         </h2>
-                        <p className="text-sm text-gray-600 mt-2">{selected.description}</p>
-                        <div className="mt-4 flex justify-between items-center text-sm text-gray-500">
-                            <div>Quantité: {selected.quantity ?? 1}</div>
+                        <p className="text-xl font-bold text-center mt-4">{selected.description}</p>
+
+                        <div className="mt-4 flex flex-col gap-3 text-lg">
+                            {selected.items.map((item, idx) => (
+                                <div key={idx}>
+                                    <span className="mx-4">x{item.quantity}</span>
+                                    <span className="border-l border-gray-700 pl-2">{item.name}</span>
+                                </div>
+                            ))}
                         </div>
 
                         <button
                             onClick={() => setSelected(null)}
-                            className="mt-6 w-full py-2 px-4 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors"
+                            className="mt-8 w-full py-2 px-4 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors cursor-pointer"
                         >
                             Fermer
                         </button>

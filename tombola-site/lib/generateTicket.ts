@@ -66,6 +66,7 @@ export async function generateTickets({ full_name, email, quantity, accessToken 
 
             const batchSize = 50;
             for (let i = 0; i < ticketNumbers.length; i += batchSize) {
+                const batchTickets = ticketNumbers.slice(i, i + batchSize);
                 const batchAttachments = allAttachments.slice(i, i + batchSize);
                 // Construire le contenu HTML
                 const htmlContent = `
@@ -77,12 +78,12 @@ export async function generateTickets({ full_name, email, quantity, accessToken 
                             </a>
                         </h1>
                         <p style="margin-bottom: 30px; font-size: 18px;">Bonjour <strong>${full_name}</strong> et merci pour votre participation !</p>
-                        <p style="margin-bottom: 30px; font-size: 18px; font-weight: bold;">Voici vos tickets : ${ticketNumbers.length}</p>
+                        <p style="margin-bottom: 30px; font-size: 18px; font-weight: bold;">Voici vos tickets : ${batchTickets.length}</p>
                     
                         <!-- Table responsive pour les tickets -->
                         <table align="center" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 600px; margin-bottom: 24px;">
                             <tr>
-                                ${ticketNumbers.map((num, idx) => `
+                                ${batchTickets.map((num, idx) => `
                                 <td align="center" valign="top" style="padding: 8px; width: 50%;">
                                     <img src="cid:ticket-${num}@tombola" alt="Ticket ${num}" style="width: 100%; max-width: 288px; height: auto; display: block;" />
                                 </td>
@@ -97,7 +98,7 @@ export async function generateTickets({ full_name, email, quantity, accessToken 
                         <p style="margin-top: 30px;">
                             <a href="${process.env.NEXT_PUBLIC_URL}/mes-tickets?token=${token}"
                                 style="display: inline-block; background-color: #3498db; color: #fff; padding: 16px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 18px;">
-                                Voir mes tickets
+                                Voir tous mes tickets
                             </a>
                         </p>
                         
@@ -114,7 +115,6 @@ export async function generateTickets({ full_name, email, quantity, accessToken 
                     .catch(err => console.error("❌ Erreur lors de l'envoi du mail :", err));
             }
 
-            console.log("Tous les emails ont été envoyés !");
         } catch (err) {
             console.error("Erreur génération/envoi des emails :", err);
         }

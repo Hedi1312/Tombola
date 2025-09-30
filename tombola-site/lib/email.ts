@@ -8,6 +8,10 @@ const transporter = nodemailer.createTransport({
         user: process.env.GMAIL_USER,
         pass: process.env.GMAIL_APP_PASSWORD,
     },
+    // ⬇️ Timeouts pour éviter ETIMEDOUT
+    connectionTimeout: 60_000, // 60 secondes
+    socketTimeout: 60_000,
+    greetingTimeout: 30_000,
 });
 
 export const sendEmail = async (
