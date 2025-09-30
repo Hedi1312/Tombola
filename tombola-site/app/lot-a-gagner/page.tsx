@@ -98,8 +98,8 @@ export default function LotAGagnerPage() {
                         <div className="mt-4 flex flex-col gap-3 text-lg">
                             {selected.items.map((item, idx) => (
                                 <div key={idx}>
-                                    <span className="mx-4">x{item.quantity}</span>
-                                    <span className="border-l border-gray-700 pl-2">{item.name}</span>
+                                    <span className="mx-3">x{item.quantity}</span>
+                                    <span className="border-l border-gray-700 pl-3">{item.name}</span>
                                 </div>
                             ))}
                         </div>

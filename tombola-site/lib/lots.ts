@@ -18,7 +18,7 @@ export const PRIZES: Prize[] = [
         description: "Livre et jeu de cartes",
         img: "/img/lots/lot1.png",
         items: [
-            { name: "Livre dAdrian Blanc", quantity: 1 },
+            { name: "Livre d'Adrian Blanc", quantity: 1 },
             { name: "Jeu de cartes", quantity: 1 },
             { name: "Marque-page", quantity: 1 },
         ],
@@ -27,7 +27,7 @@ export const PRIZES: Prize[] = [
         id: 2,
         title: "Lot n°2",
         description: "Livre et jeu de cartes",
-        img: "/img/lots/lot2.png",
+        img: "/img/lots/lot1.png",
         items: [
             { name: "Livre d'Adrian Bland", quantity: 1 },
             { name: "Jeu de cartes", quantity: 1 },
@@ -40,7 +40,7 @@ export const PRIZES: Prize[] = [
         description: "Matériel pour travail social",
         img: "/img/lots/lot3.png",
         items: [
-            { name: "Livre Cornet de stage", quantity: 1 },
+            { name: "Livre carnet de stage travailleur social", quantity: 1 },
             { name: "Paquet de fiches Bristol", quantity: 1 },
             { name: "Post-it", quantity: 1 },
         ],
@@ -52,10 +52,10 @@ export const PRIZES: Prize[] = [
         img: "/img/lots/lot4.png",
         items: [
             { name: "Carnet", quantity: 1 },
-            { name: "Stylo", quantity: 4 },
+            { name: "Stylo 4 couleurs", quantity: 1 },
             { name: "Paquet de trombones", quantity: 1 },
             { name: "Gourde", quantity: 1 },
-            { name: "Gamme de fiches Bristol", quantity: 1 },
+            { name: "Fiches Bristol", quantity: 1 },
         ],
     },
     {
@@ -85,7 +85,7 @@ export const PRIZES: Prize[] = [
     {
         id: 7,
         title: "Lot n°7",
-        description: "Jeux et lumière",
+        description: "Rubik's Cube et projecteur",
         img: "/img/lots/lot7.png",
         items: [
             { name: "Rubik's Cube", quantity: 1 },
@@ -98,7 +98,7 @@ export const PRIZES: Prize[] = [
         description: "Sortie cinéma et détente",
         img: "/img/lots/lot8.png",
         items: [
-            { name: "2 places de cinéma CGR", quantity: 2 },
+            { name: "Places de cinéma CGR", quantity: 2 },
             { name: "Balle anti-stress", quantity: 1 },
         ],
     },
@@ -114,6 +114,6 @@ export const PRIZES: Prize[] = [
         title: "Lot n°10",
         description: "Blender avec livre de recettes",
         img: "/img/lots/lot10.png",
-        items: [{ name: "Blender (livre de smoothies)", quantity: 1 }],
+        items: [{ name: "Blender + (livre de smoothies)", quantity: 1 }],
     },
 ];

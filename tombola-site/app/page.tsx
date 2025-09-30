@@ -3,16 +3,15 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-
 export default function Home() {
     const [expanded, setExpanded] = useState(false);
 
     return (
         <section className="min-h-screen bg-gray-50 flex flex-col items-center justify-start pt-16 px-4 md:px-6">
             {/* Conteneur principal en ligne */}
-            <div className="flex flex-col md:flex-row gap-6 max-w-6xl w-full mb-12">
-                {/* Bloc tombola plus petit et hauteur automatique */}
-                <div className="md:w-2/5 bg-white rounded-2xl shadow-md p-8 text-center text-gray-700">
+            <div className="flex flex-col md:flex-row gap-6 max-w-6xl w-full mb-12 items-start">
+                {/* Bloc tombola fixe */}
+                <div className="md:w-2/5 bg-white rounded-2xl shadow-md p-8 text-center text-gray-700 flex-shrink-0">
                     {/* Image + Titre alignés */}
                     <div className="flex items-center justify-center gap-3 mb-4">
                         <Image src="/img/ticket/ticket.png" alt="Ticket" width={80} height={80} />
@@ -32,13 +31,13 @@ export default function Home() {
                 </div>
 
                 {/* Bloc présentation centré */}
-                <div className="flex-1 bg-white rounded-2xl shadow-md p-8 text-gray-700 flex flex-col justify-start items-center text-center">
+                <div className="flex-1 bg-white rounded-2xl shadow-md p-8 text-gray-700 flex flex-col justify-start items-center text-center md:min-h-84">
                     <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-800">
                         Présentation
                     </h1>
                     <p
                         className={`text-base md:text-lg leading-relaxed transition-all duration-300 ${
-                            expanded ? "" : "line-clamp-5"
+                            expanded ? "max-h-full" : "line-clamp-5 overflow-hidden"
                         }`}
                     >
                         <br />
