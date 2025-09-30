@@ -58,7 +58,7 @@ export default function Home() {
                     {/* Bouton Lire plus / Réduire */}
                     <button
                         onClick={() => setExpanded(!expanded)}
-                        className="mt-4 text-blue-600 font-semibold hover:underline"
+                        className="mt-4 text-blue-600 font-semibold hover:underline cursor-pointer"
                     >
                         {expanded ? "Réduire" : "Lire plus"}
                     </button>

@@ -223,7 +223,7 @@ export default function ChoixGagnantPage() {
 
                 <button
                     onClick={handleRandomize}
-                    className="w-full rounded-lg bg-yellow-500 px-4 py-2 text-white font-medium hover:bg-yellow-600 transition mb-4"
+                    className="w-full rounded-lg bg-yellow-500 px-4 py-2 text-white font-medium hover:bg-yellow-600 transition mb-4 cursor-pointer"
                 >
                     Tirer au sort les gagnants
                 </button>
@@ -279,7 +279,7 @@ export default function ChoixGagnantPage() {
 
                 <button
                     onClick={handleSave}
-                    className="w-full rounded-lg bg-green-600 px-4 py-2 text-white font-medium hover:bg-green-700 transition"
+                    className="w-full rounded-lg bg-green-600 px-4 py-2 text-white font-medium hover:bg-green-700 transition cursor-pointer"
                 >
                     Enregistrer les gagnants
                 </button>

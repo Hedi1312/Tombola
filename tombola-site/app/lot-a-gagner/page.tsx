@@ -73,7 +73,7 @@ export default function LotAGagnerPage() {
                     />
                     <div className="relative max-w-xl w-full bg-white rounded-2xl p-6 shadow-2xl z-10 animate-fadeIn">
                         <button
-                            className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+                            className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 cursor-pointer"
                             onClick={() => setSelected(null)}
                         >
                             ✕

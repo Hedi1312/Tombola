@@ -18,6 +18,10 @@ function CheckoutForm() {
     }, [message]);
 
     const handleClick = () => {
+        if (!email || !full_name) {
+            setMessage("❌ Veuillez remplir tous les champs avant de payer !");
+            return;
+        }
         setLoading(true);
         // Simule une action asynchrone
         setTimeout(() => {

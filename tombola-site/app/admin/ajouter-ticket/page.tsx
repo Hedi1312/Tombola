@@ -128,7 +128,7 @@ export default function AddTicketForm() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full max-w-xs bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+                        className="w-full max-w-xs bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition cursor-pointer"
                     >
                         {loading ? "Création..." : "Créer les tickets"}
                     </button>

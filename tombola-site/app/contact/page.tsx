@@ -94,7 +94,7 @@ export default function Contact() {
 
                     <button
                         type="submit"
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                        className="bg-indigo-600 transition hover:bg-indigo-700 text-white font-bold py-3 px-6 rounded-lg disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
                         disabled={status === "loading"}
                     >
                         {status === "loading" ? (
