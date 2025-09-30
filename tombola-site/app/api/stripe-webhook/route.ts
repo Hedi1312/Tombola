@@ -45,16 +45,14 @@ export async function POST(req: NextRequest) {
         }
 
 
-
         try {
-            const result = await generateTickets({
+            await generateTickets({
                 full_name,
                 email,
                 quantity,
                 accessToken,
             });
 
-            console.log(`✅ Tickets générés pour ${email}`, result.ticketNumbers);
         } catch (err) {
             console.error("❌ Erreur lors de la génération des tickets:", err);
         }

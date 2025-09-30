@@ -22,38 +22,58 @@ export default function MesTickets() {
         const token = urlParams.get("token");
 
         if (!token) {
-            setError("Erreur. Veuillez utiliser l'URL reçu par mail..");
+            setError("Erreur. Veuillez utiliser l'URL reçu par mail.");
             setLoading(false);
             return;
         }
 
+        let elapsedTime = 0;
+        const pollingInterval = 2000; // toutes les 2 secondes
+        const minDelay = 1000; // délai minimum 3 secondes
+        const maxTime = 60000; // 30 secondes maximum
+
+        const startTime = Date.now();
+
         async function fetchTickets() {
             try {
-                // délai minimum 3 secondes pour l’effet visuel
-                const minDelay = new Promise((resolve) => setTimeout(resolve, 3000));
+                const res = await fetch(`/api/mes-tickets?token=${token}`);
+                const data = await res.json();
 
-                const fetchReq = fetch(`/api/mes-tickets?token=${token}`).then(res => res.json());
+                if (data.success && data.tickets?.length) {
+                    // s'assurer que le minimum de 3 secondes est respecté
+                    const timeElapsed = Date.now() - startTime;
+                    const remainingDelay = Math.max(0, minDelay - timeElapsed);
 
-                const [result] = await Promise.all([fetchReq, minDelay]);
+                    setTimeout(() => {
+                        setTickets(data.tickets);
+                        setLoading(false);
+                    }, remainingDelay);
 
-                if (!result.success) {
-                    setError(result.error || "Erreur inconnue lors de la récupération des tickets.");
-                } else if (!result.tickets || result.tickets.length === 0) {
-                    setError("Vous n'avez aucun ticket.");
+                    clearInterval(intervalId); // tickets récupérés → stop polling
                 } else {
-                    setTickets(result.tickets);
+                    elapsedTime += pollingInterval;
+                    if (elapsedTime >= maxTime) {
+                        setError("Vos tickets ne sont pas encore disponibles. Actualisé la page ou attendez de les recevoir par mail.");
+                        setLoading(false);
+                        clearInterval(intervalId);
+                    }
                 }
             } catch (err) {
                 console.error(err);
                 setError("Erreur inconnue lors de la récupération des tickets.");
-            } finally {
                 setLoading(false);
+                clearInterval(intervalId);
             }
         }
 
+        // première tentative immédiate
         fetchTickets();
+        // polling toutes les 2 secondes
+        const intervalId = setInterval(fetchTickets, pollingInterval);
 
-    }, []); // on ne relance pas inutilement
+        return () => clearInterval(intervalId);
+    }, []);
+
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">

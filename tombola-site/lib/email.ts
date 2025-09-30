@@ -28,5 +28,4 @@ export const sendEmail = async (
         replyTo,
     });
 
-    console.log("📩 Mail envoyé à:", to);
 };

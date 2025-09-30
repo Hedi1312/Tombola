@@ -5,7 +5,9 @@ import { v4 as uuidv4 } from "uuid";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export async function POST(req: NextRequest) {
-    const { tickets, email, full_name } = await req.json();
+    const { tickets: requestedTickets, email, full_name } = await req.json();
+    const tickets = Math.min(Math.max(requestedTickets, 1), 100); // 1 ≤ tickets ≤ 100
+
 
     // 🔹 Générer le token unique avant Stripe
     const accessToken = uuidv4();

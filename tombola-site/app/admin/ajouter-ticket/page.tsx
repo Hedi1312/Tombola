@@ -112,8 +112,14 @@ export default function AddTicketForm() {
                             pattern="[0-9]*"
                             placeholder="Nombre de tickets"
                             value={quantity}
-                            onChange={(e) => setQuantity(parseInt(e.target.value))}
+                            onChange={(e) => {
+                                let value = parseInt(e.target.value);
+                                if (isNaN(value) || value < 1) value = 1;
+                                if (value > 100) value = 100; // ✅ Vérification côté JS
+                                setQuantity(value);
+                            }}
                             min={1}
+                            max={100}
                             required
                             className="border rounded-lg px-3 py-2 w-full"
                         />

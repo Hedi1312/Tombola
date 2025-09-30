@@ -42,6 +42,7 @@ export default function DashboardPage() {
             icon: <BellRing className="h-8 w-8 text-yellow-500" />,
             onClick: () => router.push("/admin/envoyer-notifications"),
         },
+
     ];
 
     return (
