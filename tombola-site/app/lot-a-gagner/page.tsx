@@ -48,7 +48,7 @@ export default function LotAGagnerPage() {
                                 </p>
 
                                 <div className="mt-auto flex items-center justify-between text-sm pt-4 border-t">
-                                    <span className="italic">Nombre d'éléments</span>
+                                    <span className="italic">Nombre d&apos;éléments</span>
                                     <span className="font-medium">{lot.items.length}</span>
                                 </div>
 

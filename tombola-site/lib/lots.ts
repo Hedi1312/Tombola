@@ -18,7 +18,7 @@ export const PRIZES: Prize[] = [
         description: "Livre et jeu de cartes",
         img: "/img/lots/lot1.png",
         items: [
-            { name: "Livre d'Adrian Blanc", quantity: 1 },
+            { name: "Livre dAdrian Blanc", quantity: 1 },
             { name: "Jeu de cartes", quantity: 1 },
             { name: "Marque-page", quantity: 1 },
         ],
