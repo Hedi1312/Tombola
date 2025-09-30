@@ -114,6 +114,10 @@ export const PRIZES: Prize[] = [
         title: "Lot n°10",
         description: "Blender avec livre de recettes",
         img: "/img/lots/lot10.png",
-        items: [{ name: "Blender + (livre de smoothies)", quantity: 1 }],
+        items: [
+            { name: "Blender", quantity: 1 },
+            { name: "Livre de smoothies", quantity: 1 },
+
+        ],
     },
 ];
