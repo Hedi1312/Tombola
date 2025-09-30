@@ -37,7 +37,7 @@ export default function Navbar() {
     const handleLinkClick = () => setIsOpen(false);
     return (
         <nav className="bg-white shadow-md w-full">
-            <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div className="max-w-8xl mx-auto px-6 py-4 flex justify-between items-center">
                 <Link href="/" className="flex items-center gap-2 text-3xl font-bold text-gray-800">
                     <Image src="/img/ticket/ticket.png" alt="Ticket" width={100} height={100} />
                     <span>Marocola</span>

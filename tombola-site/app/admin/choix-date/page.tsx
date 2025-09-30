@@ -78,7 +78,7 @@ export default function ChoixDatePage() {
 
                     <button
                         onClick={() => router.push("/admin/dashboard")}
-                        className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 transition cursor-pointer w-auto md:ml-4"
+                        className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition cursor-pointer w-auto md:ml-4"
                     >
                         <ArrowLeft size={20} />
                         Retour
@@ -107,7 +107,7 @@ export default function ChoixDatePage() {
 
                 <button
                     onClick={handleSave}
-                    className="w-full rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-700 cursor-pointer"
+                    className="w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 cursor-pointer"
                 >
                     Enregistrer
                 </button>

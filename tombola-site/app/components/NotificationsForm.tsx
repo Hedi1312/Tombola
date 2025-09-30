@@ -83,7 +83,7 @@ export default function NotificationsForm({onClose,}: { onClose: () => void; }) 
                     <button
                         type="submit"
                         disabled={loading}
-                        className="bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition cursor-pointer"
+                        className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition cursor-pointer"
                     >
                         {loading ? "Envoi..." : "Je veux être notifié(e)"}
                     </button>

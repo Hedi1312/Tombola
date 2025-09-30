@@ -41,7 +41,7 @@ function ConfirmModal({
                     </button>
                     <button
                         onClick={onCancel}
-                        className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 transition cursor-pointer"
+                        className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition cursor-pointer"
                     >
                         Annuler
                     </button>
@@ -143,7 +143,7 @@ export default function TicketsPage() {
                     </div>
                     <button
                         onClick={() => router.push("/admin/dashboard")}
-                        className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 transition cursor-pointer"
+                        className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition cursor-pointer"
                     >
                         <ArrowLeft size={20} />
                         Retour

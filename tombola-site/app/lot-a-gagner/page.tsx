@@ -54,7 +54,7 @@ export default function LotAGagnerPage() {
 
                                 <button
                                     onClick={() => setSelected(lot)}
-                                    className="mt-4 w-full py-2 px-4 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors cursor-pointer"
+                                    className="mt-4 w-full py-2 px-4 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors cursor-pointer"
                                 >
                                     Voir plus
                                 </button>
@@ -106,7 +106,7 @@ export default function LotAGagnerPage() {
 
                         <button
                             onClick={() => setSelected(null)}
-                            className="mt-8 w-full py-2 px-4 rounded-xl bg-indigo-600 text-white font-medium hover:bg-indigo-700 transition-colors cursor-pointer"
+                            className="mt-8 w-full py-2 px-4 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition-colors cursor-pointer"
                         >
                             Fermer
                         </button>

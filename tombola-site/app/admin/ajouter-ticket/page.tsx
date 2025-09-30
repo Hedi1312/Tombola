@@ -56,7 +56,7 @@ export default function AddTicketForm() {
 
                     <button
                         onClick={() => router.push("/admin/dashboard")}
-                        className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 transition cursor-pointer w-auto"
+                        className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition cursor-pointer w-auto"
                     >
                         <ArrowLeft size={20} />
                         Retour
@@ -128,7 +128,7 @@ export default function AddTicketForm() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full max-w-xs bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition cursor-pointer"
+                        className="w-full max-w-xs bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition cursor-pointer"
                     >
                         {loading ? "Création..." : "Créer les tickets"}
                     </button>

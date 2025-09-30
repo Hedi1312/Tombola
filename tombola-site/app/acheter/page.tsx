@@ -9,6 +9,8 @@ function CheckoutForm() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
 
+    const ticketPrice = 2; // Prix d'un ticket
+    const total = tickets * ticketPrice;
 
     // 🔹 Effet pour cacher le message après 3 secondes
     useEffect(() => {
@@ -87,6 +89,11 @@ function CheckoutForm() {
                 />
             </label>
 
+            {/* Affichage du montant total */}
+            <p className="text-lg font-semibold text-gray-700 text-right">
+                Total : <span>{total} €</span>
+            </p>
+
 
             <div className="flex flex-row gap-4 mt-4">
                 <div className="flex-1">
@@ -95,7 +102,7 @@ function CheckoutForm() {
                         disabled={loading}
                         className="w-full h-12 px-6 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition duration-200 cursor-pointer"
                     >
-                        {loading ? "Redirection..." : "💳 Paiement par CB"}
+                        {loading ? "Redirection..." : "💳 Paiement"}
                     </button>
                 </div>
             </div>
