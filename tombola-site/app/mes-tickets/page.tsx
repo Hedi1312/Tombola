@@ -118,7 +118,7 @@ export default function MesTickets() {
                             Vos tickets : {tickets.length}
                         </h3>
                         <p className="text-center text-gray-700 mt-4">
-                            <br/><strong>⚠️ Vous allez recevoir un mail avec vos tickets et un lien pour pouvoir les retrouver plus tard !</strong><br/> <br/><br/>
+                            <br/><strong>⚠️ Vous allez recevoir un ou plusieurs mails avec vos tickets et un lien pour pouvoir les retrouver plus tard !</strong><br/> <br/><br/>
                         </p>
                         <ul className="grid grid-cols-1 sm:grid-cols-3 gap-y-6 gap-x-6 justify-items-center">
                             {tickets.map((ticket) => (

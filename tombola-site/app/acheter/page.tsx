@@ -7,14 +7,14 @@ import { Elements } from "@stripe/react-stripe-js";
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 
 function CheckoutForm() {
-    const [tickets, setTickets] = useState(1);
+    const [tickets, setTickets] = useState(""); // vide par défaut
     const [email, setEmail] = useState("");
     const [full_name, setFullName] = useState("");
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
 
     const ticketPrice = 2; // Prix d'un ticket
-    const total = tickets * ticketPrice;
+    const total = parseInt(tickets || "0") * ticketPrice;
 
     // 🔹 Effet pour cacher le message après 3 secondes
     useEffect(() => {
@@ -33,7 +33,11 @@ function CheckoutForm() {
         const res = await fetch("/api/create-checkout-session", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ tickets, email, full_name: full_name }),
+            body: JSON.stringify({
+                tickets: parseInt(tickets || "0"), // <-- conversion en nombre
+                email,
+                full_name
+            }),
         });
 
         const data = await res.json();
@@ -95,11 +99,12 @@ function CheckoutForm() {
                     min={1}
                     max={100}
                     value={tickets}
-                    onChange={(e) => {
-                        let value = parseInt(e.target.value);
-                        if (isNaN(value) || value < 1) value = 1;
-                        if (value > 100) value = 100; // ✅ Vérification côté JS
-                        setTickets(value);
+                    onChange={(e) => setTickets(e.target.value)} // juste setter la valeur brute
+                    onBlur={() => {
+                        let val = parseInt(tickets);
+                        if (isNaN(val) || val < 1) val = 1;
+                        if (val > 100) val = 100;
+                        setTickets(val.toString());
                     }}
                     className="mt-2 px-4 py-2 border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />

@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 export default function AddTicketForm() {
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
-    const [quantity, setQuantity] = useState(1);
+    const [quantity, setQuantity] = useState(""); // vide par défaut
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<string | null>(null);
     const router = useRouter();
@@ -21,7 +21,8 @@ export default function AddTicketForm() {
             const res = await fetch("/api/admin/ajouter-ticket", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ full_name: fullName, email, quantity }),
+                body: JSON.stringify({ full_name: fullName, email, quantity: parseInt(quantity || "0") }),
+
             });
 
             const data = await res.json();
@@ -31,7 +32,7 @@ export default function AddTicketForm() {
                 setMessage(`✅ ${data.tickets.length} ticket(s) créé(s) avec succès !`);
                 setFullName("");
                 setEmail("");
-                setQuantity(1);
+                setQuantity("");
             } else {
                 setMessage(`❌ Erreur: ${data.error}`);
             }
@@ -112,11 +113,12 @@ export default function AddTicketForm() {
                             pattern="[0-9]*"
                             placeholder="Nombre de tickets"
                             value={quantity}
-                            onChange={(e) => {
-                                let value = parseInt(e.target.value);
-                                if (isNaN(value) || value < 1) value = 1;
-                                if (value > 100) value = 100; // ✅ Vérification côté JS
-                                setQuantity(value);
+                            onChange={(e) => setQuantity(e.target.value)} // juste setter la valeur brute
+                            onBlur={() => {
+                                let val = parseInt(quantity);
+                                if (isNaN(val) || val < 1) val = 1;
+                                if (val > 100) val = 100;
+                                setQuantity(val.toString());
                             }}
                             min={1}
                             max={100}
