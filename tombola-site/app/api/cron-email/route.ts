@@ -1,17 +1,20 @@
 import { GET as processEmailQueue } from "@/app/api/process-email-queue/route";
 
 export async function GET(req: Request) {
-    // 1️⃣ Vérifie le secret d’authentification
-    const authHeader = req.headers.get("Authorization");
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    // Récupère le token depuis la query string
+    const url = new URL(req.url);
+    const tokenQuery = url.searchParams.get("token");
+
+    // Vérifie le token
+    if (tokenQuery !== process.env.CRON_SECRET) {
         return new Response("Unauthorized", { status: 401 });
     }
 
     try {
-        // 2️⃣ Appelle ton worker interne (traitement des emails)
+        // Appelle ton worker interne pour envoyer les emails
         const response = await processEmailQueue();
 
-        // 3️⃣ Log utile pour suivi (visible sur les logs Vercel)
+        // Log pour savoir que le cron a été exécuté
         console.log("✅ Cron exécuté avec succès à", new Date().toISOString());
 
         return response;
