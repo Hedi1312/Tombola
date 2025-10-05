@@ -1,12 +1,10 @@
 import { GET as processEmailQueue } from "@/app/api/process-email-queue/route";
 
 export async function GET(req: Request) {
-    // Récupère le token depuis la query string
-    const url = new URL(req.url);
-    const tokenQuery = url.searchParams.get("token");
 
-    // Vérifie le token
-    if (tokenQuery !== process.env.CRON_SECRET) {
+    const url = new URL(req.url);
+    const token = req.headers.get("CRON_SECRET");
+    if (token !== process.env.CRON_SECRET) {
         return new Response("Unauthorized", { status: 401 });
     }
 
