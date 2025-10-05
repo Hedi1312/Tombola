@@ -1,6 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
 
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY!);
 
 function CheckoutForm() {
     const [tickets, setTickets] = useState(1);
@@ -19,16 +23,28 @@ function CheckoutForm() {
         return () => clearTimeout(timer); // nettoyage si message change avant 3s
     }, [message]);
 
-    const handleClick = () => {
+    const handleStripePayment = async () => {
         if (!email || !full_name) {
             setMessage("❌ Veuillez remplir tous les champs avant de payer !");
             return;
         }
+
         setLoading(true);
-        // Simule une action asynchrone
-        setTimeout(() => {
-            setLoading(false);
-        }, 1000);
+        const res = await fetch("/api/create-checkout-session-stripe", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ tickets, email, full_name: full_name }),
+        });
+
+        const data = await res.json();
+        setLoading(false);
+
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            setMessage("❌ Erreur lors de la création de la session de paiement.");
+            console.error(data.error);
+        }
     };
 
 
@@ -98,7 +114,7 @@ function CheckoutForm() {
             <div className="flex flex-row gap-4 mt-4">
                 <div className="flex-1">
                     <button
-                        onClick={handleClick}
+                        onClick={handleStripePayment}
                         disabled={loading}
                         className="w-full h-12 px-6 bg-blue-600 text-white font-semibold rounded-xl shadow-md hover:bg-blue-700 transition duration-200 cursor-pointer"
                     >
@@ -122,7 +138,9 @@ export default function Acheter() {
                     Participez à notre tombola pour soutenir notre projet scolaire et tentez de gagner un super lot !
                 </p>
 
-                <CheckoutForm />
+                <Elements stripe={stripePromise}>
+                    <CheckoutForm />
+                </Elements>
 
 
                 <p className="text-sm text-gray-500 text-center">

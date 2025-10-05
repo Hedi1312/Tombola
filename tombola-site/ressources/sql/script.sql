@@ -1,96 +1,149 @@
--- Supprimer d'abord la fonction si elle existe
+-- =========================================
+-- NETTOYAGE DES FONCTIONS ET TABLES EXISTANTES
+-- =========================================
 DROP FUNCTION IF EXISTS get_and_mark_tickets(INT) CASCADE;
+DROP FUNCTION IF EXISTS fetch_and_mark_email_jobs(INT) CASCADE;
 
-drop table if exists tickets cascade;
-drop table if exists draw_date cascade;
-drop table if exists winners cascade;
-drop table if exists notifications cascade;
-drop table if exists tickets_number cascade;
+DROP TABLE IF EXISTS email_queue CASCADE;
+DROP TABLE IF EXISTS tickets CASCADE;
+DROP TABLE IF EXISTS draw_date CASCADE;
+DROP TABLE IF EXISTS winners CASCADE;
+DROP TABLE IF EXISTS notifications CASCADE;
+DROP TABLE IF EXISTS tickets_number CASCADE;
 
+-- =========================================
+-- TABLES PRINCIPALES
+-- =========================================
 
--- Table pour stocker les tickets achetés
-create table tickets (
-        id bigint generated always as identity primary key,
-        email text not null,
-        full_name text not null,
-        ticket_number VARCHAR(6) NOT NULL UNIQUE CHECK (char_length(ticket_number) = 6),
-        access_token uuid not null,
-        created_at timestamp with time zone default now()
+-- Tickets achetés
+CREATE TABLE tickets (
+                         id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                         email TEXT NOT NULL,
+                         full_name TEXT NOT NULL,
+                         ticket_number VARCHAR(6) NOT NULL UNIQUE CHECK (char_length(ticket_number) = 6),
+                         access_token UUID NOT NULL,
+                         created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Table pour stocker la date du tirage
-create table draw_date (
-        id bigint generated always as identity primary key,
-        draw_date timestamp not null
+-- Date du tirage
+CREATE TABLE draw_date (
+                           id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                           draw_date TIMESTAMP NOT NULL
 );
 
-
--- Table pour stocker les gagnants
-create table winners (
-        id bigint generated always as identity primary key,
-        name text not null,
-        email text not null UNIQUE,
-        ticket VARCHAR(6) NOT NULL UNIQUE CHECK (char_length(ticket) = 6),
-        rank int not null unique check (rank between 1 and 7)
+-- Gagnants
+CREATE TABLE winners (
+                         id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                         name TEXT NOT NULL,
+                         email TEXT NOT NULL UNIQUE,
+                         ticket VARCHAR(6) NOT NULL UNIQUE CHECK (char_length(ticket) = 6),
+                         rank INT NOT NULL UNIQUE CHECK (rank BETWEEN 1 AND 7)
 );
 
-
--- Table pour stocker les clients à prévenir
-create table notifications (
-        id bigint generated always as identity primary key,
-        full_name text not null,
-        email text not null unique,
-        access_token uuid NOT NULL,
-        notified boolean default false
+-- Clients à notifier
+CREATE TABLE notifications (
+                               id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                               full_name TEXT NOT NULL,
+                               email TEXT NOT NULL UNIQUE,
+                               access_token UUID NOT NULL,
+                               notified BOOLEAN DEFAULT FALSE
 );
 
+-- =========================================
+-- TABLE DES NUMÉROS DE TICKETS DISPONIBLES
+-- =========================================
 
--- Table pour stocker les tickets à attribuer
 CREATE TABLE tickets_number (
-        id SERIAL PRIMARY KEY,
-        ticket_number VARCHAR(6) UNIQUE NOT NULL CHECK (char_length(ticket_number) = 6),
-        used BOOLEAN DEFAULT FALSE
+                                id SERIAL PRIMARY KEY,
+                                ticket_number VARCHAR(6) UNIQUE NOT NULL CHECK (char_length(ticket_number) = 6),
+                                used BOOLEAN DEFAULT FALSE
 );
 
 -- Index pour accélérer la recherche de tickets libres
 CREATE INDEX idx_tickets_used ON tickets_number (used);
 
--- Préremplir avec 900 000 tickets formatés à 6 caractères et mélangés
+-- Préremplissage avec 900 000 tickets aléatoires
 INSERT INTO tickets_number (ticket_number)
 SELECT LPAD(gs::text, 6, '0')
 FROM generate_series(100000, 999999) AS gs
 ORDER BY random();
 
+-- Clé étrangère : tickets achetés doivent exister dans tickets_number
+ALTER TABLE tickets
+    ADD CONSTRAINT fk_ticket_number FOREIGN KEY (ticket_number) REFERENCES tickets_number(ticket_number);
 
--- Contrainte pour éviter d’attribuer un ticket inexistant
-alter table tickets add constraint fk_ticket_number foreign key (ticket_number) references tickets_number(ticket_number);
+-- =========================================
+-- INDEX SUPPLÉMENTAIRES
+-- =========================================
+CREATE INDEX tickets_email_idx ON tickets(email);
+CREATE INDEX tickets_token_idx ON tickets(access_token);
+CREATE INDEX idx_notifications_notified ON notifications(notified);
 
-
--- Index pour accélérer les recherches par email
-create index tickets_email_idx on tickets(email);
-
--- Index pour accélérer les recherches par token
-create index tickets_token_idx on tickets(access_token);
-
--- Index pour optimiser les requêtes sur les utilisateurs non notifiés
-create index idx_notifications_notified on notifications(notified);
-
-
--- 🔹 Fonction RPC pour récupérer et verrouiller des tickets en toute sécurité
+-- =========================================
+-- FONCTION RPC : attribution sécurisée de tickets
+-- =========================================
 CREATE OR REPLACE FUNCTION get_and_mark_tickets(quantity INT)
 RETURNS TABLE(ticket_number VARCHAR(6)) AS $$
 BEGIN
-    RETURN QUERY
-        WITH selected AS (
-                SELECT tn.ticket_number AS tn_number
-                FROM tickets_number tn
-                WHERE tn.used = FALSE
-                LIMIT quantity
-                FOR UPDATE
-        )
-        UPDATE tickets_number tn
-        SET used = TRUE
-        WHERE tn.ticket_number IN (SELECT tn_number FROM selected)
-        RETURNING tn.ticket_number;
+RETURN QUERY
+    WITH selected AS (
+        SELECT tn.ticket_number AS tn_number
+        FROM tickets_number tn
+        WHERE tn.used = FALSE
+        LIMIT quantity
+        FOR UPDATE SKIP LOCKED
+    )
+UPDATE tickets_number tn
+SET used = TRUE
+WHERE tn.ticket_number IN (SELECT tn_number FROM selected)
+    RETURNING tn.ticket_number;
+END;
+$$ LANGUAGE plpgsql;
+
+-- =========================================
+-- FILE D’ATTENTE POUR LES EMAILS
+-- =========================================
+CREATE TABLE email_queue (
+                             id BIGSERIAL PRIMARY KEY,
+                             full_name TEXT NOT NULL,
+                             email TEXT NOT NULL,
+                             access_token UUID NOT NULL,
+                             ticket_numbers TEXT[] NOT NULL,
+                             status TEXT NOT NULL DEFAULT 'pending',  -- pending, processing, sent, failed
+                             retries INT NOT NULL DEFAULT 0,
+                             last_error TEXT,
+                             created_at TIMESTAMPTZ DEFAULT now(),
+                             updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX idx_email_queue_status ON email_queue(status);
+
+-- =========================================
+-- FONCTION RPC : récupérer et verrouiller des jobs email
+-- =========================================
+CREATE OR REPLACE FUNCTION fetch_and_mark_email_jobs(batch INT)
+RETURNS TABLE(
+    id BIGINT,
+    full_name TEXT,
+    email TEXT,
+    access_token UUID,
+    ticket_numbers TEXT[],
+    retries INT
+) AS $$
+BEGIN
+RETURN QUERY
+    WITH sel AS (
+        SELECT id
+        FROM email_queue
+        WHERE status = 'pending'
+        ORDER BY created_at
+        LIMIT batch
+        FOR UPDATE SKIP LOCKED
+    )
+UPDATE email_queue q
+SET status = 'processing', updated_at = now()
+    FROM sel
+WHERE q.id = sel.id
+    RETURNING q.id, q.full_name, q.email, q.access_token, q.ticket_numbers, q.retries;
 END;
 $$ LANGUAGE plpgsql;
