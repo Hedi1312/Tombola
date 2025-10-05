@@ -133,14 +133,14 @@ RETURNS TABLE(
 BEGIN
 RETURN QUERY
     WITH sel AS (
-        SELECT id
-        FROM email_queue
-        WHERE status = 'pending'
-        ORDER BY created_at
+        SELECT q.id
+        FROM email_queue q
+        WHERE q.status = 'pending'
+        ORDER BY q.created_at
         LIMIT batch
         FOR UPDATE SKIP LOCKED
     )
-UPDATE email_queue q
+UPDATE email_queue AS q
 SET status = 'processing', updated_at = now()
     FROM sel
 WHERE q.id = sel.id
