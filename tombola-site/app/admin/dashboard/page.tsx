@@ -20,7 +20,7 @@ export default function DashboardPage() {
         },
         {
             title: "Déterminer les gagnants",
-            description: "Choisir le nombre de gagnants et les ajouter",
+            description: "Choisir le nombre de gagnants, les ajouter et les notifier",
             icon: <Trophy className="h-8 w-8 text-yellow-500" />,
             onClick: () => router.push("/admin/choix-gagnant"),
         },

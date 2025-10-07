@@ -95,7 +95,7 @@ function CheckoutForm() {
                     type="number"
                     inputMode="numeric"
                     pattern="[0-9]*"
-                    placeholder="Nombre de tickets"
+                    placeholder="Nombre de tickets : 1 à 100"
                     min={1}
                     max={100}
                     value={tickets}

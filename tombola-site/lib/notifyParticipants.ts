@@ -12,7 +12,7 @@ export async function notifyParticipants() {
         return;
     }
 
-    const batchSize = 50;
+    const batchSize = 20;
 
     for (let i = 0; i < participants.length; i += batchSize) {
         const batch = participants.slice(i, i + batchSize);

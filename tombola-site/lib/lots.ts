@@ -95,10 +95,10 @@ export const PRIZES: Prize[] = [
     {
         id: 8,
         title: "Lot n°8",
-        description: "Sortie cinéma et détente",
+        description: "Agenda et détente",
         img: "/img/lots/lot8.png",
         items: [
-            { name: "Places de cinéma CGR", quantity: 2 },
+            { name: "Agenda spécial EJE", quantity: 1 },
             { name: "Balle anti-stress", quantity: 1 },
         ],
     },

@@ -25,8 +25,6 @@ export default function NotificationsForm({onClose,}: { onClose: () => void; }) 
                 setMessage("✅ Vous serez notifié(e) lors du tirage !");
                 setFullName("");
                 setEmail("");
-                // Fermer le modal automatiquement après 1.5 secondes
-                setTimeout(() => {onClose();}, 1800);
             } else {
                 setMessage(`❌ Erreur : ${data.error || "Merci de réessayer"}`);
             }

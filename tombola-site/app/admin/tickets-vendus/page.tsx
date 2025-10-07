@@ -218,7 +218,7 @@ export default function TicketsPage() {
                                         <td className="px-4 py-2">
                                             <button
                                                 onClick={() => openModal(ticket)}
-                                                className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
+                                                className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-white font-medium hover:bg-red-600 transition cursor-pointer"
                                             >
                                                 <Trash2 size={16} />
                                                 Supprimer
@@ -279,7 +279,7 @@ export default function TicketsPage() {
                     onCancel={() => setModalOpen(false)}
                     message={
                         selectedTicket
-                            ? `⚠️ Voulez-vous vraiment supprimer le ticket ? ID: ${selectedTicket!.id}, Numéro: ${selectedTicket!.ticket_number}, Email: ${selectedTicket!.email}`
+                            ? `⚠️ Voulez-vous vraiment supprimer le ticket ? ID: "${selectedTicket!.id}" - "${selectedTicket!.ticket_number}" - "${selectedTicket!.email}"`
                             : ""
                     }
                 />

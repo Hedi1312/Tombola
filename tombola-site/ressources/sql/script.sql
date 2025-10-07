@@ -17,36 +17,40 @@ DROP TABLE IF EXISTS tickets_number CASCADE;
 
 -- Tickets achetés
 CREATE TABLE tickets (
-                         id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                         email TEXT NOT NULL,
-                         full_name TEXT NOT NULL,
-                         ticket_number VARCHAR(6) NOT NULL UNIQUE CHECK (char_length(ticket_number) = 6),
-                         access_token UUID NOT NULL,
-                         created_at TIMESTAMPTZ DEFAULT now()
+            id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            email TEXT NOT NULL,
+            full_name TEXT NOT NULL,
+            ticket_number VARCHAR(6) NOT NULL UNIQUE CHECK (char_length(ticket_number) = 6),
+            access_token UUID NOT NULL,
+            created_at TIMESTAMPTZ DEFAULT now()
 );
 
--- Date du tirage
+-- Date du tirage (Par défaut le 17 novembre 2025 à 20h)
 CREATE TABLE draw_date (
-                           id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                           draw_date TIMESTAMP NOT NULL
+            id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            draw_date TIMESTAMP NOT NULL
 );
+
+INSERT INTO draw_date (draw_date) VALUES ('2025-11-17 20:00:00');
+
 
 -- Gagnants
 CREATE TABLE winners (
-                         id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                         name TEXT NOT NULL,
-                         email TEXT NOT NULL UNIQUE,
-                         ticket VARCHAR(6) NOT NULL UNIQUE CHECK (char_length(ticket) = 6),
-                         rank INT NOT NULL UNIQUE CHECK (rank BETWEEN 1 AND 7)
+            id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            ticket VARCHAR(6) NOT NULL UNIQUE CHECK (char_length(ticket) = 6),
+            rank INT NOT NULL UNIQUE,
+            notified BOOLEAN DEFAULT FALSE
 );
 
 -- Clients à notifier
 CREATE TABLE notifications (
-                               id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-                               full_name TEXT NOT NULL,
-                               email TEXT NOT NULL UNIQUE,
-                               access_token UUID NOT NULL,
-                               notified BOOLEAN DEFAULT FALSE
+            id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            full_name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            access_token UUID NOT NULL,
+            notified BOOLEAN DEFAULT FALSE
 );
 
 -- =========================================
@@ -54,9 +58,9 @@ CREATE TABLE notifications (
 -- =========================================
 
 CREATE TABLE tickets_number (
-                                id SERIAL PRIMARY KEY,
-                                ticket_number VARCHAR(6) UNIQUE NOT NULL CHECK (char_length(ticket_number) = 6),
-                                used BOOLEAN DEFAULT FALSE
+            id SERIAL PRIMARY KEY,
+            ticket_number VARCHAR(6) UNIQUE NOT NULL CHECK (char_length(ticket_number) = 6),
+            used BOOLEAN DEFAULT FALSE
 );
 
 -- Index pour accélérer la recherche de tickets libres
@@ -104,16 +108,16 @@ $$ LANGUAGE plpgsql;
 -- FILE D’ATTENTE POUR LES EMAILS
 -- =========================================
 CREATE TABLE email_queue (
-                             id BIGSERIAL PRIMARY KEY,
-                             full_name TEXT NOT NULL,
-                             email TEXT NOT NULL,
-                             access_token UUID NOT NULL,
-                             ticket_numbers TEXT[] NOT NULL,
-                             status TEXT NOT NULL DEFAULT 'pending',  -- pending, processing, sent, failed
-                             retries INT NOT NULL DEFAULT 0,
-                             last_error TEXT,
-                             created_at TIMESTAMPTZ DEFAULT now(),
-                             updated_at TIMESTAMPTZ DEFAULT now()
+            id BIGSERIAL PRIMARY KEY,
+            full_name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            access_token UUID NOT NULL,
+            ticket_numbers TEXT[] NOT NULL,
+            status TEXT NOT NULL DEFAULT 'pending',  -- pending, processing, sent, failed
+            retries INT NOT NULL DEFAULT 0,
+            last_error TEXT,
+            created_at TIMESTAMPTZ DEFAULT now(),
+            updated_at TIMESTAMPTZ DEFAULT now()
 );
 
 CREATE INDEX idx_email_queue_status ON email_queue(status);

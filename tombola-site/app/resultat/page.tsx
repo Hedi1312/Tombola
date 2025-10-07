@@ -114,7 +114,7 @@ export default function ResultatPage() {
                 <Confetti width={width} height={height} recycle={true} numberOfPieces={300} />
             )}
 
-            <div className="w-full max-w-lg bg-white rounded-3xl shadow-xl p-8 flex flex-col gap-6 text-center mb-12">
+            <div className="w-full max-w-3xl bg-white rounded-3xl shadow-xl p-8 flex flex-col gap-6 text-center mb-12">
                 <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 text-center">
                     🎉 Résultat de la Tombola
                 </h1>

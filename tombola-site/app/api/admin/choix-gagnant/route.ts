@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
-interface WinnerRow {
-    id: number;
+interface IncomingWinner {
     name: string;
     email: string;
     ticket: string;
-    rank: number;
 }
 
 
@@ -48,15 +46,21 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, error: "Liste de gagnants invalide" });
         }
 
+        // Récupérer les gagnants actuels
+        const { data: existingWinnersData, error: fetchError } = await supabaseAdmin
+            .from("winners")
+            .select("*");
 
-        // Récupérer tous les tickets une seule fois
+        if (fetchError) throw fetchError;
+
+        const existingWinners = existingWinnersData ?? [];
+
+        // --- 1️⃣ Récupération des tickets pour validation
         const tickets = await GET_Tickets();
 
-        // Vérifier que chaque gagnant correspond à une entrée dans "tickets"
-        // Vérifier que chaque gagnant correspond à une entrée dans "tickets"
         for (const w of winners) {
             const match = tickets.find(
-                t =>
+                (t) =>
                     t.ticket_number === w.ticket.trim() &&
                     t.full_name === w.name.trim() &&
                     t.email === w.email.trim()
@@ -70,38 +74,45 @@ export async function POST(req: NextRequest) {
             }
         }
 
-        // On supprime tous les anciens gagnants
-        await supabaseAdmin.from("winners").delete().neq("id", 0);
-
-        // On insère les nouveaux gagnants avec le rang correspondant
-        const newWinners: Omit<WinnerRow, "id">[] = winners.map(
-            (w: { name: string; email: string; ticket: string}, index: number) => ({
-                name: w.name || "",
-                email: w.email || "",
-                ticket: w.ticket,
-                rank: index + 1,
-            })
+        // --- 2️⃣ Déterminer les gagnants à supprimer
+        const incomingEmails = winners.map((w) => w.email);
+        const toDelete = existingWinners.filter(
+            (ew) => !incomingEmails.includes(ew.email)
         );
-        const { data, error } = await supabaseAdmin
-            .from("winners")
-            .insert(newWinners)
-            .select("*");
 
-        // Gestion des erreurs, notamment l'unicité sur l'email
-        if (error) {
-            // Code Postgres pour violation de contrainte UNIQUE
-            if (error.code === "23505") {
-                return NextResponse.json({
-                    success: false,
-                    error: "Un des emails correspond déjà à un vainqueur et ne peut pas être ajouté deux fois."
-                });
-            }
-            return NextResponse.json({ success: false, error: error.message });
+        if (toDelete.length > 0) {
+            await supabaseAdmin
+                .from("winners")
+                .delete()
+                .in(
+                    "email",
+                    toDelete.map((d) => d.email)
+                );
         }
 
+        // --- 3️⃣ Upsert (ajout ou mise à jour)
+        const formattedWinners = winners.map((w: IncomingWinner, index: number) => ({
+            name: w.name,
+            email: w.email,
+            ticket: w.ticket,
+            rank: index + 1,
+        }));
+
+        const { data, error: upsertError } = await supabaseAdmin
+            .from("winners")
+            .upsert(formattedWinners, { onConflict: "email" })
+            .select("*");
+
+        if (upsertError) {
+            return NextResponse.json({ success: false, error: upsertError.message });
+        }
+
+        // --- 4️⃣ Retourner la liste finale
         return NextResponse.json({ success: true, winners: data });
     } catch (err) {
         const errorMessage = err instanceof Error ? err.message : String(err);
         return NextResponse.json({ success: false, error: errorMessage });
     }
 }
+
+

@@ -8,6 +8,7 @@ interface Winner {
     name: string;
     email: string;
     ticket: string;
+    persisted?: boolean;
 }
 
 interface Ticket {
@@ -17,11 +18,67 @@ interface Ticket {
 }
 
 
+function ConfirmModal({
+          isOpen,
+          onConfirm,
+          onCancel,
+          message,
+    }: {
+        isOpen: boolean;
+        onConfirm: () => void;
+        onCancel: () => void;
+        message?: string;
+    }) {
+        if (!isOpen) return null;
+
+        return (
+            <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+                <div className="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full text-center">
+                    <p className="text-gray-800 mb-6">{message || "Êtes-vous sûr ?"}</p>
+                    <div className="flex justify-center gap-4">
+                        <button
+                            onClick={onConfirm}
+                            className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
+                        >
+                            <Trash2 size={16} />
+                            Supprimer
+                        </button>
+                        <button
+                            onClick={onCancel}
+                            className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition cursor-pointer"
+                        >
+                            Annuler
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+}
+
+
 export default function ChoixGagnantPage() {
     const router = useRouter();
+    const [allWinners, setAllWinners] = useState<Winner[]>([]);
     const [winners, setWinners] = useState<Winner[]>([]);
     const [message, setMessage] = useState<string>("");
-    const [winnerCount, setWinnerCount] = useState(0); // valeur par défaut 0 gagnants
+    const [winnerCount, setWinnerCount] = useState(""); // valeur par défaut du nombre de gagnants
+
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedWinnerIndex, setSelectedWinnerIndex] = useState<number | null>(null);
+
+
+    useEffect(() => {
+        if (modalOpen) {
+            document.body.style.overflow = "hidden"; // bloque le scroll
+        } else {
+            document.body.style.overflow = "auto"; // réactive le scroll
+        }
+
+        return () => {
+            document.body.style.overflow = "auto"; // nettoyage au cas où
+        };
+    }, [modalOpen]);
+
 
 
     useEffect(() => {
@@ -39,36 +96,59 @@ export default function ChoixGagnantPage() {
                     name: w.name,
                     email: w.email,
                     ticket: String(w.ticket).padStart(6, "0"),
+                    persisted: true,
                 }));
 
+                setAllWinners(existingWinners);
                 setWinners(existingWinners);
-                setWinnerCount(existingWinners.length);
+                setWinnerCount(existingWinners.length > 0 ? existingWinners.length.toString() : "");
+
             } else {
-                setWinners([
-                    { name: "", email: "", ticket: "" },
-                    { name: "", email:"", ticket: "" },
-                    { name: "", email:"", ticket: "" },
-                    { name: "", email:"", ticket: "" },
-                    { name: "", email:"", ticket: "" },
-                    { name: "", email:"", ticket: "" },
-                    { name: "", email:"", ticket: "" },
-                ]);
+                setWinners([]);   // Aucun gagnant, donc le tableau est vide
+                setWinnerCount("");
             }
+
         };
         fetchWinners();
     }, []);
 
-    const handleChange = (index: number, field: keyof Winner, value: string) => {
-        const newWinners = [...winners];
-        newWinners[index][field] = value;
-        setWinners(newWinners);
+    const handleChange = (
+        index: number,
+        field: Exclude<keyof Winner, "persisted">,
+        value: string
+    ) => {
+        const updatedVisible = [...winners];
+        updatedVisible[index][field] = value;
+        setWinners(updatedVisible);
+
+        const updatedAll = [...allWinners];
+        updatedAll[index] = updatedVisible[index];
+        setAllWinners(updatedAll);
     };
 
-    const handleDelete = (index: number) => {
-        const newWinners = winners.filter((_, i) => i !== index);
-        setWinners(newWinners);
-        setWinnerCount(newWinners.length);
+
+
+    const handleConfirmDelete = async (index: number) => {
+        const winnerToDelete = winners[index];
+
+        // Supprimer de allWinners
+        const updatedAll = allWinners.filter(w => w !== winnerToDelete);
+
+        // Supprimer du tableau visible
+        const updatedVisible = winners.filter((_, i) => i !== index);
+
+        setAllWinners(updatedAll);
+        setWinners(updatedVisible);
+        setWinnerCount(updatedVisible.length.toString());
+        setModalOpen(false);
+        setSelectedWinnerIndex(null);
+
+        // Sauvegarder avec le tableau à jour
+        await handleSave(updatedVisible);
     };
+
+
+
 
     // Tirage aléatoire
 
@@ -84,86 +164,152 @@ export default function ChoixGagnantPage() {
 
 
     const handleRandomize = async () => {
-        if (winnerCount <= 0) {
+        const count = parseInt(winnerCount, 10);
+
+        if (isNaN(count) || count <= 0) {
             setMessage("❌ Veuillez choisir un nombre de gagnants supérieur à 0.");
             return;
         }
 
         try {
-            // Récupérer tous les tickets
             const res = await fetch("/api/admin/tickets-vendus");
-            const data = await res.json();
+            const data: { success: boolean; tickets?: Ticket[] } = await res.json();
 
             if (!data.success || !data.tickets || data.tickets.length === 0) {
                 setMessage("❌ Aucun ticket disponible pour le tirage.");
                 return;
             }
 
-            // Mélanger les tickets aléatoirement
             const shuffled = shuffleArray(data.tickets);
 
-            // Sélectionner uniquement le nombre de gagnants souhaité
-            const selected = shuffled.slice(0, winnerCount) as Ticket[];
+            // 🧠 Exclure les tickets déjà enregistrés (persisted)
+            const usedTickets = new Set(
+                winners
+                    .filter((w) => w.persisted && w.ticket.trim() !== "")
+                    .map((w) => w.ticket.trim())
+            );
 
-            // Créer les gagnants
-            const newWinners = selected.map((t: Ticket) => ({
-                name: t.full_name,
-                email: t.email,
-                ticket: String(t.ticket_number).padStart(6, "0"),
-            }));
+            const availableTickets = shuffled.filter(
+                (t) => !usedTickets.has(String(t.ticket_number).padStart(6, "0"))
+            );
 
-            setWinners(newWinners);
-            setMessage(`✅ ${newWinners.length} gagnant(s) tiré(s) au hasard !`);
+            const updatedWinners = [...winners];
+            let nextTicketIndex = 0;
+
+            // 🧩 Étape 1 : Remplacer uniquement les champs non persistés ou vides
+            for (let i = 0; i < updatedWinners.length; i++) {
+                const w = updatedWinners[i];
+
+                // On ne touche pas à ceux déjà enregistrés
+                if (w.persisted) continue;
+
+                const isEmpty =
+                    w.name.trim() === "" &&
+                    w.email.trim() === "" &&
+                    w.ticket.trim() === "";
+
+                if ((isEmpty || !w.persisted) && nextTicketIndex < availableTickets.length) {
+                    const t = availableTickets[nextTicketIndex++];
+                    updatedWinners[i] = {
+                        name: t.full_name,
+                        email: t.email,
+                        ticket: String(t.ticket_number).padStart(6, "0"),
+                        persisted: false, // encore non enregistré
+                    };
+                }
+            }
+
+            // 🧩 Étape 2 : Ajouter des gagnants si la liste est trop courte
+            while (updatedWinners.length < count && nextTicketIndex < availableTickets.length) {
+                const t = availableTickets[nextTicketIndex++];
+                updatedWinners.push({
+                    name: t.full_name,
+                    email: t.email,
+                    ticket: String(t.ticket_number).padStart(6, "0"),
+                    persisted: false,
+                });
+            }
+
+            // Tronquer si nécessaire
+            if (updatedWinners.length > count) updatedWinners.length = count;
+
+            setWinners(updatedWinners);
+            setMessage("✅ Gagnants non encore enregistrés mis à jour !");
             window.scrollTo({ top: 0, behavior: "smooth" });
-
+            setTimeout(() => setMessage(""), 5000);
         } catch (err: unknown) {
             if (err instanceof Error) {
                 setMessage(`❌ Erreur lors du tirage : ${err.message}`);
             } else {
-                setMessage(`❌ Erreur lors du tirage : ${String(err)}`);
+                setMessage(`❌ Erreur inattendue`);
             }
         }
+
     };
 
 
 
+    async function handleNotifyWinners() {
+        try {
+            const res = await fetch("/api/admin/notifier-gagnant", { method: "POST" });
+            const data = await res.json();
 
-    const handleSave = async () => {
-        // Vérification des lignes
-        for (let i = 0; i < winners.length; i++) {
-            const w = winners[i];
+            if (!data.success) {
+                setMessage("❌ Les mails ont déjà été envoyés.");
+                return;
+            }
+            setMessage("✅ Emails envoyés avec succès !");
+            setTimeout(() => setMessage(""), 3000);
+        } catch (err) {
+            console.error("Erreur:", err);
+            setMessage(`❌ Erreur lors de l'envoi : ${err instanceof Error ? err.message : String(err)}`);
+        }
+    }
+
+
+    const handleSave = async (winnersToSave?: Winner[]) => {
+        const list = winnersToSave || winners; // utilise le tableau passé ou le state
+
+        // Vérifications...
+        for (let i = 0; i < list.length; i++) {
+            const w = list[i];
             if (w.name.trim() === "" || !/^\d{6}$/.test(w.ticket) || w.email.trim() === "") {
                 setMessage(`❌ Ligne ${i + 1} invalide : nom, email requis et ticket doit être exactement 6 chiffres.`);
-                window.scrollTo({ top: 0, behavior: "smooth" }); // ← scroll vers le haut
+                window.scrollTo({ top: 0, behavior: "smooth" });
                 return;
             }
         }
 
-        // Vérification de l'unicité des tickets
-        const tickets = winners.map((w) => w.ticket);
+        const tickets = list.map(w => w.ticket);
         const uniqueTickets = new Set(tickets);
         if (uniqueTickets.size !== tickets.length) {
             setMessage("❌ Chaque ticket doit être unique !");
-            window.scrollTo({ top: 0, behavior: "smooth" }); // ← scroll vers le haut
+            window.scrollTo({ top: 0, behavior: "smooth" });
             return;
         }
 
         const res = await fetch("/api/admin/choix-gagnant", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ winners }),
+            body: JSON.stringify({ winners: list }),
         });
 
         const data = await res.json();
         if (data.success) {
+            const persistedList = list.map(w => ({ ...w, persisted: true }));
+            setAllWinners(persistedList);
+            setWinners(persistedList);
             setMessage("✅ Gagnants mis à jour !");
-            window.scrollTo({ top: 0, behavior: "smooth" }); // ← scroll vers le haut
+            window.scrollTo({ top: 0, behavior: "smooth" });
             setTimeout(() => setMessage(""), 5000);
         } else {
             setMessage(`❌ Erreur : ${data.error}`);
-            window.scrollTo({ top: 0, behavior: "smooth" }); // ← scroll vers le haut
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
+
+
+
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
@@ -200,39 +346,60 @@ export default function ChoixGagnantPage() {
                         type="number"
                         inputMode="numeric"
                         pattern="[0-9]*"
+                        placeholder="0-100"
                         min={0}
+                        max={100}
                         value={winnerCount}
                         onChange={(e) => {
-                            const count = Number(e.target.value);
-                            setWinnerCount(count);
+                            const value = e.target.value;
+                            setWinnerCount(value);
 
-                            // Ajuster le tableau winners
-                            const newWinners = [...winners];
-                            if (newWinners.length < count) {
-                                while (newWinners.length < count) {
-                                    newWinners.push({ name: "", email: "", ticket: "" });
-                                }
-                            } else if (newWinners.length > count) {
-                                newWinners.length = count;
+                            let count = parseInt(value || "0", 10);
+                            if (isNaN(count) || count < 0) count = 0;
+                            if (count > 100) count = 100;
+
+                            const updatedAll = [...allWinners];
+
+                            // Si on veut plus de gagnants que ce qu'on a déjà, on en ajoute
+                            if (updatedAll.length < count) {
+                                while (updatedAll.length < count)
+                                    updatedAll.push({ name: "", email: "", ticket: "", persisted: false });
                             }
-                            setWinners(newWinners);
+
+                            // On garde toujours tout en mémoire
+                            setAllWinners(updatedAll);
+
+                            // On n'affiche que les "count" premiers
+                            setWinners(updatedAll.slice(0, count));
                         }}
+
                         className="w-16 rounded-lg border px-2 py-1"
                     />
+
                 </div>
 
-                <button
-                    onClick={handleRandomize}
-                    className="w-full rounded-lg bg-yellow-500 px-4 py-2 text-white font-medium hover:bg-yellow-600 transition mb-4 cursor-pointer"
-                >
-                    Tirer au sort les gagnants
-                </button>
+                <div className="flex flex-wrap gap-4 mt-4 mb-8">
+                    <button
+                        onClick={handleRandomize}
+                        className="flex-1 min-w-[200px] rounded-lg bg-yellow-500 px-4 py-2 text-white font-medium hover:bg-yellow-600 transition cursor-pointer"
+                    >
+                        Tirer au sort les gagnants
+                    </button>
+
+                    <button
+                        onClick={handleNotifyWinners}
+                        className="flex-1 min-w-[200px] rounded-lg bg-purple-600 px-4 py-2 text-white font-medium hover:bg-purple-700 transition cursor-pointer"
+                    >
+                        Envoyer les emails
+                    </button>
+                </div>
+
 
 
                 {winners.map((winner, index) => (
                     <div
                         key={index}
-                        className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-gray-700 w-full justify-between"
+                        className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-gray-700 w-full justify-between mb-6"
                     >
                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 flex-1">
                             <span className="font-bold">{index + 1}.</span>
@@ -242,7 +409,9 @@ export default function ChoixGagnantPage() {
                                 placeholder="Prénom NOM"
                                 value={winner.name}
                                 onChange={(e) => handleChange(index, "name", e.target.value)}
-                                className="w-full sm:w-48 rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                                className={`w-full sm:w-48 rounded-lg border px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 ${
+                                    winner.persisted ? "bg-gray-300 text-gray-500" : "bg-white"
+                                }`}
                             />
 
                             <input
@@ -250,7 +419,9 @@ export default function ChoixGagnantPage() {
                                 placeholder="Adresse mail"
                                 value={winner.email}
                                 onChange={(e) => handleChange(index, "email", e.target.value)}
-                                className="w-full sm:w-48 rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                                className={`w-full sm:w-48 rounded-lg border px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 ${
+                                    winner.persisted ? "bg-gray-300 text-gray-500" : "bg-white"
+                                }`}
                             />
 
                             <input
@@ -262,14 +433,20 @@ export default function ChoixGagnantPage() {
                                 onChange={(e) =>
                                     handleChange(index, "ticket", e.target.value.replace(/\D/g, ""))
                                 }
-                                className="w-full sm:w-32 rounded-lg border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500"
+                                className={`w-full sm:w-32 rounded-lg border border px-3 py-2 focus:border-indigo-500 focus:ring-indigo-500 ${
+                                    winner.persisted ? "bg-gray-300 text-gray-500" : "bg-white text-gray-800"
+                                }`}
+
                                 maxLength={6}
                             />
                         </div>
 
                         <button
-                            onClick={() => handleDelete(index)}
-                            className="flex items-center gap-1 rounded-lg bg-red-500 w-auto shrink-0 px-3 py-1.5 text-sm text-white hover:bg-red-600 transition self-end sm:self-auto mt-2 sm:mt-0 cursor-pointer"
+                            onClick={() => {
+                                setSelectedWinnerIndex(index);
+                                setModalOpen(true);
+                            }}
+                            className="flex items-center gap-1 rounded-lg bg-red-600 w-auto shrink-0 px-3 py-1.5 text-sm text-white hover:bg-red-700 transition self-end sm:self-auto mt-2 sm:mt-0 cursor-pointer"
                         >
                             <Trash2 size={16} />
                             Supprimer
@@ -277,12 +454,30 @@ export default function ChoixGagnantPage() {
                     </div>
                 ))}
 
+
+
                 <button
-                    onClick={handleSave}
-                    className="w-full rounded-lg bg-green-600 px-4 py-2 text-white font-medium hover:bg-green-700 transition cursor-pointer"
+                    onClick={() => handleSave()}
+                    className="w-full rounded-lg bg-green-600 px-4 py-2 text-white font-medium hover:bg-green-700 transition cursor-pointer mt-2"
                 >
                     Enregistrer les gagnants
                 </button>
+
+                <ConfirmModal
+                    isOpen={modalOpen && selectedWinnerIndex !== null}
+                    onConfirm={() => {
+                        if (selectedWinnerIndex !== null) handleConfirmDelete(selectedWinnerIndex);
+                    }}
+                    onCancel={() => setModalOpen(false)}
+                    message={
+                        selectedWinnerIndex !== null
+                            ? `⚠️ Supprimer le gagnant "${winners[selectedWinnerIndex].name}" - "${winners[selectedWinnerIndex].ticket}" - "${winners[selectedWinnerIndex].email}" ?`
+                            : ""
+                    }
+                />
+
+
+
             </div>
         </section>
     );
