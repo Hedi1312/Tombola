@@ -10,21 +10,18 @@ export async function GET(req: Request) {
 
     try {
         // 🔹 Débloquer les jobs en "processing"
-        const MAX_RETRIES = 5;
         await supabaseAdmin
             .from("email_queue")
             .update({ status: "pending" })
             .eq("status", "processing")
-            .lt("retries", MAX_RETRIES);
 
-        // 🔹 Lancer le traitement des emails
-        processEmailJobs()
-            .then((count) => console.log(`✅ ${count} emails traités en background`))
-            .catch((err) => console.error("❌ Erreur background :", err));
+        // 🔹 Lancer le traitement des emails et attendre la fin
+        const count = await processEmailJobs();
+        console.log(`✅ ${count} emails traités`);
 
-        return new Response("Cron lancé avec succès", { status: 200 });
+        return new Response(`Cron terminé, ${count} emails traités`, { status: 200 });
     } catch (err) {
-        console.error(err);
+        console.error("❌ Erreur cron :", err);
         return new Response("Internal Server Error", { status: 500 });
     }
 }

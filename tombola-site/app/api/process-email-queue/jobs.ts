@@ -65,7 +65,23 @@ export async function processEmailJobs() {
                     </div>
                   `;
 
-            await sendEmail(email, "🎟️ Vos tickets de tombola", htmlContent, undefined, attachments);
+
+            console.log(`Envoi email à ${email} avec ${ticket_numbers.length} tickets`);
+
+
+            try {
+                await sendEmail(email, "🎟️ Vos tickets de tombola", htmlContent, undefined, attachments);
+            } catch (err) {
+                console.error(`Erreur envoi mail à ${email} :`, err);
+                await supabaseAdmin.from("email_queue").update({
+                    status: retries + 1 >= MAX_RETRIES ? "failed" : "pending",
+                    retries: retries + 1,
+                    last_error: err instanceof Error ? err.message : String(err),
+                    updated_at: new Date(),
+                }).eq("id", id);
+                continue; // passe au job suivant
+            }
+
 
             await supabaseAdmin.from("email_queue").update({
                 status: "sent",
