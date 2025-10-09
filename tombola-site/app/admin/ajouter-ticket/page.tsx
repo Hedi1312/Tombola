@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CirclePlus, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function AddTicketForm() {
@@ -51,9 +51,12 @@ export default function AddTicketForm() {
 
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 w-full">
-                    <h1 className="text-2xl font-bold text-gray-800 text-center md:text-left">
-                        🎟️ Ajouter des tickets
-                    </h1>
+                    <div className="flex items-center space-x-3">
+                        <CirclePlus className="h-8 w-8 text-green-600" />
+                        <h1 className="text-2xl font-bold text-gray-800">
+                            Ajouter des tickets
+                        </h1>
+                    </div>
 
                     <button
                         onClick={() => router.push("/admin/dashboard")}
@@ -130,8 +133,9 @@ export default function AddTicketForm() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full max-w-xs bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition cursor-pointer"
+                        className="flex-1 min-w-[200px] flex items-center justify-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-white font-medium hover:bg-green-800 shadow-sm hover:shadow-md transition cursor-pointer mt-4 mb-12"
                     >
+                        <Save size={18} />
                         {loading ? "Création..." : "Créer les tickets"}
                     </button>
                 </form>

@@ -1,5 +1,7 @@
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 import { sendEmail } from "@/lib/email";
+import { generateTicketImage } from "@/lib/generateTicketImage";
+
 
 export async function notifyWinners() {
     const { data: winners, error } = await supabaseAdmin
@@ -9,7 +11,6 @@ export async function notifyWinners() {
 
     if (error) {
         throw new Error("Erreur récupération gagnants");
-        return;
     }
 
     if (!winners || winners.length === 0) {
@@ -18,11 +19,21 @@ export async function notifyWinners() {
 
     for (const winner of winners) {
         try {
+            // Générer les pièces jointes pour les tickets
+            const attachments = await Promise.all(
+                winner.ticket.split(",").map(async (num: string) => ({
+                    filename: `ticket-${num}.png`,
+                    content: await generateTicketImage(num.trim()),
+                    contentType: "image/png",
+                    cid: `ticket-${num}@tombola`,
+                }))
+            );
+
+            // Construire le contenu HTML complet
             const htmlContent = `
                 <div style="font-family: Arial, sans-serif; text-align: center; background-color: #f7f7f7; padding: 50px 20px;">
                     <h1 style="margin-bottom: 40px;">
-                        <a href="${process.env.NEXT_PUBLIC_URL}" 
-                        style="text-decoration: none; color: #000;">
+                        <a href="${process.env.NEXT_PUBLIC_URL}" style="text-decoration: none; color: #000;">
                         🎟️ Marocola
                         </a>
                     </h1>
@@ -36,12 +47,27 @@ export async function notifyWinners() {
                     </p>
 
                     <p style="margin-top: 20px; font-size: 18px;">
-                        Votre ticket gagnant : <strong>${winner.ticket}</strong>
+                        Vos tickets gagnants : <strong>${winner.ticket}</strong>
                     </p>
 
+                    <table align="center" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 600px; margin-bottom: 24px;">
+                        <tr>
+                            ${winner.ticket
+                .split(",")
+                .map(
+                    (num: string, idx: number) => `
+                                <td align="center" valign="top" style="padding: 8px; width: 50%;">
+                                    <img src="cid:ticket-${num}@tombola" alt="Ticket ${num}" style="width: 100%; max-width: 288px; height: auto; display: block;" />
+                                </td>
+                                ${idx % 2 === 1 ? "</tr><tr>" : ""}
+                            `
+                )
+                .join("")}
+                        </tr>
+                    </table>
+
                     <p style="margin-top: 30px;">
-                        <a href="${process.env.NEXT_PUBLIC_URL}/resultat"
-                        style="display: inline-block; background-color: #3498db; color: #fff; padding: 14px 26px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
+                        <a href="${process.env.NEXT_PUBLIC_URL}/resultat" style="display: inline-block; background-color: #3498db; color: #fff; padding: 14px 26px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
                         Voir les résultats complets 🏆
                         </a>
                     </p>
@@ -54,8 +80,10 @@ export async function notifyWinners() {
 
             await sendEmail(
                 winner.email,
-                "🎉 Félicitations — Vous êtes l'un des gagnant du tirage Marocola !",
-                htmlContent
+                "🎉 Félicitations — Vous êtes l'un des gagnants du tirage Marocola !",
+                htmlContent,
+                undefined,
+                attachments
             );
 
             await supabaseAdmin
@@ -68,4 +96,6 @@ export async function notifyWinners() {
             console.error(`Erreur envoi email à ${winner.email} :`, err);
         }
     }
+
+    return winners.length;
 }

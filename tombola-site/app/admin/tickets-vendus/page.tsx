@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Ticket, ArrowLeft, Search, Trash2 } from "lucide-react";
+import { Ticket, ArrowLeft, Search, Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface TicketData {
@@ -36,13 +36,14 @@ function ConfirmModal({
                         onClick={onConfirm}
                         className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
                     >
-                        <Trash2 size={16} />
+                        <Trash2 size={18} />
                         Supprimer
                     </button>
                     <button
                         onClick={onCancel}
                         className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition cursor-pointer"
                     >
+                        <X size={18} />
                         Annuler
                     </button>
                 </div>
@@ -135,7 +136,7 @@ export default function TicketsPage() {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                     <div className="flex items-center space-x-3">
-                        <Ticket className="h-8 w-8 text-green-600" />
+                        <Ticket className="h-8 w-8 text-red-500" />
                         <h1 className="text-2xl font-bold text-gray-800">
                             Tickets vendus{" "}
                             <span className="text-indigo-600">({filteredTickets.length}/{tickets.length})</span>
@@ -187,7 +188,7 @@ export default function TicketsPage() {
                 ) : (
                     <>
                         {/* Table Desktop */}
-                        <div className="hidden sm:block overflow-x-auto">
+                        <div className="hidden sm:block overflow-x-auto mb-4">
                             <table className="w-full border-collapse rounded-lg shadow text-gray-700">
                                 <thead className="bg-gray-100 text-left">
                                 <tr>

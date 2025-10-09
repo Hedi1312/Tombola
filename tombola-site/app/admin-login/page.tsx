@@ -39,7 +39,7 @@ export default function LoginPage() {
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
             <div className="w-full max-w-sm mx-auto rounded-2xl bg-white p-8 shadow-md mb-12">
-                <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">Connexion Admin</h1>
+                <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">👨🏻‍💻 Connexion Admin</h1>
 
                 {error && <p className="mb-4 rounded-lg bg-red-100 p-2 text-center text-red-600">{error}</p>}
 

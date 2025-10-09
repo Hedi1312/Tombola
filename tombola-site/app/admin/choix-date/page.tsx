@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {ArrowLeft} from "lucide-react";
+import {ArrowLeft, CalendarDays, Save} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function ChoixDatePage() {
@@ -62,6 +62,7 @@ export default function ChoixDatePage() {
                 hour12: false,
             })
             setMessage(`✅ Date du tirage mise à jour : ${formattedDate.replace(" ", " à ")}`);
+            setTimeout(() => setMessage(""), 5000);
         } else {
             setMessage(`❌ Erreur : ${data.error}`);
         }
@@ -69,12 +70,15 @@ export default function ChoixDatePage() {
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
-            <div className="w-full max-w-md rounded-2xl bg-white p-12 shadow-md mb-12">
+            <div className="w-full max-w-xl rounded-2xl bg-white p-12 shadow-md mb-12">
 
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-3 mb-6 w-full">
-                    <h1 className="text-2xl font-bold text-gray-800 text-center md:text-left">
-                        Choisir la date du tirage
-                    </h1>
+                    <div className="flex items-center space-x-3">
+                        <CalendarDays className="h-8 w-8 text-indigo-600" />
+                        <h1 className="text-2xl font-bold text-gray-800">
+                            Choisir la date du tirage
+                        </h1>
+                    </div>
 
                     <button
                         onClick={() => router.push("/admin/dashboard")}
@@ -102,15 +106,17 @@ export default function ChoixDatePage() {
                     type="datetime-local"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-indigo-500 focus:ring-indigo-500 mb-4 mt-5"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-3 text-gray-700 focus:border-indigo-500 focus:ring-indigo-500 mb-6 mt-6 cursor-pointer"
                 />
 
                 <button
-                    onClick={handleSave}
-                    className="w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 cursor-pointer"
+                    onClick={() => handleSave()}
+                    className="w-full flex items-center justify-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-white font-medium hover:bg-green-800 shadow-sm hover:shadow-md cursor-pointer mt-2"
                 >
-                    Enregistrer
+                    <Save size={18} />
+                    Enregistrer les gagnants
                 </button>
+
             </div>
         </section>
     );

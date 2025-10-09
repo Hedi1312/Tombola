@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { IoIosSend } from "react-icons/io";
+import { MailQuestionMark, Send } from "lucide-react";
 
 export default function Contact() {
     const [name, setName] = useState("");
@@ -43,10 +43,15 @@ export default function Contact() {
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
             <div className="w-full max-w-lg sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-8 flex flex-col gap-6 mb-12">
-                <h2 className="text-3xl font-extrabold text-gray-800 text-center mb-6">
-                    Contact / Support
-                </h2>
-                <p className="text-center text-gray-700 mb-6">
+                <div className="flex items-center justify-center space-x-6">
+                    <MailQuestionMark className="h-10 w-10 text-red-800" />
+                    <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800">
+                        Contact / Support
+                    </h1>
+                </div>
+
+
+                <p className="text-center text-gray-700 mt-6 mb-6">
                     Vous avez une question ou besoin d&apos;aide ? Envoyez-nous un message et nous vous répondrons rapidement.
                 </p>
 
@@ -94,15 +99,15 @@ export default function Contact() {
 
                     <button
                         type="submit"
-                        className="bg-blue-600 transition hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
+                        className="bg-blue-600 transition hover:bg-blue-700 text-white font-bold py-3 px-6 mb-6 mt-8 rounded-lg disabled:opacity-50 cursor-pointer flex items-center justify-center gap-2"
                         disabled={status === "loading"}
                     >
                         {status === "loading" ? (
                             "Envoi..."
                         ) : (
                             <>
+                                <Send className="text-white" size={20} />
                                 Envoyer
-                                <IoIosSend className="text-white" size={24} />
                             </>
                         )}
                     </button>

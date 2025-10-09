@@ -5,6 +5,7 @@ import Confetti from "react-confetti";
 import TicketCard from "@/app/components/TicketCard";
 import { useWindowSize } from "react-use";
 import { HiOutlineBellAlert } from "react-icons/hi2";
+import { GiTrophy } from 'react-icons/gi';
 import NotificationsForm from "@/app/components/NotificationsForm";
 
 interface Winner {
@@ -115,9 +116,12 @@ export default function ResultatPage() {
             )}
 
             <div className="w-full max-w-3xl bg-white rounded-3xl shadow-xl p-8 flex flex-col gap-6 text-center mb-12">
-                <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 text-center">
-                    🎉 Résultat de la Tombola
-                </h1>
+                <div className="flex items-center justify-center space-x-6">
+                    <GiTrophy className="h-10 w-10 text-yellow-500" />
+                    <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 text-center">
+                        Résultat de la Tombola
+                    </h1>
+                </div>
 
 
                 <div className="mt-5 mb-8">

@@ -23,7 +23,7 @@ export const sendEmail = async (
     replyTo?: string
 ) => {
     await transporter.sendMail({
-        from: `"🎟️ Marocola" <${process.env.GMAIL_USER}>`,
+        from: `"Marocola" <${process.env.GMAIL_USER}>`,
         to,
         subject,
         html,

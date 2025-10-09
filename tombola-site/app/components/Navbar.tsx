@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import {FaHome, FaTiktok, FaUserShield, FaDonate, FaGifts, FaShoppingBasket } from "react-icons/fa";
+import {FaHome, FaTiktok, FaUserShield, FaMoneyBillWave, FaGifts } from "react-icons/fa";
 import { MailQuestionMark } from 'lucide-react';
 import { GiTrophy } from 'react-icons/gi';
 import { FiMenu, FiX } from "react-icons/fi";
@@ -47,10 +47,9 @@ export default function Navbar() {
                 {/* Menu desktop */}
                 <div className="hidden md:flex gap-6">
                     <Link href="/" className="text-gray-600 hover:text-gray-700 transition"><FaHome size={32} /></Link>
-                    <Link href="/acheter" className="text-gray-600 hover:text-gray-700 transition"><FaShoppingBasket size={30} /></Link>
                     <Link href="/lot-a-gagner" className="text-gray-600 hover:text-gray-700 transition"><FaGifts  size={30} /></Link>
                     <Link href="/resultat" className="text-gray-600 hover:text-gray-700 transition"><GiTrophy  size={30} /></Link>
-                    <Link href="/cagnotte" className="text-gray-600 hover:text-gray-700 transition"><FaDonate size={30} /></Link>
+                    <Link href="/cagnotte" className="text-gray-600 hover:text-gray-700 transition"><FaMoneyBillWave size={30} /></Link>
                     <Link href="/tiktok" className="text-gray-600 hover:text-gray-700 transition"><FaTiktok size={30} /></Link>
                     <Link href="/contact" className="text-gray-600 hover:text-gray-700 transition"><MailQuestionMark size={32} /></Link>
                     <button
@@ -99,10 +98,9 @@ export default function Navbar() {
 
                     <div className="md:hidden px-6 pt-2 pb-6 grid grid-cols-4 gap-8 text-center">
                         <Link href="/" className="text-gray-700" onClick={handleLinkClick}><FaHome size={36} /></Link>
-                        <Link href="/acheter" className="text-gray-700" onClick={handleLinkClick}><FaShoppingBasket size={36} /></Link>
                         <Link href="/lot-a-gagner" className="text-gray-700" onClick={handleLinkClick}><FaGifts size={36} /></Link>
                         <Link href="/resultat" className="text-gray-700" onClick={handleLinkClick}><GiTrophy size={36} /></Link>
-                        <Link href="/cagnotte" className="text-gray-700" onClick={handleLinkClick}><FaDonate size={36} /></Link>
+                        <Link href="/cagnotte" className="text-gray-700" onClick={handleLinkClick}><FaMoneyBillWave size={36} /></Link>
                         <Link href="/tiktok" className="text-gray-700" onClick={handleLinkClick}><FaTiktok size={36} /></Link>
                         <Link href="/contact" className="text-gray-700" onClick={handleLinkClick}><MailQuestionMark size={38} /></Link>
                         <button onClick={() => {handleAdminClick();handleLinkClick();}} className="text-gray-700 text-left"><FaUserShield size={38} /></button>

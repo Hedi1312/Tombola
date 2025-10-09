@@ -3,6 +3,7 @@
 import Image from "next/image";
 import React, { useState } from "react";
 import { PRIZES, Prize } from "@/lib/lots";
+import { FaGifts } from "react-icons/fa";
 
 export default function LotAGagnerPage() {
     const [selected, setSelected] = useState<Prize | null>(null);
@@ -11,9 +12,10 @@ export default function LotAGagnerPage() {
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50 relative overflow-hidden">
             <div className="w-full max-w-7xl bg-white rounded-3xl shadow-xl p-6 md:p-10 mx-auto mb-12 text-gray-700">
                 {/* Header */}
-                <div className="flex justify-center mb-20">
+                <div className="flex items-center justify-center space-x-6 mb-20">
+                    <FaGifts className="h-10 w-10 text-red-800" />
                     <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 text-center">
-                        🎟️ Lots à gagner
+                        Lots à gagner
                     </h1>
                 </div>
 
