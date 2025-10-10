@@ -129,7 +129,7 @@ export default function AddTicketForm() {
                                     type="number"
                                     inputMode="numeric"
                                     pattern="[0-9]*"
-                                    placeholder="Nombre de tickets"
+                                    placeholder="1-100"
                                     value={quantity}
                                     onChange={(e) => setQuantity(e.target.value)}
                                     onBlur={() => {
@@ -141,7 +141,7 @@ export default function AddTicketForm() {
                                     min={1}
                                     max={100}
                                     required
-                                    className="border rounded-lg px-3 py-2 w-24 text-center"
+                                    className="border rounded-lg px-3 py-2 w-24 text-center font-bold"
                                 />
 
                                 {/* Bouton + */}
@@ -164,8 +164,6 @@ export default function AddTicketForm() {
                             </p>
                         </div>
                     </div>
-
-
 
 
                     <button

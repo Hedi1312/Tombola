@@ -50,7 +50,7 @@ export default function DashboardPage() {
             <div className="mx-auto max-w-5xl w-full mb-12">
                 {/* Titre + bouton logout */}
                 <div className="flex flex-col items-center lg:flex-row lg:justify-center lg:gap-4 mb-10 w-full relative">
-                    <h1 className="text-4xl font-bold text-gray-800 text-center">
+                    <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 text-center">
                         👨🏻‍💻 Espace Admin
                     </h1>
                     <button

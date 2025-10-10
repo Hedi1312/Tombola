@@ -10,7 +10,7 @@ export default function LotAGagnerPage() {
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50 relative overflow-hidden">
-            <div className="w-full max-w-7xl bg-white rounded-3xl shadow-xl p-6 md:p-10 mx-auto mb-12 text-gray-700">
+            <div className="w-full max-w-7xl bg-white rounded-3xl shadow-xl p-8 mx-auto mb-12 text-gray-700">
                 {/* Header */}
                 <div className="flex items-center justify-center space-x-6 mb-20">
                     <FaGifts className="h-10 w-10 text-red-800" />

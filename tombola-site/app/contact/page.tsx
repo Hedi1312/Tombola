@@ -51,7 +51,7 @@ export default function Contact() {
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
-            <div className="w-full max-w-lg bg-white rounded-3xl shadow-xl p-8 flex flex-col gap-6 mb-12">
+            <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-8 flex flex-col gap-6 mb-12">
                 <div className="flex items-center justify-center space-x-6">
                     <MailQuestionMark className="h-10 w-10 text-red-800" />
                     <h1 className="text-3xl font-extrabold text-gray-800">Contact / Support</h1>

@@ -38,12 +38,13 @@ export default function LoginPage() {
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
-            <div className="w-full max-w-sm mx-auto rounded-2xl bg-white p-8 shadow-md mb-12">
-                <h1 className="mb-6 text-center text-2xl font-bold text-gray-800">👨🏻‍💻 Connexion Admin</h1>
+            <div className="w-full max-w-xl mx-auto rounded-2xl bg-white p-8 shadow-md mb-12">
 
-                {error && <p className="mb-4 rounded-lg bg-red-100 p-2 text-center text-red-600">{error}</p>}
+                <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 text-center ">👨🏻‍💻 Connexion Admin</h1>
 
-                <form onSubmit={handleLogin} className="space-y-4 text-gray-700">
+                {error && <p className="mb-4 mt-10 rounded-lg bg-red-100 p-2 text-center text-red-600">{error}</p>}
+
+                <form onSubmit={handleLogin} className="space-y-4 text-gray-700 mt-12 max-w-sm mx-auto">
                     <div>
                         <label className="block text-sm font-medium">Mot de passe</label>
                         <input
@@ -59,7 +60,7 @@ export default function LoginPage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
+                        className="w-full rounded-lg bg-blue-600 px-4 py-2 mt-4 mb-2 font-medium text-white transition hover:bg-blue-700 disabled:opacity-50 cursor-pointer"
                     >
                         {loading ? "Connexion..." : "Se connecter"}
                     </button>

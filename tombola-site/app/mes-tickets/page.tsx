@@ -43,8 +43,8 @@ export default function MesTickets() {
 
         let elapsedTime = 0;
         const pollingInterval = 2000; // toutes les 2 secondes
-        const minDelay = 1000; // délai minimum 3 secondes
-        const maxTime = 60000; // 30 secondes maximum
+        const minDelay = 3000; // délai minimum 3 secondes
+        const maxTime = 15000; // 15 secondes maximum
 
         const startTime = Date.now();
 
