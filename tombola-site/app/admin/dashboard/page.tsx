@@ -20,15 +20,15 @@ export default function DashboardPage() {
         },
         {
             title: "Déterminer les gagnants",
-            description: "Choisir le nombre de gagnants, les ajouter et les notifier",
+            description: "Choisir le nombre de gagnants, les ajouter aléatoirement et leur envoyer un email",
             icon: <Trophy className="h-8 w-8 text-yellow-500" />,
             onClick: () => router.push("/admin/choix-gagnant"),
         },
         {
-            title: "Ajouter des tickets",
-            description: "Ajouter des tickets à partir des infos de l'acheteur",
+            title: "Créer des tickets",
+            description: "Créer des tickets à partir des infos de l'acheteur",
             icon: <CirclePlus className="h-8 w-8 text-green-600" />,
-            onClick: () => router.push("/admin/ajouter-ticket"),
+            onClick: () => router.push("/admin/creer-ticket"),
         },
         {
             title: "Changer la date du tirage",
@@ -38,7 +38,7 @@ export default function DashboardPage() {
         },
         {
             title: "Prévenir les participants",
-            description: "Prévenir les participants inscrits que le tirage a eu lieu",
+            description: "Envoyer un email aux participants inscrits que le tirage a eu lieu",
             icon: <BellRing className="h-8 w-8 text-yellow-500" />,
             onClick: () => router.push("/admin/envoyer-notifications"),
         },

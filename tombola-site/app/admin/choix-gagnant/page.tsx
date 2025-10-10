@@ -428,7 +428,7 @@ export default function ChoixGagnantPage() {
                         className="flex-1 min-w-[200px] flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 shadow-sm hover:shadow-md transition cursor-pointer"
                     >
                         <Send size={18} />
-                        {loadingNotify ? "Envoi en cours..." : "Envoyer emails aux gagnants"}
+                        {loadingNotify ? "Envoi en cours..." : "Envoyer les emails aux gagnants"}
                     </button>
                 </div>
 
@@ -487,7 +487,7 @@ export default function ChoixGagnantPage() {
                                 setSelectedWinnerIndex(index);
                                 setModalOpen(true);
                             }}
-                            className="flex items-center justify-center bg-red-600 text-white rounded-lg px-3 py-2 hover:bg-red-700 transition h-full shrink-0 cursor-pointer"
+                            className="flex items-center justify-center bg-red-600 text-white rounded-lg px-3 py-2 hover:bg-red-700 transition h-full shrink-0 cursor-pointer gap-2"
                         >
                             <Trash2 size={16} />
                             Supprimer

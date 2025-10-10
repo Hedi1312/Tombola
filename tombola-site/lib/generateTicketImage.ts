@@ -27,7 +27,7 @@ export async function generateTicketImage(ticketNumber: string): Promise<Buffer>
 
 
     // Position verticale (un peu au-dessus du bas)
-    const marginBottom = baseImage.height * 0.255;
+    const marginBottom = baseImage.height * 0.257;
     const y = baseImage.height - marginBottom;
 
     // Dessiner le numéro centré
