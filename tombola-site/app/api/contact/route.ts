@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Préparation des pièces jointes
-        let attachments = [];
+        const attachments = [];
         if (file) {
             const bytes = await file.arrayBuffer();
             const buffer = Buffer.from(bytes);
