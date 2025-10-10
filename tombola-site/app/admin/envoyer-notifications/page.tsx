@@ -101,7 +101,7 @@ export default function NotificationsAdminPage() {
                 <button
                     onClick={handleNotifyAll}
                     disabled={loadingNotify}
-                    className="mb-4 mt-10 rounded-lg bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-700 transition cursor-pointer flex items-center justify-center gap-2"
+                    className="mb-4 mt-10 rounded-lg bg-indigo-600 text-white px-4 py-2 hover:bg-indigo-700 transition cursor-pointer flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                     <Send size={18} />
                     {loadingNotify ? "Envoi en cours..." : "Envoyer les emails aux participants"}

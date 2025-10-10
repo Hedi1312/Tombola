@@ -3,13 +3,18 @@ import { sendEmail } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
     try {
-        const { name, email, message } = await req.json();
+        // Utilisation de formData (et non JSON)
+        const formData = await req.formData();
+        const name = formData.get("name") as string;
+        const email = formData.get("email") as string;
+        const message = formData.get("message") as string;
+        const file = formData.get("file") as File | null;
 
+        // Validation
         if (!name || !email || !message) {
             return NextResponse.json({ success: false, error: "Tous les champs sont requis." }, { status: 400 });
         }
 
-        // Vérifie que la variable d'environnement est définie
         const supportEmail = process.env.GMAIL_USER;
         if (!supportEmail) {
             console.error("❌ GMAIL_USER non défini !");
@@ -19,8 +24,19 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        // Préparation des pièces jointes
+        let attachments = [];
+        if (file) {
+            const bytes = await file.arrayBuffer();
+            const buffer = Buffer.from(bytes);
 
-        // Envoyer du mail
+            attachments.push({
+                filename: file.name,
+                content: buffer,
+            });
+        }
+
+        // Envoi de l'email
         try {
             await sendEmail(
                 supportEmail,
@@ -28,10 +44,10 @@ export async function POST(req: NextRequest) {
                 `<p><strong>Nom :</strong> ${name}</p>
                 <p><strong>Email :</strong> ${email}</p>
                 <p><strong>Message :</strong></p>
-                <p>${message}</p>`, // contenu HTML
-                undefined,  // version texte (optionnel)
-                undefined, // attachments (optionnel)
-                email  // replyTo : adresse de l’expéditeur
+                <p>${message}</p>`,
+                undefined,
+                attachments,
+                email
             );
 
             return NextResponse.json({ success: true });

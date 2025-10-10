@@ -114,7 +114,7 @@ export default function ChoixDatePage() {
                     className="w-full flex items-center justify-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-white font-medium hover:bg-green-800 shadow-sm hover:shadow-md cursor-pointer mt-2"
                 >
                     <Save size={18} />
-                    Enregistrer les gagnants
+                    Enregistrer la date
                 </button>
 
             </div>

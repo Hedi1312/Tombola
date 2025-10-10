@@ -43,15 +43,15 @@ export default function LoginPage() {
 
                 {error && <p className="mb-4 rounded-lg bg-red-100 p-2 text-center text-red-600">{error}</p>}
 
-                <form onSubmit={handleLogin} className="space-y-4">
+                <form onSubmit={handleLogin} className="space-y-4 text-gray-700">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Mot de passe</label>
+                        <label className="block text-sm font-medium">Mot de passe</label>
                         <input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
-                            className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:border-indigo-500 focus:ring-indigo-500"
+                            className="mt-1 w-full rounded-lg border px-3 py-2 text-gray-700 focus:border-indigo-500 focus:ring-indigo-500"
                             placeholder="********"
                         />
                     </div>

@@ -425,7 +425,7 @@ export default function ChoixGagnantPage() {
                     <button
                         onClick={handleNotifyWinners}
                         disabled={loadingNotify}
-                        className="flex-1 min-w-[200px] flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 shadow-sm hover:shadow-md transition cursor-pointer"
+                        className="flex-1 min-w-[200px] flex items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 shadow-sm hover:shadow-md transition cursor-pointer disabled:opacity-50"
                     >
                         <Send size={18} />
                         {loadingNotify ? "Envoi en cours..." : "Envoyer les emails aux gagnants"}

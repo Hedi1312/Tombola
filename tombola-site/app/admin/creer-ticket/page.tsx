@@ -133,7 +133,7 @@ export default function AddTicketForm() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full max-w-xs flex items-center justify-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-white font-medium hover:bg-green-800 shadow-sm hover:shadow-md transition cursor-pointer mt-4 mb-6"
+                        className="w-full max-w-xs flex items-center justify-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-white font-medium hover:bg-green-800 shadow-sm hover:shadow-md transition cursor-pointer mt-4 mb-6 disabled:opacity-50"
                     >
                         <Save size={18} />
                         {loading ? "Création..." : "Créer les tickets"}
