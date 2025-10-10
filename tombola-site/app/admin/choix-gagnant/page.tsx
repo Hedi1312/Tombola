@@ -356,8 +356,24 @@ export default function ChoixGagnantPage() {
                     </p>
                 )}
 
-                <div className="flex items-center gap-2 mb-4 text-gray-700">
+                <div className="flex items-center gap-4 mb-4 text-gray-700">
                     <label className="font-medium">Nombre de gagnants :</label>
+
+                    {/* Bouton -1 */}
+                    <button
+                        onClick={() => {
+                            let count = parseInt(winnerCount || "0", 10);
+                            if (count > 0) count--;
+
+                            setWinnerCount(String(count));
+                            setWinners(allWinners.slice(0, count));
+                        }}
+                        className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 transition font-bold text-lg cursor-pointer"
+                    >
+                        -
+                    </button>
+
+                    {/* Champ de nombre (toujours editable clavier PC) */}
                     <input
                         type="number"
                         inputMode="numeric"
@@ -368,50 +384,45 @@ export default function ChoixGagnantPage() {
                         value={winnerCount}
                         onChange={(e) => {
                             const value = e.target.value;
-
-                            // 🧠 Si on efface tout → on laisse vide et on ne touche pas
-                            if (value === "") {
-                                setWinnerCount("");
-                                setWinners([]); // optionnel : vider la liste visible
-                                return;
-                            }
+                            if (value === "") return setWinnerCount("");
 
                             let count = parseInt(value, 10);
-
                             if (isNaN(count) || count < 0) count = 0;
                             if (count > 100) count = 100;
 
-                            // ✅ met à jour la valeur corrigée immédiatement
                             setWinnerCount(String(count));
 
                             const updatedAll = [...allWinners];
+                            while (updatedAll.length < count)
+                                updatedAll.push({ name: "", email: "", ticket: "", persisted: false });
 
-                            // Si on veut plus de gagnants que ce qu'on a déjà, on en ajoute
-                            if (updatedAll.length < count) {
-                                while (updatedAll.length < count)
-                                    updatedAll.push({ name: "", email: "", ticket: "", persisted: false });
-                            }
-
-                            // On garde toujours tout en mémoire
                             setAllWinners(updatedAll);
-
-                            // On n'affiche que les "count" premiers
                             setWinners(updatedAll.slice(0, count));
                         }}
-                        onBlur={() => {
-                            // 🔹 Correction finale quand on quitte le champ
-                            if (winnerCount === "") return; // si vide → reste vide
-
-                            let val = parseInt(winnerCount);
-                            if (isNaN(val) || val < 0) val = 0;
-                            if (val > 100) val = 100;
-
-                            setWinnerCount(val.toString());
-                        }}
-                        className="w-20 rounded-lg border px-2 py-1 font-bold"
+                        className="w-24 text-center rounded-lg border px-2 py-2 font-bold"
                     />
 
+                    {/* Bouton +1 */}
+                    <button
+                        onClick={() => {
+                            let count = parseInt(winnerCount || "0", 10);
+                            if (count < 100) count++;
+
+                            setWinnerCount(String(count));
+
+                            const updatedAll = [...allWinners];
+                            if (updatedAll.length < count) {
+                                updatedAll.push({ name: "", email: "", ticket: "", persisted: false });
+                                setAllWinners(updatedAll);
+                            }
+                            setWinners(updatedAll.slice(0, count));
+                        }}
+                        className="px-4 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 transition font-bold text-lg cursor-pointer"
+                    >
+                        +
+                    </button>
                 </div>
+
 
                 <div className="flex flex-wrap gap-4 mt-4 mb-4">
                     <button
@@ -496,7 +507,6 @@ export default function ChoixGagnantPage() {
                 ))}
 
 
-
                 <button
                     onClick={() => handleSave()}
                     className="flex-1 min-w-[200px] flex items-center justify-center gap-2 rounded-lg bg-green-700 px-4 py-2 text-white font-medium hover:bg-green-800 shadow-sm hover:shadow-md transition cursor-pointer mt-4 mb-12"
@@ -517,8 +527,6 @@ export default function ChoixGagnantPage() {
                             : ""
                     }
                 />
-
-
 
             </div>
         </section>

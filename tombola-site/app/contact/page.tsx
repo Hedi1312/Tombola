@@ -84,14 +84,14 @@ export default function Contact() {
                     {/* Champ fichier custom */}
                     {/* Champ fichier custom */}
                     <div className="flex flex-col gap-2">
-                        <label className="text-gray-700 font-medium">Pièce jointe (optionnel)</label>
+                        <label className="text-gray-700 font-medium">📎 Pièce jointe (optionnel)</label>
 
                         <button
                             type="button"
                             onClick={() => document.getElementById("fileInput")?.click()}
                             className="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-4 rounded-lg cursor-pointer"
                         >
-                            📎 Joindre un fichier (PDF, Image, etc...)
+                            Joindre un fichier (PDF, Image, etc...)
                         </button>
 
                         {/* Input caché */}

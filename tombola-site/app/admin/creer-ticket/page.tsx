@@ -50,7 +50,7 @@ export default function AddTicketForm() {
             <div className="w-full max-w-lg md:max-w-2xl bg-white rounded-2xl p-6 md:p-10 shadow-md flex flex-col gap-6 mb-12">
 
                 {/* Header */}
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 w-full">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-12 w-full">
                     <div className="flex items-center space-x-3">
                         <CirclePlus className="h-8 w-8 text-green-600" />
                         <h1 className="text-2xl font-bold text-gray-800">
@@ -82,7 +82,7 @@ export default function AddTicketForm() {
                 {/* Form */}
                 <form
                     onSubmit={handleSubmit}
-                    className="flex flex-col gap-4 items-center text-gray-700"
+                    className="flex flex-col gap-5 items-center text-gray-700"
                 >
                     <input
                         type="text"
@@ -102,33 +102,71 @@ export default function AddTicketForm() {
                         className="border rounded-lg px-3 py-2 w-full max-w-xs"
                     />
 
-                    <div className="flex flex-col w-full max-w-xs">
-                        <label
-                            htmlFor="quantity"
-                            className="text-base font-medium text-gray-700 mb-1"
-                        >
+                    <div className="flex flex-col w-full max-w-xs mt-4">
+                        <label htmlFor="quantity" className="text-base font-medium text-gray-700 mb-2">
                             Nombre de tickets :
                         </label>
-                        <input
-                            id="quantity"
-                            type="number"
-                            inputMode="numeric"
-                            pattern="[0-9]*"
-                            placeholder="Nombre de tickets"
-                            value={quantity}
-                            onChange={(e) => setQuantity(e.target.value)} // juste setter la valeur brute
-                            onBlur={() => {
-                                let val = parseInt(quantity);
-                                if (isNaN(val) || val < 1) val = 1;
-                                if (val > 100) val = 100;
-                                setQuantity(val.toString());
-                            }}
-                            min={1}
-                            max={100}
-                            required
-                            className="border rounded-lg px-3 py-2 w-full"
-                        />
+
+                        <div className="flex items-center justify-between mb-2">
+                            {/* Section gauche : boutons et input */}
+                            <div className="flex items-center gap-2">
+                                {/* Bouton - */}
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        let val = parseInt(quantity || "0", 10);
+                                        if (val > 1) val--;
+                                        setQuantity(val.toString());
+                                    }}
+                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg font-bold cursor-pointer"
+                                >
+                                    -
+                                </button>
+
+                                {/* Champ de saisie */}
+                                <input
+                                    id="quantity"
+                                    type="number"
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
+                                    placeholder="Nombre de tickets"
+                                    value={quantity}
+                                    onChange={(e) => setQuantity(e.target.value)}
+                                    onBlur={() => {
+                                        let val = parseInt(quantity);
+                                        if (isNaN(val) || val < 1) val = 1;
+                                        if (val > 100) val = 100;
+                                        setQuantity(val.toString());
+                                    }}
+                                    min={1}
+                                    max={100}
+                                    required
+                                    className="border rounded-lg px-3 py-2 w-24 text-center"
+                                />
+
+                                {/* Bouton + */}
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        let val = parseInt(quantity || "0", 10);
+                                        if (val < 100) val++;
+                                        setQuantity(val.toString());
+                                    }}
+                                    className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg font-bold cursor-pointer"
+                                >
+                                    +
+                                </button>
+                            </div>
+
+                            {/* Total à droite */}
+                            <p className="text-gray-700 font-bold">
+                                Total : {(parseInt(quantity || "0") * 2).toString()} €
+                            </p>
+                        </div>
                     </div>
+
+
+
 
                     <button
                         type="submit"
