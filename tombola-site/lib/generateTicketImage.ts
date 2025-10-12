@@ -2,25 +2,10 @@ import { createCanvas, loadImage, registerFont } from "canvas";
 import path from "path";
 
 
-// Enregistrer la police sans le warning dans les logs
-
-// Sauvegarder l'ancien write
-const originalStderrWrite = process.stderr.write.bind(process.stderr);
-
-// Redéfinir stderr.write pour filtrer uniquement les warnings Fontconfig
-process.stderr.write = ((chunk: string | Uint8Array, encoding?: BufferEncoding, cb?: (err?: Error | null) => void): boolean => {
-    if (typeof chunk === "string" && chunk.includes("Fontconfig error")) {
-        return true; // ignorer le warning
-    }
-    // passer tout le reste à l'original
-    return originalStderrWrite(chunk, encoding, cb);
-}) as typeof process.stderr.write;
-
 // Enregistrer la police
 registerFont(path.join(process.cwd(), "ressources/fonts/norwester.ttf"), {
     family: "Norwester",
 });
-
 
 
 export async function generateTicketImage(ticketNumber: string): Promise<Buffer> {

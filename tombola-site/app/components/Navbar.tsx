@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import {FaHome, FaTiktok, FaUserShield, FaMoneyBillWave, FaGifts } from "react-icons/fa";
-import { MailQuestionMark } from 'lucide-react';
+import { MailQuestionMark, LoaderPinwheel } from 'lucide-react';
 import { GiTrophy } from 'react-icons/gi';
 import { FiMenu, FiX } from "react-icons/fi";
 import Image from "next/image";
@@ -38,7 +38,7 @@ export default function Navbar() {
     return (
         <nav className="bg-white shadow-md w-full">
             <div className="max-w-8xl mx-auto px-6 py-4 flex justify-between items-center">
-                <Link href="/" className="flex items-center gap-2 text-4xl text-gray-800" onClick={handleLinkClick}  style={{ fontFamily: 'Norwester'}}>
+                <Link href="/" className="flex items-center gap-4 text-4xl text-gray-800" onClick={handleLinkClick}  style={{ fontFamily: 'Norwester'}}>
                     <Image src="/img/ticket/ticket.png" alt="Ticket" width={100} height={100} />
                     <span>Marocola</span>
                     <Image src="/img/ui/maroc.png" alt="Maroc" width={24} height={24} />
@@ -49,6 +49,7 @@ export default function Navbar() {
                     <Link href="/" className="text-gray-600 hover:text-gray-700 transition"><FaHome size={32} /></Link>
                     <Link href="/lot-a-gagner" className="text-gray-600 hover:text-gray-700 transition"><FaGifts  size={30} /></Link>
                     <Link href="/resultat" className="text-gray-600 hover:text-gray-700 transition"><GiTrophy  size={30} /></Link>
+                    <Link href="/roue" className="text-gray-600 hover:text-gray-700 transition"><LoaderPinwheel  size={30} /></Link>
                     <Link href="/cagnotte" className="text-gray-600 hover:text-gray-700 transition"><FaMoneyBillWave size={30} /></Link>
                     <Link href="/tiktok" className="text-gray-600 hover:text-gray-700 transition"><FaTiktok size={30} /></Link>
                     <Link href="/contact" className="text-gray-600 hover:text-gray-700 transition"><MailQuestionMark size={32} /></Link>
@@ -100,6 +101,7 @@ export default function Navbar() {
                         <Link href="/" className="text-gray-700" onClick={handleLinkClick}><FaHome size={36} /></Link>
                         <Link href="/lot-a-gagner" className="text-gray-700" onClick={handleLinkClick}><FaGifts size={36} /></Link>
                         <Link href="/resultat" className="text-gray-700" onClick={handleLinkClick}><GiTrophy size={36} /></Link>
+                        <Link href="/roue" className="text-gray-700" onClick={handleLinkClick}><LoaderPinwheel  size={36} /></Link>
                         <Link href="/cagnotte" className="text-gray-700" onClick={handleLinkClick}><FaMoneyBillWave size={36} /></Link>
                         <Link href="/tiktok" className="text-gray-700" onClick={handleLinkClick}><FaTiktok size={36} /></Link>
                         <Link href="/contact" className="text-gray-700" onClick={handleLinkClick}><MailQuestionMark size={38} /></Link>

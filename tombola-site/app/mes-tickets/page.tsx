@@ -43,7 +43,7 @@ export default function MesTickets() {
 
         let elapsedTime = 0;
         const pollingInterval = 2000; // toutes les 2 secondes
-        const minDelay = 3000; // délai minimum 3 secondes
+        const minDelay = 2000; // délai minimum de 2 secondes
         const maxTime = 15000; // 15 secondes maximum
 
         const startTime = Date.now();
@@ -113,13 +113,13 @@ export default function MesTickets() {
                 {!loading && error && <p className="mb-4 rounded-lg text-center text-base p-2 bg-red-100 text-red-700">{error}</p>}
 
                 {!loading && tickets && tickets.length > 0 && (
-                    <div className="mt-6">
+                    <div className="mt-4">
+                        <p className="bg-yellow-100 text-gray-700 text-sm p-3 rounded-md text-center max-w-lg mx-auto mb-10">
+                            ⚠️ Vous allez recevoir un ou plusieurs mails avec vos tickets et un lien pour pouvoir les retrouver plus tard !
+                        </p>
                         <h3 className="text-xl font-bold mb-4 text-gray-800 text-center">
                             Vos tickets : {tickets.length}
                         </h3>
-                        <p className="text-center text-gray-700 mt-4">
-                            <br/><strong>⚠️ Vous allez recevoir un ou plusieurs mails avec vos tickets et un lien pour pouvoir les retrouver plus tard !</strong><br/> <br/><br/>
-                        </p>
                         <ul className="grid grid-cols-1 sm:grid-cols-3 gap-y-6 gap-x-6 justify-items-center">
                             {tickets.map((ticket) => (
                                 <li key={ticket.id}>

@@ -17,6 +17,14 @@ export default function AddTicketForm() {
         setLoading(true);
         setMessage(null);
 
+        // Vérification du nom complet : pas de chiffres
+        const nameHasNumbers = /\d/.test(fullName);
+        if (nameHasNumbers) {
+            setMessage("❌ Le nom complet ne doit pas contenir de chiffres.");
+            setLoading(false);
+            return;
+        }
+
         try {
             const res = await fetch("/api/admin/creer-ticket", {
                 method: "POST",

@@ -151,3 +151,15 @@ WHERE q.id = sel.id
     RETURNING q.id, q.full_name, q.email, q.access_token, q.ticket_numbers, q.retries;
 END;
 $$ LANGUAGE plpgsql;
+
+
+-- =========================================
+-- Valeur du taux de victoire de la roue
+-- =========================================
+
+CREATE TABLE settings (
+            key text PRIMARY KEY,
+            value numeric
+);
+INSERT INTO settings (key, value) VALUES ('win_probability', 0.3);
+

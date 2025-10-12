@@ -424,7 +424,7 @@ export default function ChoixGagnantPage() {
                 </div>
 
 
-                <div className="flex flex-wrap gap-4 mt-4 mb-4">
+                <div className="flex flex-wrap gap-4 my-4">
                     <button
                         onClick={handleRandomize}
                         className="flex-1 min-w-[200px] flex items-center justify-center gap-2 rounded-lg bg-yellow-500 px-4 py-2 text-white font-medium hover:bg-yellow-600 shadow-sm hover:shadow-md transition cursor-pointer"

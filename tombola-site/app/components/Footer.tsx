@@ -1,4 +1,4 @@
-import { FaTiktok, FaDonate } from "react-icons/fa";
+import { FaTiktok, FaMoneyBillWave } from "react-icons/fa";
 
 export default function Footer() {
     return (
@@ -19,7 +19,7 @@ export default function Footer() {
                     href="/cagnotte"
                     className="hover:text-black"
                 >
-                    <FaDonate size={20} />
+                    <FaMoneyBillWave size={20} />
                 </a>
             </div>
         </footer>

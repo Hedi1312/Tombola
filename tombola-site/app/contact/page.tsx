@@ -57,7 +57,7 @@ export default function Contact() {
                     <h1 className="text-3xl font-extrabold text-gray-800">Contact / Support</h1>
                 </div>
 
-                <p className="text-center text-gray-700 mt-6 mb-6">
+                <p className="text-center text-gray-700 my-6">
                     Vous avez une question ou besoin d&apos;aide ? Envoyez-nous un message et nous vous répondrons rapidement.
                 </p>
 

@@ -106,7 +106,7 @@ export default function ChoixDatePage() {
                     type="datetime-local"
                     value={selectedDate}
                     onChange={(e) => setSelectedDate(e.target.value)}
-                    className="w-full rounded-lg border border-gray-300 px-3 py-3 text-gray-700 focus:border-indigo-500 focus:ring-indigo-500 mb-6 mt-6 cursor-pointer"
+                    className="w-full rounded-lg border border-gray-300 px-3 py-3 text-gray-700 focus:border-indigo-500 focus:ring-indigo-500 my-6 cursor-pointer"
                 />
 
                 <button
