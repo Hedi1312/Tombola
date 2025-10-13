@@ -35,14 +35,18 @@ export async function POST(req: NextRequest) {
         // Envoi du mail de confirmation
         const htmlContent = `
             <div style="font-family: Arial, sans-serif; text-align: center; background-color: #f7f7f7; padding: 50px 20px;">
-                <h1 style="margin-bottom: 40px;">
+                <h1 style="margin-bottom: 40px; display: flex; align-items: center; justify-content: center;">
+                    <img src="${process.env.NEXT_PUBLIC_URL}/img/ticket/ticket.png" 
+                         alt="Ticket" 
+                         style="width: 50px; height: auto; margin-right: 10px;">
                     <a href="${process.env.NEXT_PUBLIC_URL}" 
-                    style="text-decoration: none; color: #000;">
-                    🎟️ Marocola
+                       style="text-decoration: none; color: #000; font-family: 'Norwester', Arial, sans-serif; font-size: 45px;">
+                       Marocola
                     </a>
                 </h1>
+
                 
-                <p style="margin-bottom: 20px; font-size: 25px;">
+                <p style="margin-bottom: 40px; font-size: 25px;">
                     Bonjour <strong>${full_name}</strong>,
                 </p>
                 <p style="margin-bottom: 30px; font-size: 18px;">
@@ -52,7 +56,7 @@ export async function POST(req: NextRequest) {
                 <p style="margin-top: 20px; font-size: 18px;">
                     Si vous changez d'avis, vous pouvez vous désinscrire ici :
                 </p>
-                <p style="margin-top: 30px;">
+                <p style="margin-top: 60px;">
                     <a href="${process.env.NEXT_PUBLIC_URL}/api/notifications?token=${access_token}"
                     style="display: inline-block; background-color: #e74c3c; color: #fff; padding: 14px 26px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
                     Se désinscrire

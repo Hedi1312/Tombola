@@ -44,9 +44,9 @@ export default function Contact() {
             console.error(err);
             setStatus("error");
             setErrorMsg("Erreur inconnue lors de l'envoi du message.");
+        } finally {
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
-        window.scrollTo({ top: 0, behavior: "smooth" });
-
     }
 
     return (

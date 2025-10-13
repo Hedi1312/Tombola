@@ -17,15 +17,16 @@ export default function AddTicketForm() {
         setLoading(true);
         setMessage(null);
 
-        // Vérification du nom complet : pas de chiffres
-        const nameHasNumbers = /\d/.test(fullName);
-        if (nameHasNumbers) {
-            setMessage("❌ Le nom complet ne doit pas contenir de chiffres.");
-            setLoading(false);
-            return;
-        }
 
         try {
+            // Vérification du nom complet : pas de chiffres
+            const nameHasNumbers = /\d/.test(fullName);
+            if (nameHasNumbers) {
+                setMessage("❌ Le nom complet ne doit pas contenir de chiffres.");
+                setLoading(false);
+                return;
+            }
+
             const res = await fetch("/api/admin/creer-ticket", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -47,15 +48,15 @@ export default function AddTicketForm() {
 
         } catch {
             setMessage("❌ Erreur réseau");
+        } finally {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            setLoading(false);
         }
-
-        window.scrollTo({ top: 0, behavior: "smooth" }); // ← scroll vers le haut
-        setLoading(false);
     };
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
-            <div className="w-full max-w-lg md:max-w-2xl bg-white rounded-2xl p-6 md:p-10 shadow-md flex flex-col gap-6 mb-12">
+            <div className="w-full max-w-2xl mx-auto rounded-2xl bg-white p-6 md:p-8 shadow-md mb-12">
 
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-12 w-full">
@@ -77,7 +78,7 @@ export default function AddTicketForm() {
 
                 {message && (
                     <div
-                        className={`p-3 rounded-lg text-center text-base ${
+                        className={`p-3 mb-8 rounded-lg text-center text-base ${
                             message.startsWith("✅")
                                 ? "bg-green-100 text-green-700"
                                 : "bg-red-100 text-red-700"

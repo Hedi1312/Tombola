@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 export default function WinProbabilityAdmin() {
     const [probability, setProbability] = useState(30);
-    const [manualInput, setManualInput] = useState("");
+    const [manualInput, setManualInput] = useState(0);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
     const router = useRouter()
@@ -16,7 +16,9 @@ export default function WinProbabilityAdmin() {
                 const res = await fetch("/api/admin/roue-probabilite");
                 const data = await res.json();
                 if (data.success) {
-                    setProbability(Math.round(data.value * 100));
+                    const roundedValue = Math.round(data.value * 100);
+                    setProbability(roundedValue);
+                    setManualInput(roundedValue);
                 }
             } catch (err) {
                 console.warn("Erreur récupération probabilité :", err);
@@ -26,14 +28,16 @@ export default function WinProbabilityAdmin() {
     }, []);
 
     const saveProbability = async (value?: number) => {
-        const finalValue = value !== undefined ? value : probability;
-        if (finalValue < 0 || finalValue > 100) {
-            setMessage("❌ La valeur doit être entre 0 et 100%");
-            return;
-        }
-        setLoading(true);
-        setMessage("");
+
         try {
+            const finalValue = value !== undefined ? value : probability;
+            if (finalValue < 0 || finalValue > 100) {
+                setMessage("❌ La valeur doit être entre 0 et 100%");
+                return;
+            }
+            setLoading(true);
+            setMessage("");
+
             const res = await fetch("/api/admin/roue-probabilite", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -42,16 +46,18 @@ export default function WinProbabilityAdmin() {
             const data = await res.json();
             if (data.success) {
                 setProbability(finalValue);
+                setManualInput(finalValue);
                 setMessage(`✅ Probabilité mise à jour  à ${finalValue} %`);
                 setTimeout(() => setMessage(""), 3000);
-                setManualInput("");
             } else {
                 setMessage(`❌ Erreur : ${data.error}`);
             }
         } catch (err) {
             setMessage(`❌ Erreur serveur : ${err}`);
+        } finally {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     const presetValues = [0, 5, 10, 25, 50, 100];
@@ -59,7 +65,6 @@ export default function WinProbabilityAdmin() {
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
             <div className="w-full max-w-4xl mx-auto rounded-2xl bg-white p-6 md:p-8 shadow-md mb-12">
-                <h2 className="text-xl font-bold mb-4"></h2>
 
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                     <div className="flex items-center space-x-3">
@@ -91,7 +96,6 @@ export default function WinProbabilityAdmin() {
                     </p>
                 )}
 
-
                 <div className="my-15">
 
                     {/* Bloc des presets */}
@@ -110,20 +114,49 @@ export default function WinProbabilityAdmin() {
                     </div>
 
                     {/* Bloc input + bouton aligné comme les presets */}
-                    <div className="w-full max-w-4xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-3 mt-10">
-                        <input
-                            type="number"
-                            min={0}
-                            max={100}
-                            placeholder="Autre valeur en %"
-                            value={manualInput}
-                            onChange={(e) => setManualInput(e.target.value)}
-                            className="sm:col-span-2 h-12 px-4 border rounded-lg text-gray-700"
-                        />
+                    <div className="w-full mt-12 flex flex-col gap-3">
+
+                        {/* Label au-dessus, bien positionné */}
+                        <div className="text-center mb-2">
+                            <label className="font-bold text-gray-700">
+                                Probabilité personnalisée :
+                            </label>
+                        </div>
+
+                        {/* Ligne avec - / champ / + alignés */}
+                        <div className="flex items-center justify-center gap-3 text-gray-700 mb-6">
+                            <button
+                                onClick={() => setManualInput((prev) => Math.max(0, prev - 1))}
+                                className="px-4 py-2 bg-gray-200 rounded-lg font-bold cursor-pointer"
+                            >
+                                -
+                            </button>
+
+                            <input
+                                type="number"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                min={0}
+                                max={100}
+                                value={manualInput}
+                                onChange={(e) => setManualInput(Number(e.target.value))}
+                                className="h-12 px-4 border rounded-lg text-center w-20"
+                            />
+
+                            <button
+                                onClick={() => setManualInput((prev) => Math.min(100, prev + 1))}
+                                className="px-4 py-2 bg-gray-200 rounded-lg font-bold cursor-pointer"
+                            >
+                                +
+                            </button>
+                        </div>
+
+
+
                         <button
                             onClick={() => saveProbability(Number(manualInput))}
                             disabled={loading}
-                            className="h-12 px-6 flex items-center justify-center gap-2 bg-green-700 text-white font-medium rounded-lg hover:bg-green-800 shadow-sm hover:shadow-md transition cursor-pointer disabled:opacity-50"
+                            className="h-12 w-full sm:max-w-xs sm:mx-auto flex items-center justify-center gap-2 bg-green-700 text-white font-medium rounded-lg hover:bg-green-800 shadow-sm hover:shadow-md transition cursor-pointer disabled:opacity-50"
                         >
                             <Save className="w-5 h-5 flex-shrink-0" />
                             {loading ? "Enregistrement..." : "Enregistrer"}

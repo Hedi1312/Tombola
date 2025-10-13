@@ -105,6 +105,7 @@ export default function TicketsPage() {
                 return;
             }
             const data = await res.json();
+
             if (data.success) {
                 setTickets(prev => prev.filter(t => t.id !== id));
                 setMessage(`✅ Le ticket suivant est supprimé : ID: ${selectedTicket!.id}, Numéro: ${selectedTicket!.ticket_number}, Email: ${selectedTicket!.email}`);
@@ -117,6 +118,8 @@ export default function TicketsPage() {
         } catch (err) {
             console.error(err);
             setMessage(`❌ Erreur lors de la suppression du ticket`);
+        } finally {
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
 
     }

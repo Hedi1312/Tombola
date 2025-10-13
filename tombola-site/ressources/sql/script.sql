@@ -161,5 +161,5 @@ CREATE TABLE settings (
             key text PRIMARY KEY,
             value numeric
 );
-INSERT INTO settings (key, value) VALUES ('win_probability', 0.3);
+INSERT INTO settings (key, value) VALUES ('win_probability', 0.15);
 

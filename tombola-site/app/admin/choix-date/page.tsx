@@ -29,48 +29,55 @@ export default function ChoixDatePage() {
     }, []);
 
     const handleSave = async () => {
-        if (!selectedDate) return;
 
-        const localDate = new Date(selectedDate);
-        const now = new Date();
+        try {
+            if (!selectedDate) return;
 
-        if (localDate < now) {
-            setMessage("❌ La date choisie est déjà passée !");
-            return;
-        }
+            const localDate = new Date(selectedDate);
+            const now = new Date();
 
-        const utcDate = new Date(
-            localDate.getTime() - localDate.getTimezoneOffset() * 60 * 1000
-        ).toISOString();
+            if (localDate < now) {
+                setMessage("❌ La date choisie est déjà passée !");
+                return;
+            }
 
-        const res = await fetch("/api/admin/choix-date", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ newDate: utcDate }),
-        });
+            const utcDate = new Date(
+                localDate.getTime() - localDate.getTimezoneOffset() * 60 * 1000
+            ).toISOString();
 
-        const data = await res.json();
-        if (data.success) {
-            // Crée un objet Date pour l'affichage local
-            const displayDate = new Date(selectedDate);
-            const formattedDate = displayDate.toLocaleString("fr-FR", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false,
-            })
-            setMessage(`✅ Date du tirage mise à jour : ${formattedDate.replace(" ", " à ")}`);
-            setTimeout(() => setMessage(""), 5000);
-        } else {
-            setMessage(`❌ Erreur : ${data.error}`);
+            const res = await fetch("/api/admin/choix-date", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ newDate: utcDate }),
+            });
+
+            const data = await res.json();
+            if (data.success) {
+                // Crée un objet Date pour l'affichage local
+                const displayDate = new Date(selectedDate);
+                const formattedDate = displayDate.toLocaleString("fr-FR", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                })
+                setMessage(`✅ Date du tirage mise à jour : ${formattedDate.replace(" ", " à ")}`);
+                setTimeout(() => setMessage(""), 5000);
+            } else {
+                setMessage(`❌ Erreur : ${data.error}`);
+            }
+        } catch (err: unknown) {
+            setMessage(`❌ Erreur inattendue : ${err instanceof Error ? err.message : String(err)}`);
+        } finally {
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50">
-            <div className="w-full max-w-xl rounded-2xl bg-white p-12 shadow-md mb-12">
+            <div className="w-full max-w-xl mx-auto rounded-2xl bg-white p-6 md:p-8 shadow-md mb-12">
 
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-3 mb-6 w-full">
                     <div className="flex items-center space-x-3">

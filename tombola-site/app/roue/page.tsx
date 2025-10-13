@@ -16,7 +16,7 @@ export default function RouePage() {
     const [message, setMessage] = useState<string | null>(null);
     const [messageModal, setMessageModal] = useState<string | null>(null);
     const [loadingButton, setLoadingButton] = useState(false);
-    const [winProbability, setWinProbability] = useState(0.3); // par défaut 30% si l'API ne répond pas
+    const [winProbability, setWinProbability] = useState(0.15); // par défaut 15% si l'API ne répond pas
 
 
 
@@ -49,6 +49,26 @@ export default function RouePage() {
     }, []);
 
 
+    // Avertissement si une modale est ouverte (résultat ou formulaire)
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (showResult || showFormModal) {
+                e.preventDefault();
+                e.returnValue = ""; // Nécessaire pour chrome
+            }
+        };
+
+        if (showResult || showFormModal) {
+            window.addEventListener("beforeunload", handleBeforeUnload);
+        } else {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        }
+
+        return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+    }, [showResult, showFormModal]);
+
+
+
     // Précharge le son
     useEffect(() => {
         const loadSound = async () => {
@@ -73,7 +93,7 @@ export default function RouePage() {
             e.preventDefault();
         };
 
-        if (spinning || showResult || showFormModal) {
+        if (showResult || showFormModal) {
             scrollY = window.scrollY;
             document.body.style.position = "fixed";
             document.body.style.top = `-${scrollY}px`;

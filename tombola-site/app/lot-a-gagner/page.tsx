@@ -1,12 +1,28 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { PRIZES, Prize } from "@/lib/lots";
 import { FaGifts } from "react-icons/fa";
 
+
 export default function LotAGagnerPage() {
     const [selected, setSelected] = useState<Prize | null>(null);
+
+    useEffect(() => {
+        if (selected) {
+            // Bloquer le scroll
+            document.body.style.overflow = "hidden";
+        } else {
+            // Réactiver le scroll
+            document.body.style.overflow = "auto";
+        }
+
+        // Nettoyage si le composant se démonte
+        return () => {
+            document.body.style.overflow = "auto";
+        };
+    }, [selected]);
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50 relative overflow-hidden">

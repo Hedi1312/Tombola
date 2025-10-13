@@ -13,6 +13,14 @@ export default function NotificationsForm({onClose,}: { onClose: () => void; }) 
         setLoading(true);
         setMessage("");
 
+        // Vérification du nom complet : pas de chiffres
+        const nameHasNumbers = /\d/.test(fullName);
+        if (nameHasNumbers) {
+            setMessage("❌ Le nom complet ne doit pas contenir de chiffres.");
+            setLoading(false);
+            return;
+        }
+
         try {
             const res = await fetch("/api/notifications", {
                 method: "POST",
@@ -22,7 +30,7 @@ export default function NotificationsForm({onClose,}: { onClose: () => void; }) 
 
             const data = await res.json();
             if (res.ok) {
-                setMessage("✅ Vous serez notifié(e) lors du tirage !");
+                setMessage(`✅ Vous serez notifié(e) lors du tirage à ${email} !`);
                 setFullName("");
                 setEmail("");
             } else {

@@ -30,21 +30,22 @@ export default function NotificationsAdminPage() {
 
     async function handleNotifyAll() {
 
-        if (participants.length === 0) {
-            setMessage("❌ Aucun participant à notifier !");
-            return; // empêche l'exécution si la liste est vide
-        }
-
-        const pending = participants.filter(p => !p.notified);
-
-        if (pending.length === 0) {
-            setMessage("❌ Tous les participants ont déjà été notifiés !");
-            return;
-        }
-
-        setLoadingNotify(true);
-
         try {
+
+            if (participants.length === 0) {
+                setMessage("❌ Aucun participant à notifier !");
+                return; // empêche l'exécution si la liste est vide
+            }
+
+            const pending = participants.filter(p => !p.notified);
+
+            if (pending.length === 0) {
+                setMessage("❌ Tous les participants ont déjà été notifiés !");
+                return;
+            }
+
+            setLoadingNotify(true);
+
             const res = await fetch("/api/admin/envoyer-notifications", { method: "POST" });
             const data = await res.json();
 
@@ -58,7 +59,8 @@ export default function NotificationsAdminPage() {
             console.error(err);
             setMessage("❌ Erreur réseau lors de l'envoi des emails.");
         } finally {
-            setLoadingNotify(false); // ← désactive le loading quoi qu’il arrive
+            setLoadingNotify(false);
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
     }
 
@@ -68,7 +70,7 @@ export default function NotificationsAdminPage() {
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
-            <div className="w-full max-w-4xl bg-white p-6 rounded-2xl shadow-lg mb-12 text-gray-700" >
+            <div className="w-full max-w-4xl mx-auto rounded-2xl bg-white p-6 md:p-8 shadow-md mb-12 text-gray-700">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-3 mb-6 w-full">
                     <div className="flex items-center space-x-3">
                         <BellRing className="h-8 w-8 text-yellow-500" />

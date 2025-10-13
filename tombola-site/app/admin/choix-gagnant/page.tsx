@@ -167,12 +167,13 @@ export default function ChoixGagnantPage() {
     const handleRandomize = async () => {
         const count = parseInt(winnerCount, 10);
 
-        if (isNaN(count) || count <= 0) {
-            setMessage("❌ Veuillez choisir un nombre de gagnants supérieur à 0.");
-            return;
-        }
 
         try {
+            if (isNaN(count) || count <= 0) {
+                setMessage("❌ Veuillez choisir un nombre de gagnants supérieur à 0.");
+                return;
+            }
+
             const res = await fetch("/api/admin/tickets-vendus");
             const data: { success: boolean; tickets?: Ticket[] } = await res.json();
 
@@ -236,14 +237,15 @@ export default function ChoixGagnantPage() {
 
             setWinners(updatedWinners);
             setMessage("✅ Gagnants non encore enregistrés mis à jour !");
-            window.scrollTo({ top: 0, behavior: "smooth" });
         } catch (err: unknown) {
             if (err instanceof Error) {
                 setMessage(`❌ Erreur lors du tirage : ${err.message}`);
             } else {
                 setMessage(`❌ Erreur inattendue`);
             }
-        }
+        } finally {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
     };
 
@@ -255,7 +257,6 @@ export default function ChoixGagnantPage() {
             setMessage("❌ Aucun gagnant enregistré à notifier !");
             return;
         }
-
 
         setLoadingNotify(true);
 
@@ -275,6 +276,7 @@ export default function ChoixGagnantPage() {
             setMessage(`❌ Erreur lors de l'envoi : ${err instanceof Error ? err.message : String(err)}`);
         } finally {
             setLoadingNotify(false);
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
 
     }
@@ -283,40 +285,42 @@ export default function ChoixGagnantPage() {
     const handleSave = async (winnersToSave?: Winner[]) => {
         const list = winnersToSave || winners; // utilise le tableau passé ou le state
 
-        // Vérifications...
-        for (let i = 0; i < list.length; i++) {
-            const w = list[i];
-            if (w.name.trim() === "" || !/^\d{6}$/.test(w.ticket) || w.email.trim() === "") {
-                setMessage(`❌ Ligne ${i + 1} invalide : nom, email requis et ticket doit être exactement 6 chiffres.`);
-                window.scrollTo({ top: 0, behavior: "smooth" });
+        try {
+            // Vérifications...
+            for (let i = 0; i < list.length; i++) {
+                const w = list[i];
+                if (w.name.trim() === "" || !/^\d{6}$/.test(w.ticket) || w.email.trim() === "") {
+                    setMessage(`❌ Ligne ${i + 1} invalide : nom, email requis et ticket doit être exactement 6 chiffres.`);
+                    return;
+                }
+            }
+
+            const tickets = list.map(w => w.ticket);
+            const uniqueTickets = new Set(tickets);
+            if (uniqueTickets.size !== tickets.length) {
+                setMessage("❌ Chaque ticket doit être unique !");
                 return;
             }
-        }
 
-        const tickets = list.map(w => w.ticket);
-        const uniqueTickets = new Set(tickets);
-        if (uniqueTickets.size !== tickets.length) {
-            setMessage("❌ Chaque ticket doit être unique !");
-            window.scrollTo({ top: 0, behavior: "smooth" });
-            return;
-        }
+            const res = await fetch("/api/admin/choix-gagnant", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ winners: list }),
+            });
 
-        const res = await fetch("/api/admin/choix-gagnant", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ winners: list }),
-        });
-
-        const data = await res.json();
-        if (data.success) {
-            const persistedList = list.map(w => ({ ...w, persisted: true }));
-            setAllWinners(persistedList);
-            setWinners(persistedList);
-            setMessage("✅ Gagnants mis à jour !");
-            window.scrollTo({ top: 0, behavior: "smooth" });
-            setTimeout(() => setMessage(""), 5000);
-        } else {
-            setMessage(`❌ Erreur : ${data.error}`);
+            const data = await res.json();
+            if (data.success) {
+                const persistedList = list.map(w => ({ ...w, persisted: true }));
+                setAllWinners(persistedList);
+                setWinners(persistedList);
+                setMessage("✅ Gagnants mis à jour !");
+                setTimeout(() => setMessage(""), 5000);
+            } else {
+                setMessage(`❌ Erreur : ${data.error}`);
+            }
+        } catch (err) {
+            setMessage(`❌ Erreur inattendue : ${err instanceof Error ? err.message : String(err)}`);
+        } finally {
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
     };
@@ -325,7 +329,7 @@ export default function ChoixGagnantPage() {
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
-            <div className="w-full max-w-lg md:max-w-3xl bg-white rounded-2xl p-6 md:p-12 shadow-md flex flex-col gap-6 mb-12">
+            <div className="w-full max-w-3xl mx-auto rounded-2xl bg-white p-6 md:p-8 shadow-md flex flex-col gap-6 mb-12">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-3 mb-6 w-full">
 
                     <div className="flex items-center space-x-3">

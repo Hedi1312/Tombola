@@ -1,9 +1,8 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { FileText } from "lucide-react";
+import { FileText, LoaderPinwheel } from "lucide-react";
 import Link from "next/link";
-
 
 export default function Home() {
     const [expanded, setExpanded] = useState(false);
@@ -14,12 +13,9 @@ export default function Home() {
             <div className="flex flex-col md:flex-row gap-10 max-w-6xl w-full mb-12 items-start">
                 {/* Bloc tombola fixe */}
                 <div className="md:w-2/5 bg-white rounded-2xl shadow-md p-8 text-center text-gray-700 flex-shrink-0">
-                    {/* Image + Titre alignés */}
-                    <div className="flex items-center justify-center gap-3 mb-10">
+                    <div className="flex items-center justify-center gap-3 mb-10 mt-0.5">
                         <Image src="/img/ticket/ticket.png" alt="Ticket" width={80} height={80} />
-                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
-                            Tombola
-                        </h1>
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 ">Tombola</h1>
                     </div>
                     <p className="text-base md:text-lg mb-6">
                         Participez à notre tombola pour soutenir notre projet scolaire.<br /> <br />
@@ -32,13 +28,30 @@ export default function Home() {
                     </Link>
                 </div>
 
+                {/* Bloc roue de la chance */}
+                <div className="md:w-2/5 bg-white rounded-2xl shadow-md p-8 text-center text-gray-700 flex-shrink-0 md:min-h-90.75">
+
+                    <h1 className="flex items-center justify-center gap-3 text-3xl md:text-4xl font-bold mb-10.75 mt-1 text-gray-800">
+                        <LoaderPinwheel size={40}/>
+                        Roue de la Chance
+                    </h1>
+
+                    <p className="text-base md:text-lg mb-6">
+                        Une roue de la chance est disponible avec 1 tirage par jour sur le site. Tentez chaque jour votre chance pour obtenir un ticket de tombola gratuitement !
+                    </p>
+                    <Link href="/roue">
+                        <button className="px-6 py-3 mt-7 bg-green-600 text-white font-semibold rounded-lg shadow hover:bg-green-700 transition cursor-pointer">
+                            Jouer maintenant
+                        </button>
+                    </Link>
+                </div>
+
                 {/* Bloc présentation centré */}
-                <div className="flex-1 bg-white rounded-2xl shadow-md p-8 text-gray-700 flex flex-col justify-start items-center text-center md:min-h-90">
-                    <h1 className="flex items-center justify-center gap-3 text-3xl md:text-4xl font-bold mb-3 mt-1 text-gray-800">
+                <div className="flex-1 bg-white rounded-2xl shadow-md p-8 text-gray-700 flex flex-col justify-start items-center text-center md:min-h-90.75">
+                    <h1 className="flex items-center justify-center gap-3 text-3xl md:text-4xl font-bold mb-3.25 mt-1 text-gray-800">
                         <FileText size={40}/>
                         Présentation
                     </h1>
-
                     <p
                         className={`text-base md:text-lg leading-relaxed transition-all duration-300 ${
                             expanded ? "max-h-full" : "line-clamp-5 overflow-hidden"
@@ -57,8 +70,6 @@ export default function Home() {
                         Merci infiniment 🫱🏻‍🫲🏾<br />
                         Ménissa, Manon et Sarah !! 🥰
                     </p>
-
-                    {/* Bouton Lire plus / Réduire */}
                     <button
                         onClick={() => setExpanded(!expanded)}
                         className="mt-10 text-blue-600 font-semibold hover:underline cursor-pointer"
@@ -66,6 +77,7 @@ export default function Home() {
                         {expanded ? "Réduire" : "Lire plus"}
                     </button>
                 </div>
+
             </div>
         </section>
     );
