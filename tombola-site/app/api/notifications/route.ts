@@ -49,9 +49,9 @@ export async function POST(req: NextRequest) {
                     <!-- Image Marocola -->
                     <td style="padding-left: 10px; vertical-align: middle;">
                       <a href="${process.env.NEXT_PUBLIC_URL}" style="text-decoration: none;">
-                        <img src="${process.env.NEXT_PUBLIC_URL}/img/ui/marocola-title.png" 
+                        <img src="https://tombola-maroc.vercel.app/img/ui/marocola-title.png" 
                              alt="Marocola" 
-                             style="display: block; width: auto; height: 60px;">
+                             style="display: block; width: auto; height: 120px;">
                       </a>
                     </td>
                   </tr>
