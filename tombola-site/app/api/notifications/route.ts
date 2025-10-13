@@ -35,33 +35,28 @@ export async function POST(req: NextRequest) {
         // Envoi du mail de confirmation
         const htmlContent = `
             <div style="font-family: Arial, sans-serif; text-align: center; background-color: #f7f7f7; padding: 50px 20px;">
-                <style>
-                  @font-face {
-                    font-family: 'Norwester';
-                    src: url('https://tombola-maroc.vercel.app/fonts/norwester.otf') format('opentype');
-                  }
-                </style>
-                
-                <!-- H1 avec image à gauche -->
-                <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 40px;">
+              
+                <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 70px;">
                   <tr>
                     <!-- Image du ticket -->
                     <td style="vertical-align: middle;">
                       <img src="${process.env.NEXT_PUBLIC_URL}/img/ticket/ticket.png" 
                            alt="Ticket" 
-                           width="50" 
+                           width="80" 
                            style="display: block; height: auto;">
                     </td>
                 
-                    <!-- Texte Marocola -->
-                    <td style="padding-left: 10px; vertical-align: middle; font-family: 'Norwester', Arial, sans-serif; font-size: 45px; color: #000;">
-                      <a href="${process.env.NEXT_PUBLIC_URL}" 
-                         style="text-decoration: none; color: #000; font-family: 'Norwester', Arial, sans-serif;">
-                         Marocola
+                    <!-- Image Marocola -->
+                    <td style="padding-left: 10px; vertical-align: middle;">
+                      <a href="${process.env.NEXT_PUBLIC_URL}" style="text-decoration: none;">
+                        <img src="${process.env.NEXT_PUBLIC_URL}/img/ui/marocola-title.png" 
+                             alt="Marocola" 
+                             style="display: block; width: auto; height: 60px;">
                       </a>
                     </td>
                   </tr>
                 </table>
+
 
                 
                 <p style="margin-bottom: 50px; font-size: 25px;">
