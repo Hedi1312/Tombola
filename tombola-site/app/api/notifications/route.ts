@@ -36,28 +36,26 @@ export async function POST(req: NextRequest) {
         const htmlContent = `
             <div style="font-family: Arial, sans-serif; text-align: center; background-color: #f7f7f7; padding: 50px 20px;">
               
-                <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 70px;">
-                  <tr>
-                    <!-- Image du ticket -->
-                    <td style="vertical-align: middle;">
-                      <img src="${process.env.NEXT_PUBLIC_URL}/img/ticket/ticket.png" 
+                <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 50px;">
+                    <tr>
+                        <!-- Image du ticket -->
+                        <td style="vertical-align: middle;">
+                        <img src="${process.env.NEXT_PUBLIC_URL}/img/ticket/ticket.png"
                            alt="Ticket" 
-                           width="80" 
+                           width="100" 
                            style="display: block; height: auto;">
-                    </td>
-                
-                    <!-- Image Marocola -->
-                    <td style="padding-left: 10px; vertical-align: middle;">
-                      <a href="${process.env.NEXT_PUBLIC_URL}" style="text-decoration: none;">
-                        <img src="https://tombola-maroc.vercel.app/img/ui/marocola-title.png" 
+                        </td>
+                        
+                        <!-- Image Marocola -->
+                        <td style="padding-left: 10px; vertical-align: middle;">
+                        <a href="${process.env.NEXT_PUBLIC_URL}" style="text-decoration: none;">
+                        <img src="${process.env.NEXT_PUBLIC_URL}/img/ui/marocola-title.png"
                              alt="Marocola" 
                              style="display: block; width: auto; height: 120px;">
-                      </a>
-                    </td>
-                  </tr>
+                        </a>
+                        </td>
+                    </tr>
                 </table>
-
-
                 
                 <p style="margin-bottom: 50px; font-size: 25px;">
                     Bonjour <strong>${full_name}</strong>,
@@ -72,7 +70,7 @@ export async function POST(req: NextRequest) {
                 <p style="margin-top: 60px;">
                     <a href="${process.env.NEXT_PUBLIC_URL}/api/notifications?token=${access_token}"
                     style="display: inline-block; background-color: #e74c3c; color: #fff; padding: 14px 26px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 16px;">
-                    Se désinscrire
+                    ✖️ Se désinscrire
                     </a>
                 </p>
                 
@@ -83,13 +81,13 @@ export async function POST(req: NextRequest) {
                     </a>
                 </p>
                 
-                <p style="margin-top: 30px; font-size: 16px; color: #555;">
+                <p style="margin-top: 30px; font-size: 18px; color: #555;">
                     Merci et à bientôt pour le tirage 🍀
                 </p>
             </div>
         `;
 
-        await sendEmail(email, "Confirmation d'inscription aux notifications", htmlContent);
+        await sendEmail(email, "✅ Confirmation d'inscription aux notifications", htmlContent);
 
         return NextResponse.json({ success: true, participant: data });
     } catch (err) {

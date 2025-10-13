@@ -23,16 +23,36 @@ export async function processEmailJobs() {
 
             // Construire le contenu HTML
             const htmlContent = `
-                    <div style="font-family: Arial, sans-serif; text-align: center; background-color: #f7f7f7; padding: 50px 0;">
-                      <h1 style="margin-bottom: 40px;">
-                        <a href="${process.env.NEXT_PUBLIC_URL}" style="text-decoration: none; color: #000;">
-                          🎟️ Marocola
-                        </a>
-                      </h1>
-                      <p style="margin-bottom: 30px; font-size: 18px;">Bonjour <strong>${full_name}</strong> et merci pour votre participation !</p>
-                      <p style="margin-bottom: 30px; font-size: 18px; font-weight: bold;">Voici vos tickets : ${ticket_numbers.length}</p>
+                    <div style="font-family: Arial, sans-serif; text-align: center; background-color: #f7f7f7; padding: 50px 20px;">
+                    <table align="center" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 50px;">
+                        <tr>
+                            <!-- Image du ticket -->
+                            <td style="vertical-align: middle;">
+                            <img src="${process.env.NEXT_PUBLIC_URL}/img/ticket/ticket.png"
+                               alt="Ticket" 
+                               width="100" 
+                               style="display: block; height: auto;">
+                            </td>
+                            
+                            <!-- Image Marocola -->
+                            <td style="padding-left: 10px; vertical-align: middle;">
+                            <a href="${process.env.NEXT_PUBLIC_URL}" style="text-decoration: none;">
+                            <img src="${process.env.NEXT_PUBLIC_URL}/img/ui/marocola-title.png"
+                                 alt="Marocola" 
+                                 style="display: block; width: auto; height: 120px;">
+                            </a>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                    <p style="margin-bottom: 50px; font-size: 25px;">
+                        Bonjour <strong>${full_name}</strong> et merci pour votre participation !
+                    </p>
+                    <p style="margin-bottom: 30px; font-size: 18px; font-weight: bold;">
+                        Voici vos tickets : ${ticket_numbers.length}
+                    </p>
         
-                      <table align="center" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 600px; margin-bottom: 24px;">
+                    <table align="center" cellpadding="0" cellspacing="0" style="width: 100%; max-width: 600px; margin-bottom: 24px;">
                         <tr>
                           ${ticket_numbers
                 .map(
@@ -47,11 +67,11 @@ export async function processEmailJobs() {
                         </tr>
                       </table>
         
-                      <p style="margin-top: 20px; font-size: 18px;">Vous pouvez aussi consulter vos tickets ici :</p>
+                      <p style="margin-top: 60px; font-size: 18px;">Vous pouvez aussi consulter vos tickets ici :</p>
                       <p style="margin-top: 30px;">
                         <a href="${process.env.NEXT_PUBLIC_URL}/mes-tickets?token=${access_token}"
                            style="display: inline-block; background-color: #3498db; color: #fff; padding: 16px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 18px;">
-                          Voir tous mes tickets
+                          🎟️ Voir tous mes tickets
                         </a>
                       </p>
         
