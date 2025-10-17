@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Ticket, ArrowLeft, Search, Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useLockBodyScroll } from "@/lib/useLockBodyScroll";
 
 interface TicketData {
     id: number;
@@ -67,17 +68,7 @@ export default function TicketsPage() {
 
 
     // Bloquer le scroll derrière le modal
-    useEffect(() => {
-        if (modalOpen) {
-            document.body.style.overflow = "hidden"; // bloque le scroll
-        } else {
-            document.body.style.overflow = "auto"; // réactive le scroll
-        }
-
-        return () => {
-            document.body.style.overflow = "auto"; // nettoyage au cas où
-        };
-    }, [modalOpen]);
+    useLockBodyScroll(modalOpen);
 
 
     useEffect(() => {

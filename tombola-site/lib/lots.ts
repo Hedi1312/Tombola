@@ -72,7 +72,7 @@ export const PRIZES: Prize[] = [
         description: "Livre et jeu de cartes",
         img: "/img/lots/lot6.png",
         items: [
-            { name: "Livre d'Adrien Blanc (Jouons ! À la découverte du monde, des autres et de soi", quantity: 1 },
+            { name: "Livre d'Adrien Blanc (Jouons ! À la découverte du monde, des autres et de soi)", quantity: 1 },
             { name: "Jeu de cartes", quantity: 1 },
             { name: "Marque-page", quantity: 1 },
         ],
