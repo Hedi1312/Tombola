@@ -9,11 +9,27 @@ export async function POST(req: NextRequest) {
         const email = formData.get("email") as string;
         const message = formData.get("message") as string;
         const file = formData.get("file") as File | null;
+        const subject = formData.get("subject") as string;
+        const tickets = formData.get("tickets") as string | null;
+        const otherSubject = formData.get("otherSubject") as string | null;
 
-        // Validation
-        if (!name || !email || !message) {
+
+        // Validation champs
+        if (!name || !email || !message || !subject) {
             return NextResponse.json({ success: false, error: "Tous les champs sont requis." }, { status: 400 });
         }
+
+        // Validation spécifique selon le sujet
+        if (subject === "Achat de ticket" && !tickets) {
+            return NextResponse.json({ success: false, error: "Veuillez indiquer le nombre de tickets." }, { status: 400 });
+        }
+
+        if (subject === "Autres" && !otherSubject) {
+            return NextResponse.json({ success: false, error: "Veuillez préciser le sujet." }, { status: 400 });
+        }
+
+
+
 
         const supportEmail = process.env.GMAIL_USER;
         if (!supportEmail) {
@@ -23,6 +39,27 @@ export async function POST(req: NextRequest) {
                 { status: 500 }
             );
         }
+
+
+        let emailSubject = "";
+        let emailContent = `
+            <p><strong>Nom :</strong> ${name}</p>
+            <p><strong>Email :</strong> ${email}</p>
+        `;
+
+        if (subject === "Achat de ticket") {
+            emailSubject = "Achat de ticket";
+            emailContent += `<p><strong>Sujet :</strong> Achat de ticket</p>
+                     <p><strong>Nombre de tickets :</strong> ${tickets}</p>`;
+        } else {
+            emailSubject = "Autres";
+            emailContent += `<p><strong>Sujet :</strong> Autres</p>
+                     <p><strong>Précision :</strong> ${otherSubject}</p>`;
+        }
+
+        emailContent += `<p><strong>Message :</strong></p>
+                 <p>${message}</p>`;
+
 
         // Préparation des pièces jointes
         const attachments = [];
@@ -36,19 +73,22 @@ export async function POST(req: NextRequest) {
             });
         }
 
+        let emailTitle = emailSubject;
+        if (subject === "Autres" && otherSubject) {
+            emailTitle += ` - ${otherSubject}`;
+        }
+
         // Envoi de l'email
         try {
             await sendEmail(
                 supportEmail,
-                `SUPPORT - Nouveau message de ${name}`,
-                `<p><strong>Nom :</strong> ${name}</p>
-                <p><strong>Email :</strong> ${email}</p>
-                <p><strong>Message :</strong></p>
-                <p>${message}</p>`,
+                `SUPPORT - ${emailTitle}`,
+                emailContent,
                 undefined,
                 attachments,
                 email
             );
+
 
             return NextResponse.json({ success: true });
         } catch (mailError) {

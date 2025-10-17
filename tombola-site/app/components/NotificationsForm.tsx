@@ -72,7 +72,7 @@ export default function NotificationsForm({onClose,}: { onClose: () => void; }) 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                     <input
                         type="text"
-                        placeholder="Nom complet"
+                        placeholder="Nom Prénom"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         required
@@ -80,7 +80,7 @@ export default function NotificationsForm({onClose,}: { onClose: () => void; }) 
                     />
                     <input
                         type="email"
-                        placeholder="Email"
+                        placeholder="Adresse mail"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         required

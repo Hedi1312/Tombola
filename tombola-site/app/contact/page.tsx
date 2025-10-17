@@ -10,13 +10,37 @@ export default function Contact() {
     const [file, setFile] = useState<File | null>(null);
     const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
     const [errorMsg, setErrorMsg] = useState("");
+    const [subject, setSubject] = useState("");
+    const [tickets, setTickets] = useState("");
+    const [otherSubject, setOtherSubject] = useState(""); // NOUVEAU
+
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         setStatus("loading");
         setErrorMsg("");
 
+        if (!subject) {
+            setStatus("error");
+            setErrorMsg("Veuillez sélectionner un sujet.");
+            return;
+        }
+
+
         const formData = new FormData();
+        formData.append("subject", subject);
+        if (subject === "Achat de ticket") {
+            const ticketCount = parseInt(tickets);
+            if (isNaN(ticketCount) || ticketCount < 1 || ticketCount > 100) {
+                setStatus("error");
+                setErrorMsg("Veuillez indiquer un nombre de tickets valide (1-100).");
+                return;
+            }
+            formData.append("tickets", ticketCount.toString());
+        }
+
+        if (subject === "Autres") formData.append("otherSubject", otherSubject);
+
         formData.append("name", name);
         formData.append("email", email);
         formData.append("message", message);
@@ -77,8 +101,52 @@ export default function Contact() {
                 )}
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-gray-700">
-                    <input type="text" placeholder="Nom" value={name} onChange={(e) => setName(e.target.value)} required className="p-3 border rounded-lg" />
-                    <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required className="p-3 border rounded-lg" />
+                    <select value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full p-3 border rounded-lg">
+                        <option value="">Sélectionner un sujet</option>
+                        <option value="Achat de ticket">Achat de ticket</option>
+                        <option value="Autres">Autres</option>
+                    </select>
+
+                    {subject === "Achat de ticket" && (
+
+                        <div className="flex flex-col">
+                            <label htmlFor="tickets" className="text-gray-700 font-medium mb-2">
+                                Nombre de tickets :
+                            </label>
+                            <input
+                                type="number"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                placeholder="1-100"
+                                value={tickets}
+                                onChange={(e) => setTickets(e.target.value)}
+                                min={1}
+                                max={100}
+                                className="p-3 border rounded-lg"
+                                required
+                            />
+                        </div>
+
+                    )}
+
+                    {subject === "Autres" && (
+                        <div className="flex flex-col">
+                            <label htmlFor="tickets" className="text-gray-700 font-medium mb-2">
+                                Précision du sujet :
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Précision du sujet"
+                                value={otherSubject}
+                                onChange={(e) => setOtherSubject(e.target.value)}
+                                className="p-3 border rounded-lg"
+                                required
+                            />
+                        </div>
+                    )}
+
+                    <input type="text" placeholder="Nom Prénom" value={name} onChange={(e) => setName(e.target.value)} required className="p-3 border rounded-lg" />
+                    <input type="email" placeholder="Adresse mail" value={email} onChange={(e) => setEmail(e.target.value)} required className="p-3 border rounded-lg" />
                     <textarea placeholder="Votre message" value={message} onChange={(e) => setMessage(e.target.value)} required rows={5} className="p-3 border rounded-lg resize-none" />
 
                     {/* Champ fichier custom */}

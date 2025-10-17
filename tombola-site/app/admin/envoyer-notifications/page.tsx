@@ -18,6 +18,9 @@ export default function NotificationsAdminPage() {
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState("");
     const [loadingNotify, setLoadingNotify] = useState(false);
+    const total = participants.length;
+    const pending = participants.filter(p => !p.notified).length;
+
 
     async function fetchParticipants() {
         setLoading(true);
@@ -75,7 +78,8 @@ export default function NotificationsAdminPage() {
                     <div className="flex items-center space-x-3">
                         <BellRing className="h-8 w-8 text-yellow-500" />
                         <h1 className="text-2xl font-bold text-gray-800">
-                            Notifications participants
+                            Notifications participants{" "}
+                            <span className="text-indigo-600">({pending}/{total})</span>
                         </h1>
                     </div>
 

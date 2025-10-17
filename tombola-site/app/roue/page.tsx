@@ -393,7 +393,7 @@ export default function RouePage() {
 
                             <input
                                 type="text"
-                                placeholder="Nom complet"
+                                placeholder="Nom Prénom"
                                 value={fullName}
                                 required
                                 onChange={e => setFullName(e.target.value)}

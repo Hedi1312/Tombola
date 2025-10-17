@@ -68,7 +68,7 @@ export async function processEmailJobs() {
                       </table>
         
                       <p style="margin-top: 60px; font-size: 18px;">Vous pouvez aussi consulter vos tickets ici :</p>
-                      <p style="margin-top: 30px;">
+                      <p style="margin-top: 40px;">
                         <a href="${process.env.NEXT_PUBLIC_URL}/mes-tickets?token=${access_token}"
                            style="display: inline-block; background-color: #3498db; color: #fff; padding: 16px 28px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 18px;">
                           🎟️ Voir tous mes tickets

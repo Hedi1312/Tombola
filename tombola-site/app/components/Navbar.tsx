@@ -97,7 +97,7 @@ export default function Navbar() {
                     {/* Trait séparateur */}
                     <div className="border-t border-gray-700 my-4"></div>
 
-                    <div className="md:hidden px-6 pt-2 pb-6 grid grid-cols-4 gap-8 text-center">
+                    <div className="md:hidden pt-2 pb-6 grid grid-cols-4 gap-8 justify-items-center">
                         <Link href="/" className="text-gray-700" onClick={handleLinkClick}><FaHome size={36} /></Link>
                         <Link href="/lot-a-gagner" className="text-gray-700" onClick={handleLinkClick}><FaGifts size={36} /></Link>
                         <Link href="/resultat" className="text-gray-700" onClick={handleLinkClick}><GiTrophy size={36} /></Link>

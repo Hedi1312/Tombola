@@ -88,7 +88,7 @@ export async function notifyWinners() {
                     </p>
 
                     <p style="margin-top: 30px; font-size: 18px; color: #555;">
-                        Merci pour votre participation et félicitations encore 🍀
+                        Merci pour votre participation et toutes nos félicitations 🍀
                     </p>
                 </div>
             `;

@@ -50,7 +50,7 @@ export const PRIZES: Prize[] = [
         description: "Agenda et détente",
         img: "/img/lots/lot4.png",
         items: [
-            { name: "Agenda spécial EJE", quantity: 1 },
+            { name: "Agenda spécial EJE (@Jade et ses Bisounours)", quantity: 1 },
             { name: "Balle anti-stress", quantity: 1 },
         ],
     },

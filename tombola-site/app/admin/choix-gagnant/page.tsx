@@ -151,8 +151,6 @@ export default function ChoixGagnantPage() {
 
 
 
-    // Tirage aléatoire
-
     // Fonction pour mélanger un tableau correctement
     function shuffleArray<T>(array: T[]): T[] {
         const arr = [...array];
@@ -164,9 +162,9 @@ export default function ChoixGagnantPage() {
     }
 
 
+    // Tirage aléatoire
     const handleRandomize = async () => {
         const count = parseInt(winnerCount, 10);
-
 
         try {
             if (isNaN(count) || count <= 0) {
@@ -182,48 +180,57 @@ export default function ChoixGagnantPage() {
                 return;
             }
 
+            // Mélanger les tickets
             const shuffled = shuffleArray(data.tickets);
 
-            // 🧠 Exclure les tickets déjà enregistrés (persisted)
-            const usedTickets = new Set(
-                winners
-                    .filter((w) => w.persisted && w.ticket.trim() !== "")
-                    .map((w) => w.ticket.trim())
+            // 1 ticket unique par email
+            const uniqueTickets = Array.from(
+                new Map(shuffled.map((t) => [t.email.trim(), t])).values()
             );
 
-            const availableTickets = shuffled.filter(
-                (t) => !usedTickets.has(String(t.ticket_number).padStart(6, "0"))
-            );
+            // Exclure tickets déjà persistés
+            const persistedWinners = winners.filter((w) => w.persisted);
 
-            const updatedWinners = [...winners];
-            let nextTicketIndex = 0;
-
-            // 🧩 Étape 1 : Remplacer uniquement les champs non persistés ou vides
-            for (let i = 0; i < updatedWinners.length; i++) {
-                const w = updatedWinners[i];
-
-                // On ne touche pas à ceux déjà enregistrés
-                if (w.persisted) continue;
-
-                const isEmpty =
-                    w.name.trim() === "" &&
-                    w.email.trim() === "" &&
-                    w.ticket.trim() === "";
-
-                if ((isEmpty || !w.persisted) && nextTicketIndex < availableTickets.length) {
-                    const t = availableTickets[nextTicketIndex++];
-                    updatedWinners[i] = {
-                        name: t.full_name,
-                        email: t.email,
-                        ticket: String(t.ticket_number).padStart(6, "0"),
-                        persisted: false, // encore non enregistré
-                    };
-                }
+            // 🚨 Vérification : si on a déjà assez de gagnants persistés
+            if (persistedWinners.length >= count) {
+                setMessage(`❌ Vous avez déjà ${persistedWinners.length} gagnants enregistrés. Aucun nouveau tirage nécessaire.`);
+                return;
             }
 
-            // 🧩 Étape 2 : Ajouter des gagnants si la liste est trop courte
-            while (updatedWinners.length < count && nextTicketIndex < availableTickets.length) {
-                const t = availableTickets[nextTicketIndex++];
+            const usedTickets = new Set(
+                persistedWinners.map((w) => w.ticket.trim())
+            );
+            const usedEmails = new Set(
+                persistedWinners.map((w) => w.email.trim())
+            );
+
+            // Commencer avec les gagnants persistés
+            const updatedWinners = [...persistedWinners];
+
+            // Emails déjà sélectionnés
+            const selectedEmails = new Set(
+                updatedWinners.map((w) => w.email.trim()).filter((e) => e !== "")
+            );
+
+            // Tickets disponibles pour le tirage
+            const availableTickets = uniqueTickets.filter(
+                (t) =>
+                    !usedTickets.has(String(t.ticket_number).padStart(6, "0")) &&
+                    !usedEmails.has(t.email.trim()) &&
+                    !selectedEmails.has(t.email.trim())
+            );
+
+            // Combien de nouveaux gagnants il nous faut
+            const toDraw = count - persistedWinners.length;
+
+            if (availableTickets.length < toDraw) {
+                setMessage(`❌ Pas assez de participants uniques pour ce tirage. Seuls ${availableTickets.length} tickets uniques sont disponibles.`);
+                return;
+            }
+
+            // Tirage des nouveaux gagnants
+            for (let i = 0; i < toDraw; i++) {
+                const t = availableTickets[i];
                 updatedWinners.push({
                     name: t.full_name,
                     email: t.email,
@@ -232,11 +239,10 @@ export default function ChoixGagnantPage() {
                 });
             }
 
-            // Tronquer si nécessaire
-            if (updatedWinners.length > count) updatedWinners.length = count;
-
             setWinners(updatedWinners);
-            setMessage("✅ Gagnants non encore enregistrés mis à jour !");
+            setMessage(`✅ ${toDraw} gagnants tirés au sort. N'oubliez pas de les enregistrer !`);
+            setTimeout(() => setMessage(""), 5000);
+
         } catch (err: unknown) {
             if (err instanceof Error) {
                 setMessage(`❌ Erreur lors du tirage : ${err.message}`);
@@ -244,9 +250,8 @@ export default function ChoixGagnantPage() {
                 setMessage(`❌ Erreur inattendue`);
             }
         } finally {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
     };
 
 
@@ -301,6 +306,16 @@ export default function ChoixGagnantPage() {
                 setMessage("❌ Chaque ticket doit être unique !");
                 return;
             }
+
+
+            // 🛑 Vérifier qu'il n'y a pas 2 emails identiques
+            const emails = list.map(w => w.email.trim());
+            const uniqueEmails = new Set(emails);
+            if (uniqueEmails.size !== emails.length) {
+                setMessage("❌ Chaque email doit être unique !");
+                return;
+            }
+
 
             const res = await fetch("/api/admin/choix-gagnant", {
                 method: "POST",

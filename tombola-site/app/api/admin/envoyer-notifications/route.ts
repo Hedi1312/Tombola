@@ -11,7 +11,10 @@ export async function GET() {
         if (error) {
             throw new Error(error.message);
         }
-        return NextResponse.json({ success: true, participants: data ?? [] });
+        // 🔥 Trier ici : ceux non notifiés (false) en premier
+        const sorted = (data ?? []).sort((a, b) => Number(a.notified) - Number(b.notified));
+
+        return NextResponse.json({ success: true, participants: sorted });
     } catch (err) {
         const errorMessage =
             err instanceof Error ? err.message : "Erreur inconnue côté serveur";

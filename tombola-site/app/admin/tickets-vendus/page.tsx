@@ -62,6 +62,8 @@ export default function TicketsPage() {
     const [selectedTicket, setSelectedTicket] = useState<TicketData | null>(null);
     const router = useRouter();
     const [message, setMessage] = useState<string>("");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+
 
 
     // Bloquer le scroll derrière le modal
@@ -125,12 +127,27 @@ export default function TicketsPage() {
     }
 
 
-    const filteredTickets = tickets.filter(
-        (t) =>
+    const filteredTickets = tickets
+        .filter((t) =>
             t.full_name.toLowerCase().includes(search.toLowerCase()) ||
             t.email.toLowerCase().includes(search.toLowerCase()) ||
             String(t.ticket_number).includes(search)
-    );
+        )
+        .sort((a, b) => {
+            const parseDate = (d: string) => new Date(d.replace(" ", "T")).getTime();
+            const dateA = parseDate(a.created_at);
+            const dateB = parseDate(b.created_at);
+
+            if (dateA === dateB) {
+                // Si même date → trier par ID pour garder un ordre logique
+                return sortOrder === "asc" ? a.id - b.id : b.id - a.id;
+            }
+
+            return sortOrder === "asc" ? dateA - dateB : dateB - dateA;
+        });
+
+
+
 
 
     return (
@@ -199,11 +216,18 @@ export default function TicketsPage() {
                                     <th className="px-4 py-2">Nom complet</th>
                                     <th className="px-4 py-2">Email</th>
                                     <th className="px-4 py-2">Numéro du ticket</th>
-                                    <th className="px-4 py-2">Date achat</th>
+                                    <th
+                                        className="px-4 py-2 cursor-pointer select-none"
+                                        onClick={() => setSortOrder(prev => (prev === "asc" ? "desc" : "asc"))}
+                                    >
+                                        Date achat {sortOrder === "asc" ? "⬇️" : "⬆️"}
+                                    </th>
+
                                     <th className="px-4 py-2">Supprimer</th>
                                 </tr>
                                 </thead>
                                 <tbody>
+
                                 {filteredTickets.map((ticket) => (
                                     <tr
                                         key={ticket.id}
