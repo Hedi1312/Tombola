@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, error: "Veuillez indiquer le nombre de tickets." }, { status: 400 });
         }
 
-        if (subject === "Autres" && !otherSubject) {
+        if (subject === "Autre" && !otherSubject) {
             return NextResponse.json({ success: false, error: "Veuillez préciser le sujet." }, { status: 400 });
         }
 
@@ -52,8 +52,8 @@ export async function POST(req: NextRequest) {
             emailContent += `<p><strong>Sujet :</strong> Achat de ticket</p>
                      <p><strong>Nombre de tickets :</strong> ${tickets}</p>`;
         } else {
-            emailSubject = "Autres";
-            emailContent += `<p><strong>Sujet :</strong> Autres</p>
+            emailSubject = "Autre";
+            emailContent += `<p><strong>Sujet :</strong> Autre</p>
                      <p><strong>Précision :</strong> ${otherSubject}</p>`;
         }
 
@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
         }
 
         let emailTitle = emailSubject;
-        if (subject === "Autres" && otherSubject) {
+        if (subject === "Autre" && otherSubject) {
             emailTitle += ` - ${otherSubject}`;
         }
 

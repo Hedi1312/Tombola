@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { PRIZES, Prize } from "@/lib/lots";
 import { FaGifts } from "react-icons/fa";
 import {useLockBodyScroll} from "@/lib/useLockBodyScroll";

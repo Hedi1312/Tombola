@@ -39,7 +39,7 @@ export default function Contact() {
             formData.append("tickets", ticketCount.toString());
         }
 
-        if (subject === "Autres") formData.append("otherSubject", otherSubject);
+        if (subject === "Autre") formData.append("otherSubject", otherSubject);
 
         formData.append("name", name);
         formData.append("email", email);
@@ -104,7 +104,7 @@ export default function Contact() {
                     <select value={subject} onChange={(e) => setSubject(e.target.value)} className="w-full p-3 border rounded-lg">
                         <option value="">Sélectionner un sujet</option>
                         <option value="Achat de ticket">Achat de ticket</option>
-                        <option value="Autres">Autres</option>
+                        <option value="Autre">Autre</option>
                     </select>
 
                     {subject === "Achat de ticket" && (
@@ -129,7 +129,7 @@ export default function Contact() {
 
                     )}
 
-                    {subject === "Autres" && (
+                    {subject === "Autre" && (
                         <div className="flex flex-col">
                             <label htmlFor="tickets" className="text-gray-700 font-medium mb-2">
                                 Précision du sujet :
