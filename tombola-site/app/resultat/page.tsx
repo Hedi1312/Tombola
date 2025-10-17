@@ -7,6 +7,7 @@ import { useWindowSize } from "react-use";
 import { HiOutlineBellAlert } from "react-icons/hi2";
 import { GiTrophy } from 'react-icons/gi';
 import NotificationsForm from "@/app/components/NotificationsForm";
+import {useLockBodyScroll} from "@/lib/useLockBodyScroll";
 
 interface Winner {
     name: string;
@@ -41,17 +42,7 @@ export default function ResultatPage() {
 
 
     // Bloquer le scroll derrière le modal
-    useEffect(() => {
-        if (notifyOpen) {
-            document.body.style.overflow = "hidden"; // bloque le scroll
-        } else {
-            document.body.style.overflow = "auto";   // réactive le scroll
-        }
-
-        return () => {
-            document.body.style.overflow = "auto"; // nettoyage au cas où
-        };
-    }, [notifyOpen]);
+    useLockBodyScroll(notifyOpen);
 
     // Compte à rebours jusqu'au tirage
     useEffect(() => {

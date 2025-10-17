@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Save, LoaderPinwheel } from "lucide-react";
 import Image from "next/image";
+import {useLockBodyScroll} from "@/lib/useLockBodyScroll";
 
 export default function RouePage() {
     const [rotation, setRotation] = useState(0);
@@ -86,44 +87,9 @@ export default function RouePage() {
         loadSound();
     }, []);
 
-    useEffect(() => {
-        let scrollY = 0;
 
-        const handleTouchMove = (e: TouchEvent) => {
-            e.preventDefault();
-        };
-
-        if (showResult || showFormModal) {
-            scrollY = window.scrollY;
-            document.body.style.position = "fixed";
-            document.body.style.top = `-${scrollY}px`;
-            document.body.style.left = "0";
-            document.body.style.right = "0";
-            document.body.style.overflow = "hidden";
-
-            document.addEventListener("touchmove", handleTouchMove, { passive: false });
-        } else {
-            document.body.style.position = "";
-            document.body.style.top = "";
-            document.body.style.left = "";
-            document.body.style.right = "";
-            document.body.style.overflow = "";
-            window.scrollTo(0, scrollY);
-
-            document.removeEventListener("touchmove", handleTouchMove);
-        }
-
-        return () => {
-            document.body.style.position = "";
-            document.body.style.top = "";
-            document.body.style.left = "";
-            document.body.style.right = "";
-            document.body.style.overflow = "";
-            document.removeEventListener("touchmove", handleTouchMove);
-            window.scrollTo(0, scrollY);
-        };
-    }, [spinning, showResult, showFormModal]);
-
+    // Bloquer le scroll derrière le modal
+    useLockBodyScroll(showResult || showFormModal);
 
 
 

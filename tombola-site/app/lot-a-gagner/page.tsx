@@ -4,25 +4,15 @@ import Image from "next/image";
 import React, { useState, useEffect } from "react";
 import { PRIZES, Prize } from "@/lib/lots";
 import { FaGifts } from "react-icons/fa";
+import {useLockBodyScroll} from "@/lib/useLockBodyScroll";
 
 
 export default function LotAGagnerPage() {
     const [selected, setSelected] = useState<Prize | null>(null);
 
-    useEffect(() => {
-        if (selected) {
-            // Bloquer le scroll
-            document.body.style.overflow = "hidden";
-        } else {
-            // Réactiver le scroll
-            document.body.style.overflow = "auto";
-        }
 
-        // Nettoyage si le composant se démonte
-        return () => {
-            document.body.style.overflow = "auto";
-        };
-    }, [selected]);
+    // Bloquer le scroll derrière le modal
+    useLockBodyScroll(!!selected);
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-6 bg-gray-50 relative overflow-hidden">
