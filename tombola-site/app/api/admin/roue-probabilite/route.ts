@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseAdmin } from "@/lib/supabaseAdmin"; // ajuste selon ton import
+import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 // GET -> retourne { success: true, value: number } (decimal)
 export async function GET() {

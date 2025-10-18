@@ -33,7 +33,7 @@ export default function Home() {
                 {/* Bloc Lots */}
                 <div className="w-full md:w-1/2 max-w-[500px] bg-white rounded-2xl shadow-md p-8 text-center text-gray-700 flex-shrink-0 min-h-[350px]">
                     <h1 className="flex items-center justify-center gap-3 text-3xl md:text-4xl font-bold mb-10 mt-0.75 text-gray-800">
-                        <FaGifts size={40} />
+                        <FaGifts size={40} className="text-red-800" />
                         Lots
                     </h1>
                     <p className="text-base md:text-lg mb-6">
@@ -54,7 +54,7 @@ export default function Home() {
                 <div className="w-full md:w-1/2 max-w-[500px] bg-white rounded-2xl shadow-md p-8 text-center text-gray-700 flex flex-col justify-between min-h-[350px]">
                     <div>
                         <h1 className="flex items-center justify-center gap-3 text-3xl md:text-4xl font-bold mb-10 mt-1 text-gray-800">
-                            <LoaderPinwheel size={40} />
+                            <LoaderPinwheel size={40} className="text-red-800" />
                             Roue de la Chance
                         </h1>
                         <p className="text-base md:text-lg mb-6">

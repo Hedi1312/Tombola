@@ -10,6 +10,10 @@ DROP TABLE IF EXISTS draw_date CASCADE;
 DROP TABLE IF EXISTS winners CASCADE;
 DROP TABLE IF EXISTS notifications CASCADE;
 DROP TABLE IF EXISTS tickets_number CASCADE;
+DROP TABLE IF EXISTS settings CASCADE;
+DROP TABLE IF EXISTS roue_plays CASCADE;
+
+
 
 -- =========================================
 -- TABLES PRINCIPALES
@@ -158,8 +162,29 @@ $$ LANGUAGE plpgsql;
 -- =========================================
 
 CREATE TABLE settings (
-            key text PRIMARY KEY,
-            value numeric
+            key TEXT PRIMARY KEY,
+            value NUMERIC CHECK (value BETWEEN 0 AND 1)
 );
 INSERT INTO settings (key, value) VALUES ('win_probability', 0.15);
+
+
+
+
+-- =========================================
+-- Participation au tirage de la roue
+-- =========================================
+
+CREATE TABLE roue_plays (
+            id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+            email TEXT not null,
+            is_win BOOLEAN not null default false,
+            played_at TIMESTAMPTZ not null default now()
+);
+
+
+CREATE INDEX ON roue_plays (email, played_at);
+
+-- Empêche de jouer plusieurs fois dans la même journée
+CREATE UNIQUE INDEX unique_play_per_day_idx ON roue_plays (email, (date_trunc('day', played_at)));
+
 

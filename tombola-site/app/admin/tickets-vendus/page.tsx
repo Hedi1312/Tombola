@@ -250,42 +250,56 @@ export default function TicketsPage() {
                             </table>
                         </div>
 
+
                         {/* Cartes Mobile */}
-                        <div className="grid gap-4 sm:hidden text-gray-700">
-                            {filteredTickets.map((ticket) => (
-                                <div
-                                    key={ticket.id}
-                                    className="p-4 border rounded-lg shadow-sm bg-gray-50"
+                        <div className="sm:hidden text-gray-700">
+                            {/* Bouton de tri sur mobile */}
+                            <div className="flex justify-end mb-4">
+                                <button
+                                    onClick={() => setSortOrder(prev => (prev === "asc" ? "desc" : "asc"))}
+                                    className="flex items-center gap-2 rounded-lg bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 transition"
                                 >
-                                    <p>
-                                        <strong>Id :</strong> {ticket.id}
-                                    </p>
-                                    <p>
-                                        <strong>Nom :</strong> {ticket.full_name}
-                                    </p>
-                                    <p>
-                                        <strong>Email :</strong> {ticket.email}
-                                    </p>
-                                    <p>
-                                        <strong>Ticket :</strong> {ticket.ticket_number}
-                                    </p>
-                                    <p>
-                                        <strong>Date :</strong>{" "}
-                                        {new Date(ticket.created_at).toLocaleString("fr-FR", {
-                                            dateStyle: "short",
-                                            timeStyle: "short",
-                                        })}
-                                    </p>
-                                    <button
-                                        onClick={() => openModal(ticket)}
-                                        className="mt-3 flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
+                                    Trier par date {sortOrder === "asc" ? "⬇️" : "⬆️"}
+                                </button>
+                            </div>
+
+                            <div className="grid gap-4">
+                                {filteredTickets.map((ticket) => (
+                                    <div
+                                        key={ticket.id}
+                                        className="p-4 border rounded-lg shadow-sm bg-gray-50"
                                     >
-                                        <Trash2 size={16} />
-                                        Supprimer
-                                    </button>
-                                </div>
-                            ))}
+                                        <p>
+                                            <strong>Id :</strong> {ticket.id}
+                                        </p>
+                                        <p>
+                                            <strong>Nom :</strong> {ticket.full_name}
+                                        </p>
+                                        <p>
+                                            <strong>Email :</strong> {ticket.email}
+                                        </p>
+                                        <p>
+                                            <strong>Ticket :</strong> {ticket.ticket_number}
+                                        </p>
+                                        <p>
+                                            <strong>Date :</strong>{" "}
+                                            {new Date(ticket.created_at).toLocaleString("fr-FR", {
+                                                dateStyle: "short",
+                                                timeStyle: "short",
+                                            })}
+                                        </p>
+                                        <button
+                                            onClick={() => openModal(ticket)}
+                                            className="mt-3 flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
+                                        >
+                                            <Trash2 size={16} />
+                                            Supprimer
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
+
                     </>
                 )}
 
