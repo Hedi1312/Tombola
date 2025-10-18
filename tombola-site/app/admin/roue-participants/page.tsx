@@ -30,7 +30,7 @@ export default function RoueParticipantsAdmin() {
                 if (data.success) setParticipants(data.participants || []);
                 else setMessage(`❌ Erreur API : ${data.error || "inconnue"}`);
             } catch (err) {
-                setMessage("❌ Erreur lors du chargement des participants.");
+                setMessage(`❌ Erreur lors du chargement des participants : ${err}`);
             }
             setLoading(false);
         }
