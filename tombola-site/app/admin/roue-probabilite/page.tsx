@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { LoaderPinwheel, ArrowLeft, Save } from "lucide-react";
+import { LoaderPinwheel, ArrowLeft, Save, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function WinProbabilityAdmin() {
@@ -84,6 +84,16 @@ export default function WinProbabilityAdmin() {
                     </button>
                 </div>
 
+
+                <button
+                    onClick={() => router.push("/admin/roue-participants")}
+                    className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 transition cursor-pointer"
+                >
+                    <Users size={20} />
+                    Voir la liste des participants
+                </button>
+
+
                 {message && (
                     <p
                         className={`mb-4 mt-10 rounded-lg text-center text-base p-2 ${
@@ -156,7 +166,7 @@ export default function WinProbabilityAdmin() {
                         <button
                             onClick={() => saveProbability(Number(manualInput))}
                             disabled={loading}
-                            className="h-12 w-full sm:max-w-xs sm:mx-auto flex items-center justify-center gap-2 bg-green-700 text-white font-medium rounded-lg hover:bg-green-800 shadow-sm hover:shadow-md transition cursor-pointer disabled:opacity-50"
+                            className="px-4 py-2 w-full sm:max-w-xs sm:mx-auto flex items-center justify-center gap-2 bg-green-700 text-white font-medium rounded-lg hover:bg-green-800 shadow-sm hover:shadow-md transition cursor-pointer disabled:opacity-50"
                         >
                             <Save className="w-5 h-5 flex-shrink-0" />
                             {loading ? "Enregistrement..." : "Enregistrer"}

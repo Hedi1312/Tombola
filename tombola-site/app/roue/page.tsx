@@ -293,7 +293,6 @@ export default function RouePage() {
                     {/* Bouton SPIN qui tourne avec la roue */}
                     <div
                         className="absolute top-1/2 left-1/2 cursor-pointer select-none"
-                        onClick={spinWheel}
                         style={{
                             transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
                             transition: spinning ? "none" : "transform 0.3s ease-out",

@@ -203,18 +203,18 @@ export default function TicketsPage() {
                             <table className="w-full border-collapse rounded-lg shadow text-gray-700">
                                 <thead className="bg-gray-100 text-left">
                                 <tr>
-                                    <th className="px-4 py-2">#</th>
-                                    <th className="px-4 py-2">Nom complet</th>
-                                    <th className="px-4 py-2">Email</th>
-                                    <th className="px-4 py-2">Numéro du ticket</th>
+                                    <th className="px-4 py-2 text-left">#</th>
+                                    <th className="px-4 py-2 text-center">Nom complet</th>
+                                    <th className="px-4 py-2 text-center">Email</th>
+                                    <th className="px-4 py-2 text-center">Numéro du ticket</th>
                                     <th
-                                        className="px-4 py-2 cursor-pointer select-none"
+                                        className="px-4 py-2 cursor-pointer select-none text-center"
                                         onClick={() => setSortOrder(prev => (prev === "asc" ? "desc" : "asc"))}
                                     >
                                         Date achat {sortOrder === "asc" ? "⬇️" : "⬆️"}
                                     </th>
 
-                                    <th className="px-4 py-2">Supprimer</th>
+                                    <th className="px-4 py-2 text-right">Supprimer</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -224,17 +224,17 @@ export default function TicketsPage() {
                                         key={ticket.id}
                                         className="border-b hover:bg-gray-50 transition"
                                     >
-                                        <td className="px-4 py-2">{ticket.id}</td>
-                                        <td className="px-4 py-2">{ticket.full_name}</td>
-                                        <td className="px-4 py-2">{ticket.email}</td>
-                                        <td className="px-4 py-2">{ticket.ticket_number}</td>
-                                        <td className="px-4 py-2">
+                                        <td className="px-4 py-2 text-left">{ticket.id}</td>
+                                        <td className="px-4 py-2 text-center">{ticket.full_name}</td>
+                                        <td className="px-4 py-2 text-center">{ticket.email}</td>
+                                        <td className="px-4 py-2 text-center">{ticket.ticket_number}</td>
+                                        <td className="px-4 py-2 text-center">
                                             {new Date(ticket.created_at).toLocaleString("fr-FR", {
                                                 dateStyle: "short",
                                                 timeStyle: "short",
                                             })}
                                         </td>
-                                        <td className="px-4 py-2">
+                                        <td className="px-4 py-2 text-right">
                                             <button
                                                 onClick={() => openModal(ticket)}
                                                 className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-white font-medium hover:bg-red-600 transition cursor-pointer"
@@ -254,7 +254,7 @@ export default function TicketsPage() {
                         {/* Cartes Mobile */}
                         <div className="sm:hidden text-gray-700">
                             {/* Bouton de tri sur mobile */}
-                            <div className="flex justify-end mb-4">
+                            <div className="flex justify-center mb-4">
                                 <button
                                     onClick={() => setSortOrder(prev => (prev === "asc" ? "desc" : "asc"))}
                                     className="flex items-center gap-2 rounded-lg bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 transition"

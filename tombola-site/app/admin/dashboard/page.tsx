@@ -31,6 +31,12 @@ export default function DashboardPage() {
             onClick: () => router.push("/admin/choix-gagnant"),
         },
         {
+            title: "Roue de la chance",
+            description: "Modifier le taux de victoire de la roue et afficher la liste des participants",
+            icon: <LoaderPinwheel className="h-8 w-8 text-green-600" />,
+            onClick: () => router.push("/admin/roue-probabilite"),
+        },
+        {
             title: "Changer la date du tirage",
             description: "Modifiez la date prévue pour le prochain tirage",
             icon: <CalendarDays className="h-8 w-8 text-indigo-600" />,
@@ -42,12 +48,7 @@ export default function DashboardPage() {
             icon: <BellRing className="h-8 w-8 text-yellow-500" />,
             onClick: () => router.push("/admin/envoyer-notifications"),
         },
-        {
-            title: "Probabilité de gain",
-            description: "Modifier le taux de victoire de la roue",
-            icon: <LoaderPinwheel className="h-8 w-8 text-green-600" />,
-            onClick: () => router.push("/admin/roue-probabilite"),
-        },
+
 
     ];
 
