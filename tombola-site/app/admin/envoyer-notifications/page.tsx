@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ArrowLeft, BellRing, Send } from "lucide-react";
+import { ArrowLeft, BellRing, Send, Search, Trash2, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import {useLockBodyScroll} from "@/lib/useLockBodyScroll";
 
 interface Participant {
     id: number;
@@ -12,12 +13,58 @@ interface Participant {
     access_token: string;
 }
 
+
+function ConfirmModal({
+          isOpen,
+          onConfirm,
+          onCancel,
+          message,
+          }: {
+    isOpen: boolean;
+    onConfirm: () => void;
+    onCancel: () => void;
+    message?: string;
+}) {
+    if (!isOpen) return null;
+    return (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+            <div className="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full text-center">
+                <p className="text-gray-800 mb-6">{message || "Êtes-vous sûr ?"}</p>
+                <div className="flex justify-center gap-4">
+                    <button
+                        onClick={onConfirm}
+                        className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
+                    >
+                        <Trash2 size={18} />
+                        Supprimer
+                    </button>
+                    <button
+                        onClick={onCancel}
+                        className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 transition cursor-pointer"
+                    >
+                        <X size={18} />
+                        Annuler
+                    </button>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function NotificationsAdminPage() {
     const router = useRouter();
     const [participants, setParticipants] = useState<Participant[]>([]);
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState("");
     const [loadingNotify, setLoadingNotify] = useState(false);
+    const [search, setSearch] = useState("");
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selected, setSelected] = useState<Participant | null>(null);
+
+
+    // Bloquer le scroll derrière le modal
+    useLockBodyScroll(modalOpen);
+
     const total = participants.length;
     const pending = participants.filter((p) => !p.notified).length;
 
@@ -62,9 +109,50 @@ export default function NotificationsAdminPage() {
         }
     }
 
+
+    async function handleDelete(id: number) {
+        try {
+            const res = await fetch(`/api/admin/envoyer-notifications/${id}`, { method: "DELETE" });
+            const data = await res.json().catch(() => ({}));
+
+            if (!res.ok) {
+                setMessage(`❌ Erreur HTTP ${res.status}`);
+                return;
+            }
+
+            if (data.success) {
+                setParticipants((prev) => prev.filter((p) => p.id !== id));
+                setMessage(`✅ Participant supprimé : "${selected?.full_name}" - "${selected?.email}"`);
+            } else {
+                setMessage(`❌ ${data.error}`);
+            }
+        } catch (err) {
+            console.error(err);
+            setMessage("❌ Erreur réseau lors de la suppression.");
+        } finally {
+            setModalOpen(false);
+            setSelected(null);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    }
+
+    function openModal(p: Participant) {
+        setSelected(p);
+        setModalOpen(true);
+    }
+
+    const filtered = participants.filter(
+        (p) =>
+            p.full_name.toLowerCase().includes(search.toLowerCase()) ||
+            p.email.toLowerCase().includes(search.toLowerCase())
+    );
+
     useEffect(() => {
         fetchParticipants();
     }, []);
+
+
+
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
@@ -103,6 +191,18 @@ export default function NotificationsAdminPage() {
                     </p>
                 )}
 
+                {/* Barre de recherche */}
+                <div className="flex items-center gap-2 border rounded-lg px-3 py-2 my-8 max-w-md mx-auto text-gray-700">
+                    <Search className="w-5 h-5 text-gray-500" />
+                    <input
+                        type="text"
+                        placeholder="Rechercher par nom ou email..."
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        className="w-full outline-none"
+                    />
+                </div>
+
                 {/* Bouton envoyer */}
                 <button
                     onClick={handleNotifyAll}
@@ -116,7 +216,7 @@ export default function NotificationsAdminPage() {
                 {/* Contenu */}
                 {loading ? (
                     <p className="mt-6 text-center text-gray-600">Chargement...</p>
-                ) : participants.length === 0 ? (
+                ) : filtered.length === 0 ? (
                     <p className="mt-6 text-center text-gray-600">
                         Aucune personne à notifier pour le moment.
                     </p>
@@ -127,27 +227,22 @@ export default function NotificationsAdminPage() {
                             <table className="w-full border-collapse rounded-lg shadow text-gray-700 mb-4">
                                 <thead className="bg-gray-100 text-left">
                                 <tr>
-                                    <th className="px-4 py-2 align-middle">Nom</th>
-                                    <th className="px-4 py-2 align-middle text-center break-all">
-                                        Email
-                                    </th>
-                                    <th className="px-4 py-2 align-middle text-center">
-                                        État
-                                    </th>
+                                    <th className="px-4 py-2 align-middle">#</th>
+                                    <th className="px-4 py-2 align-middle text-center">Nom complet</th>
+                                    <th className="px-4 py-2 align-middle text-center">Email</th>
+                                    <th className="px-4 py-2 align-middle text-center">État</th>
+                                    <th className="px-4 py-2 align-middle text-center">Supprimer</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                {participants.map((p) => (
+                                {filtered.map((p) => (
                                     <tr
                                         key={p.id}
                                         className="border-b hover:bg-gray-50 transition"
                                     >
-                                        <td className="px-4 py-2 align-middle">
-                                            {p.full_name}
-                                        </td>
-                                        <td className="px-4 py-2 align-middle text-center">
-                                            {p.email}
-                                        </td>
+                                        <td className="px-4 py-2 align-middle">{p.id}</td>
+                                        <td className="px-4 py-2 align-middle text-center">{p.full_name}</td>
+                                        <td className="px-4 py-2 align-middle text-center">{p.email}</td>
                                         <td className="px-4 py-2 align-middle text-center">
                                             {p.notified ? (
                                                 <span className="text-green-600 font-medium">
@@ -159,6 +254,18 @@ export default function NotificationsAdminPage() {
                                                     </span>
                                             )}
                                         </td>
+                                        <td className="px-4 py-2 align-middle">
+                                            <div className="flex justify-center">
+                                                <button
+                                                    onClick={() => openModal(p)}
+                                                    className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-white font-medium hover:bg-red-600 transition cursor-pointer"
+                                                >
+                                                    <Trash2 size={16} />
+                                                    Supprimer
+                                                </button>
+                                            </div>
+                                        </td>
+
                                     </tr>
                                 ))}
                                 </tbody>
@@ -168,13 +275,16 @@ export default function NotificationsAdminPage() {
                         {/* Cartes Mobile (affichage responsive) */}
                         <div className="sm:hidden text-gray-700 mt-8">
                             <div className="grid gap-4">
-                                {participants.map((p) => (
+                                {filtered.map((p) => (
                                     <div
                                         key={p.id}
                                         className="p-4 border rounded-lg shadow-sm bg-gray-50"
                                     >
                                         <p>
-                                            <strong>Nom :</strong> {p.full_name}
+                                            <strong>Id :</strong> {p.id}
+                                        </p>
+                                        <p>
+                                            <strong>Nom complet :</strong> {p.full_name}
                                         </p>
                                         <p className="break-all">
                                             <strong>Email :</strong> {p.email}
@@ -191,12 +301,32 @@ export default function NotificationsAdminPage() {
                                                 </span>
                                             )}
                                         </p>
+                                        <div className="flex justify-end mt-3">
+                                            <button
+                                                onClick={() => openModal(p)}
+                                                className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
+                                            >
+                                                <Trash2 size={16} />
+                                                Supprimer
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
                     </>
                 )}
+                {/* Modal de confirmation */}
+                <ConfirmModal
+                    isOpen={modalOpen && selected !== null}
+                    onConfirm={() => selected && handleDelete(selected.id)}
+                    onCancel={() => setModalOpen(false)}
+                    message={
+                        selected
+                            ? `⚠️ Supprimer le participant "${selected.full_name}" - "${selected.email}" ?`
+                            : ""
+                    }
+                />
             </div>
         </section>
     );

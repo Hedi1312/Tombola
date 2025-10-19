@@ -199,16 +199,16 @@ export default function RoueParticipantsAdmin() {
                     </p>
                 ) : (
                     <>
-                        {/* ✅ TABLEAU DESKTOP */}
+                        {/* TABLEAU DESKTOP */}
                         <div className="hidden sm:block overflow-x-auto mb-4">
                             <table className="w-full border-collapse rounded-lg shadow text-gray-700">
                                 <thead className="bg-gray-100 text-left">
                                 <tr>
-                                    <th className="px-4 py-2">#</th>
-                                    <th className="px-4 py-2 text-center">Email</th>
-                                    <th className="px-4 py-2 text-center">Gains</th>
-                                    <th className="px-4 py-2 text-center">Pertes</th>
-                                    <th className="px-4 py-2 text-center">Dernier résultat</th>
+                                    <th className="px-4 py-2 align-middle">#</th>
+                                    <th className="px-4 py-2 align-middle text-center">Email</th>
+                                    <th className="px-4 py-2 align-middle text-center">Gains</th>
+                                    <th className="px-4 py-2 align-middle text-center">Pertes</th>
+                                    <th className="px-4 py-2 align-middle text-center">Dernier résultat</th>
                                     <th
                                         className="px-4 py-2 cursor-pointer select-none text-center"
                                         onClick={() =>
@@ -229,36 +229,40 @@ export default function RoueParticipantsAdmin() {
                                         key={participant.id}
                                         className="border-b hover:bg-gray-50 transition"
                                     >
-                                        <td className="px-4 py-2">{participant.id}</td>
-                                        <td className="px-4 py-2 text-center">{participant.email}</td>
-                                        <td className="px-4 py-2 text-center text-green-600 font-semibold">
+                                        <td className="px-4 py-2 align-middle">{participant.id}</td>
+                                        <td className="px-4 py-2 align-middle text-center">{participant.email}</td>
+                                        <td className="px-4 py-2 align-middle text-center text-green-600 font-semibold">
                                             {participant.total_wins}
                                         </td>
-                                        <td className="px-4 py-2 text-center text-red-600 font-semibold">
+                                        <td className="px-4 py-2 align-middle text-center text-red-600 font-semibold">
                                             {participant.total_losses}
                                         </td>
-                                        <td className="px-4 py-2 text-center">
+                                        <td className="px-4 py-2 align-middle text-center">
                                             {participant.last_result === "win"
                                                 ? "✅ Gagné"
                                                 : participant.last_result === "lose"
                                                     ? "❌ Perdu"
                                                     : "—"}
                                         </td>
-                                        <td className="px-4 py-2 text-center">
+                                        <td className="px-4 py-2 align-middle text-center">
                                             {new Date(participant.played_at).toLocaleString("fr-FR", {
                                                 dateStyle: "short",
                                                 timeStyle: "short",
                                             })}
                                         </td>
-                                        <td className="px-4 py-2 text-center">
-                                            <button
-                                                onClick={() => openModal(participant)}
-                                                className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-white font-medium hover:bg-red-600 transition cursor-pointer"
-                                            >
-                                                <RotateCcw size={16} />
-                                                Réinitialiser
-                                            </button>
+
+                                        <td className="px-4 py-2 align-middle">
+                                            <div className="flex justify-center">
+                                                <button
+                                                    onClick={() => openModal(participant)}
+                                                    className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-white font-medium hover:bg-red-600 transition cursor-pointer"
+                                                >
+                                                    <RotateCcw size={16} />
+                                                    Réinitialiser
+                                                </button>
+                                            </div>
                                         </td>
+
                                     </tr>
                                 ))}
                                 </tbody>
@@ -266,50 +270,62 @@ export default function RoueParticipantsAdmin() {
                         </div>
 
                         {/* Cartes Mobile */}
-                        <div className="sm:hidden text-gray-700 grid gap-4">
-                            {filteredParticipants.map((participant) => (
-                                <div
-                                    key={participant.id}
-                                    className="p-4 border rounded-lg shadow-sm bg-gray-50"
+                        <div className="sm:hidden text-gray-700">
+                            {/* Bouton de tri sur mobile */}
+                            <div className="flex justify-center mb-4">
+                                <button
+                                    onClick={() => setSortOrder(prev => (prev === "asc" ? "desc" : "asc"))}
+                                    className="flex items-center gap-2 rounded-lg mb-4 bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 transition"
                                 >
-                                    <p>
-                                        <strong>Id :</strong> {participant.id}
-                                    </p>
-                                    <p>
-                                        <strong>Email :</strong> {participant.email}
-                                    </p>
-                                    <p className="text-green-600 font-semibold">
-                                        Gains : {participant.total_wins}
-                                    </p>
-                                    <p className="text-red-600 font-semibold">
-                                        Pertes : {participant.total_losses}
-                                    </p>
-                                    <p>
-                                        <strong>Dernier résultat :</strong>{" "}
-                                        {participant.last_result === "win"
-                                            ? "✅ Gagné"
-                                            : participant.last_result === "lose"
-                                                ? "❌ Perdu"
-                                                : "—"}
-                                    </p>
-                                    <p>
-                                        <strong>Dernière participation :</strong>{" "}
-                                        {new Date(participant.played_at).toLocaleString("fr-FR", {
-                                            dateStyle: "short",
-                                            timeStyle: "short",
-                                        })}
-                                    </p>
-                                    <div className="flex justify-end mt-3">
-                                        <button
-                                            onClick={() => openModal(participant)}
-                                            className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
-                                        >
-                                            <RotateCcw size={16} />
-                                            Réinitialiser
-                                        </button>
+                                    Trier par date {sortOrder === "asc" ? "⬇️" : "⬆️"}
+                                </button>
+                            </div>
+                            <div className="grid gap-4">
+                                {filteredParticipants.map((participant) => (
+                                    <div
+                                        key={participant.id}
+                                        className="p-4 border rounded-lg shadow-sm bg-gray-50"
+                                    >
+                                        <p>
+                                            <strong>Id :</strong> {participant.id}
+                                        </p>
+                                        <p>
+                                            <strong>Email :</strong> {participant.email}
+                                        </p>
+                                        <p className="text-green-600 font-semibold">
+                                            Gains : {participant.total_wins}
+                                        </p>
+                                        <p className="text-red-600 font-semibold">
+                                            Pertes : {participant.total_losses}
+                                        </p>
+                                        <p>
+                                            <strong>Dernier résultat :</strong>{" "}
+                                            {participant.last_result === "win"
+                                                ? "✅ Gagné"
+                                                : participant.last_result === "lose"
+                                                    ? "❌ Perdu"
+                                                    : "—"}
+                                        </p>
+                                        <p>
+                                            <strong>Dernière participation :</strong>{" "}
+                                            {new Date(participant.played_at).toLocaleString("fr-FR", {
+                                                dateStyle: "short",
+                                                timeStyle: "short",
+                                            })}
+                                        </p>
+                                        <div className="flex justify-end mt-3">
+                                            <button
+                                                onClick={() => openModal(participant)}
+                                                className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
+                                            >
+                                                <RotateCcw size={16} />
+                                                Réinitialiser
+                                            </button>
+                                        </div>
+
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     </>
                 )}

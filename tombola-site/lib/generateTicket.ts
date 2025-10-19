@@ -15,19 +15,31 @@ export async function generateTickets({ full_name, email, quantity, accessToken 
         throw new Error("Champs invalides");
     }
 
-    const token = accessToken ?? uuidv4();
+    // Étape 1 : vérifier si l'email existe déjà
+    const { data: existingUser, error: userError } = await supabaseAdmin
+        .from("tickets")
+        .select("access_token")
+        .eq("email", email)
+        .limit(1)
+        .maybeSingle();
 
-    // Étape 1 : récupérer des tickets via la fonction RPC sécurisée
+    if (userError) throw userError;
+
+
+    // Si déjà existant, on garde le même access_token
+    const token = accessToken ?? existingUser?.access_token ?? uuidv4();
+
+    // Étape 2 : récupérer des tickets via la fonction RPC sécurisée
     const { data: ticketRows, error } = await supabaseAdmin.rpc("get_and_mark_tickets", { quantity });
     if (error) throw error;
     if (!ticketRows || ticketRows.length < quantity) {
         throw new Error("Pas assez de tickets disponibles");
     }
 
-    // Étape 2 : Extraire uniquement les numéros de ticket depuis les lignes récupérées
+    // Étape 3 : Extraire uniquement les numéros de ticket depuis les lignes récupérées
     const ticketNumbers: string[] = ticketRows.map((r: { ticket_number: string }) => r.ticket_number);
 
-    // Étape 3 : insérer dans la table tickets
+    // Étape 4 : insérer dans la table tickets
     const { data: insertedTickets, error: insertError } = await supabaseAdmin
         .from("tickets")
         .insert(
@@ -42,7 +54,7 @@ export async function generateTickets({ full_name, email, quantity, accessToken 
 
     if (insertError) throw insertError;
 
-    // Étape 4 : créer les jobs dans la queue d’emails par batch de MAX_TICKETS_PER_EMAIL
+    // Étape 5 : créer les jobs dans la queue d’emails par batch de MAX_TICKETS_PER_EMAIL
     for (let i = 0; i < ticketNumbers.length; i += MAX_TICKETS_PER_EMAIL) {
         const batchTickets = ticketNumbers.slice(i, i + MAX_TICKETS_PER_EMAIL);
         await supabaseAdmin.from("email_queue").insert([{
@@ -55,7 +67,7 @@ export async function generateTickets({ full_name, email, quantity, accessToken 
         }]);
     }
 
-    // ✅ Étape 5 : Retour immédiat au client
+    // Étape 6 : Retour immédiat au client
     return {
         success: true,
         message: "Tickets générés. Un email de confirmation arrivera sous peu.",

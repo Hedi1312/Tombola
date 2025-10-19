@@ -87,7 +87,7 @@ export default function WinProbabilityAdmin() {
                 {/* Participants */}
                 <button
                     onClick={() => router.push("/admin/roue-participants")}
-                    className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2 text-white font-medium hover:bg-indigo-700 transition cursor-pointer"
+                    className="flex items-center justify-center gap-3 rounded-lg bg-indigo-600 px-6 py-3 mt-10 text-lg text-white font-semibold hover:bg-indigo-700 transition cursor-pointer shadow-md hover:shadow-lg"
                 >
                     <Users size={20} />
                     Liste des participants

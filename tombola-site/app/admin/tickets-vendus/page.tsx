@@ -141,8 +141,6 @@ export default function TicketsPage() {
 
 
 
-
-
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
             <div className="w-full max-w-5xl mx-auto rounded-2xl bg-white p-6 md:p-8 shadow-md mb-12">
@@ -236,15 +234,18 @@ export default function TicketsPage() {
                                                 timeStyle: "short",
                                             })}
                                         </td>
-                                        <td className="px-4 py-2 align-middle text-center">
-                                            <button
-                                                onClick={() => openModal(ticket)}
-                                                className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-white font-medium hover:bg-red-600 transition cursor-pointer"
-                                            >
-                                                <Trash2 size={16} />
-                                                Supprimer
-                                            </button>
+                                        <td className="px-4 py-2 align-middle">
+                                            <div className="flex justify-center">
+                                                <button
+                                                    onClick={() => openModal(ticket)}
+                                                    className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-white font-medium hover:bg-red-600 transition cursor-pointer"
+                                                >
+                                                    <Trash2 size={16} />
+                                                    Supprimer
+                                                </button>
+                                            </div>
                                         </td>
+
                                     </tr>
                                 ))}
                                 </tbody>
@@ -274,7 +275,7 @@ export default function TicketsPage() {
                                             <strong>Id :</strong> {ticket.id}
                                         </p>
                                         <p>
-                                            <strong>Nom :</strong> {ticket.full_name}
+                                            <strong>Nom complet :</strong> {ticket.full_name}
                                         </p>
                                         <p>
                                             <strong>Email :</strong> {ticket.email}

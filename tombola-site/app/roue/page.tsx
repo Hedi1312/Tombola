@@ -15,7 +15,7 @@ export default function RouePage() {
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState<string | null>(null);
     const [loadingButton, setLoadingButton] = useState(false);
-    const [winProbability, setWinProbability] = useState(0.15);
+    const [winProbability, setWinProbability] = useState(0);
 
     const radius = 170;
     const center = radius;
@@ -47,7 +47,7 @@ export default function RouePage() {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             if (spinning || showFormModal || showResult) {
                 e.preventDefault();
-                e.returnValue = "Une action est en cours (roue ou modal). Voulez-vous vraiment quitter ?";
+                e.returnValue = "";
             }
         };
 
