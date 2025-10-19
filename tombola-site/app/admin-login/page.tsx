@@ -25,6 +25,7 @@ export default function LoginPage() {
 
             if (result.success) {
                 sessionStorage.setItem("admin_logged_in", "true");
+                window.dispatchEvent(new Event("admin-login"));
                 router.push("/admin/dashboard");
             } else {
                 setError(result.message);

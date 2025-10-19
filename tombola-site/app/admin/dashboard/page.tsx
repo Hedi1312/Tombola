@@ -8,6 +8,7 @@ export default function DashboardPage() {
 
     const handleLogout = () => {
         sessionStorage.removeItem("admin_logged_in");
+        window.dispatchEvent(new Event("admin-logout"));
         router.push("/admin-login");
     };
 

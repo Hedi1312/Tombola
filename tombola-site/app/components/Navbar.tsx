@@ -6,31 +6,34 @@ import { MailQuestionMark, LoaderPinwheel } from 'lucide-react';
 import { GiTrophy } from 'react-icons/gi';
 import { FiMenu, FiX } from "react-icons/fi";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
+    const [adminHref, setAdminHref] = useState<string | null>(null);
 
-    const router = useRouter();
-    const [isMounted, setIsMounted] = useState(false);
 
-    // ⚡ On est sûr d'être côté client
     useEffect(() => {
-        setIsMounted(true);
+        const updateAdminHref = () => {
+            const isAdmin = sessionStorage.getItem("admin_logged_in") === "true";
+            setAdminHref(isAdmin ? "/admin/dashboard" : "/admin-login");
+        };
+
+        if (typeof window !== "undefined") {
+            updateAdminHref(); // 🔹 fait la lecture initiale
+            window.addEventListener("admin-login", updateAdminHref);
+            window.addEventListener("admin-logout", updateAdminHref);
+        }
+
+        return () => {
+            window.removeEventListener("admin-login", updateAdminHref);
+            window.removeEventListener("admin-logout", updateAdminHref);
+        };
     }, []);
 
-    const handleAdminClick = () => {
-        if (!isMounted) return; // ne rien faire tant que le composant n'est pas monté
-        const isAdminLoggedIn = sessionStorage.getItem("admin_logged_in") === "true";
-        if (isAdminLoggedIn) {
-            router.replace("/admin/dashboard");
-        } else {
-            router.replace("/admin-login");
-        }
-    };
+
 
 
     // Fonction pour fermer le menu mobile
@@ -53,10 +56,10 @@ export default function Navbar() {
                     <Link href="/cagnotte" className="text-gray-600 hover:text-gray-700 transition"><FaMoneyBillWave size={30} /></Link>
                     <Link href="/tiktok" className="text-gray-600 hover:text-gray-700 transition"><FaTiktok size={30} /></Link>
                     <Link href="/contact" className="text-gray-600 hover:text-gray-700 transition"><MailQuestionMark size={32} /></Link>
-                    <button
-                        onClick={handleAdminClick}
-                        className="text-gray-600 hover:text-gray-700 transition font-medium cursor-pointer"
-                    ><FaUserShield size={32} /></button>
+                    {adminHref && (
+                        <Link href={adminHref} className="text-gray-600 hover:text-gray-700 transition"><FaUserShield size={32} /></Link>
+                    )}
+
                 </div>
 
                 {/* Menu mobile toggle avec animation */}
@@ -105,7 +108,9 @@ export default function Navbar() {
                         <Link href="/cagnotte" className="text-gray-700" onClick={handleLinkClick}><FaMoneyBillWave size={36} /></Link>
                         <Link href="/tiktok" className="text-gray-700" onClick={handleLinkClick}><FaTiktok size={36} /></Link>
                         <Link href="/contact" className="text-gray-700" onClick={handleLinkClick}><MailQuestionMark size={38} /></Link>
-                        <button onClick={() => {handleAdminClick();handleLinkClick();}} className="text-gray-700 text-left"><FaUserShield size={38} /></button>
+                        {adminHref && (
+                            <Link href={adminHref} className="text-gray-700" onClick={handleLinkClick}><FaUserShield size={38} /></Link>
+                        )}
                     </div>
                 </div>
             )}
