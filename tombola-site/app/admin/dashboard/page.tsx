@@ -13,7 +13,7 @@ export default function DashboardPage() {
 
     const actions = [
         {
-            title: "Voir tickets vendus",
+            title: "Tickets vendus",
             description: "Consultez la liste des tickets déjà achetés",
             icon: <Ticket className="h-8 w-8 text-red-500" />,
             onClick: () => router.push("/admin/tickets-vendus"),
@@ -37,7 +37,7 @@ export default function DashboardPage() {
             onClick: () => router.push("/admin/roue-probabilite"),
         },
         {
-            title: "Changer la date du tirage",
+            title: "Choisir la date du tirage",
             description: "Modifiez la date prévue pour le prochain tirage",
             icon: <CalendarDays className="h-8 w-8 text-indigo-600" />,
             onClick: () => router.push("/admin/choix-date"),

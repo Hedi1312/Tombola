@@ -125,20 +125,26 @@ export default function ChoixGagnantPage() {
     const handleConfirmDelete = async (index: number) => {
         const winnerToDelete = winners[index];
 
-        // Supprimer de allWinners
-        const updatedAll = allWinners.filter(w => w !== winnerToDelete);
-
-        // Supprimer du tableau visible
+        // Supprimer localement
+        const updatedAll = allWinners.filter((w) => w !== winnerToDelete);
         const updatedVisible = winners.filter((_, i) => i !== index);
 
-        setAllWinners(updatedAll);
-        setWinners(updatedVisible);
-        setWinnerCount(updatedVisible.length.toString());
-        setModalOpen(false);
-        setSelectedWinnerIndex(null);
-
-        // Sauvegarder avec le tableau à jour
-        await handleSave(updatedVisible);
+        try {
+            // Sauvegarde avec le tableau à jour
+            await handleSave(updatedVisible);
+            setAllWinners(updatedAll);
+            setWinners(updatedVisible);
+            setWinnerCount(updatedVisible.length.toString());
+            setMessage(`✅ Le gagnant "${winnerToDelete.name}" (${winnerToDelete.email}, ticket ${winnerToDelete.ticket}) a été supprimé.`);
+        } catch (err) {
+            console.error("Erreur lors de la suppression :", err);
+            setMessage(`❌ Erreur lors de la sauvegarde après suppression.`);
+            // Facultatif : tu peux recharger les données depuis la source si tu veux annuler la suppression locale
+        } finally {
+            setModalOpen(false);
+            setSelectedWinnerIndex(null);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
     };
 
 

@@ -19,8 +19,7 @@ export default function NotificationsAdminPage() {
     const [message, setMessage] = useState("");
     const [loadingNotify, setLoadingNotify] = useState(false);
     const total = participants.length;
-    const pending = participants.filter(p => !p.notified).length;
-
+    const pending = participants.filter((p) => !p.notified).length;
 
     async function fetchParticipants() {
         setLoading(true);
@@ -32,29 +31,25 @@ export default function NotificationsAdminPage() {
     }
 
     async function handleNotifyAll() {
-
         try {
-
             if (participants.length === 0) {
                 setMessage("❌ Aucun participant à notifier !");
-                return; // empêche l'exécution si la liste est vide
+                return;
             }
 
-            const pending = participants.filter(p => !p.notified);
-
+            const pending = participants.filter((p) => !p.notified);
             if (pending.length === 0) {
                 setMessage("❌ Tous les participants ont déjà été notifiés !");
                 return;
             }
 
             setLoadingNotify(true);
-
             const res = await fetch("/api/admin/envoyer-notifications", { method: "POST" });
             const data = await res.json();
 
             if (data.success) {
                 setMessage("✅ Emails envoyés !");
-                await fetchParticipants(); // attendre que la liste soit rechargée
+                await fetchParticipants();
             } else {
                 setMessage(`❌ ${data.error}`);
             }
@@ -74,12 +69,15 @@ export default function NotificationsAdminPage() {
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
             <div className="w-full max-w-4xl mx-auto rounded-2xl bg-white p-6 md:p-8 shadow-md mb-12 text-gray-700">
+                {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-3 mb-6 w-full">
                     <div className="flex items-center space-x-3">
                         <BellRing className="h-8 w-8 text-yellow-500" />
                         <h1 className="text-2xl font-bold text-gray-800">
                             Notifications participants{" "}
-                            <span className="text-indigo-600">({pending}/{total})</span>
+                            <span className="text-indigo-600">
+                                ({pending}/{total})
+                            </span>
                         </h1>
                     </div>
 
@@ -92,6 +90,7 @@ export default function NotificationsAdminPage() {
                     </button>
                 </div>
 
+                {/* Message */}
                 {message && (
                     <p
                         className={`mb-4 p-2 rounded-lg text-center ${
@@ -104,6 +103,7 @@ export default function NotificationsAdminPage() {
                     </p>
                 )}
 
+                {/* Bouton envoyer */}
                 <button
                     onClick={handleNotifyAll}
                     disabled={loadingNotify}
@@ -113,36 +113,89 @@ export default function NotificationsAdminPage() {
                     {loadingNotify ? "Envoi en cours..." : "Envoyer les emails aux participants"}
                 </button>
 
-
+                {/* Contenu */}
                 {loading ? (
                     <p className="mt-6 text-center text-gray-600">Chargement...</p>
                 ) : participants.length === 0 ? (
-                    <p className="mt-6 text-center text-gray-600">Aucune personne à notifier pour le moment.</p>
+                    <p className="mt-6 text-center text-gray-600">
+                        Aucune personne à notifier pour le moment.
+                    </p>
                 ) : (
-                    <table className="w-full border-collapse rounded-lg shadow text-gray-700 mb-4 mt-10">
-                        <thead className="bg-gray-100 text-left">
-                        <tr>
-                            <th className="px-4 py-2 align-middle">Nom</th>
-                            <th className="px-4 py-2 align-middle text-center">Email</th>
-                            <th className="px-4 py-2 align-middle text-center">État</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {participants.map((p) => (
-                            <tr key={p.id} className="border-b hover:bg-gray-50">
-                                <td className="px-4 py-2 align-middle">{p.full_name}</td>
-                                <td className="px-4 py-2 align-middle text-center break-all">{p.email}</td>
-                                <td className="px-4 py-2 align-middle text-center">
-                                    {p.notified ? (
-                                        <span className="text-green-600 font-medium">✅ Notifié</span>
-                                    ) : (
-                                        <span className="text-red-600 font-medium">❌ En attente</span>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
+                    <>
+                        {/* Table Desktop */}
+                        <div className="hidden sm:block overflow-x-auto mt-10">
+                            <table className="w-full border-collapse rounded-lg shadow text-gray-700 mb-4">
+                                <thead className="bg-gray-100 text-left">
+                                <tr>
+                                    <th className="px-4 py-2 align-middle">Nom</th>
+                                    <th className="px-4 py-2 align-middle text-center break-all">
+                                        Email
+                                    </th>
+                                    <th className="px-4 py-2 align-middle text-center">
+                                        État
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {participants.map((p) => (
+                                    <tr
+                                        key={p.id}
+                                        className="border-b hover:bg-gray-50 transition"
+                                    >
+                                        <td className="px-4 py-2 align-middle">
+                                            {p.full_name}
+                                        </td>
+                                        <td className="px-4 py-2 align-middle text-center">
+                                            {p.email}
+                                        </td>
+                                        <td className="px-4 py-2 align-middle text-center">
+                                            {p.notified ? (
+                                                <span className="text-green-600 font-medium">
+                                                        ✅ Notifié
+                                                    </span>
+                                            ) : (
+                                                <span className="text-red-600 font-medium">
+                                                        ❌ En attente
+                                                    </span>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Cartes Mobile (affichage responsive) */}
+                        <div className="sm:hidden text-gray-700 mt-8">
+                            <div className="grid gap-4">
+                                {participants.map((p) => (
+                                    <div
+                                        key={p.id}
+                                        className="p-4 border rounded-lg shadow-sm bg-gray-50"
+                                    >
+                                        <p>
+                                            <strong>Nom :</strong> {p.full_name}
+                                        </p>
+                                        <p className="break-all">
+                                            <strong>Email :</strong> {p.email}
+                                        </p>
+                                        <p>
+                                            <strong>État :</strong>{" "}
+                                            {p.notified ? (
+                                                <span className="text-green-600 font-medium">
+                                                    ✅ Notifié
+                                                </span>
+                                            ) : (
+                                                <span className="text-red-600 font-medium">
+                                                    ❌ En attente
+                                                </span>
+                                            )}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </>
                 )}
             </div>
         </section>

@@ -176,15 +176,18 @@ INSERT INTO settings (key, value) VALUES ('win_probability', 0.15);
 
 CREATE TABLE roue_plays (
             id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-            email TEXT not null,
-            is_win BOOLEAN not null default false,
-            played_at TIMESTAMPTZ not null default now()
+            email TEXT NOT NULL UNIQUE,
+            total_wins INT NOT NULL DEFAULT 0,
+            total_losses INT NOT NULL DEFAULT 0,
+            last_result TEXT CHECK (last_result IN ('win', 'lose')),
+            played_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+            played_date DATE GENERATED ALWAYS AS ((played_at AT TIME ZONE 'Europe/Paris')::date) STORED
+
 );
 
+-- Empêche plusieurs jeux dans la même journée
+CREATE UNIQUE INDEX unique_play_per_day_idx ON roue_plays (email, played_date);
 
-CREATE INDEX ON roue_plays (email, played_at);
 
--- Empêche de jouer plusieurs fois dans la même journée
-CREATE UNIQUE INDEX unique_play_per_day_idx ON roue_plays (email, (date_trunc('day', played_at)));
 
 

@@ -1,6 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
+// 🧩 Fonction de normalisation serveur
+function normalizeEmail(email: string): string {
+    const trimmed = email.trim().toLowerCase();
+    const [local, domain] = trimmed.split("@");
+
+    if (!local || !domain) return trimmed;
+
+    // Supprime le +quelquechose uniquement pour Gmail et Googlemail
+    const cleanLocal =
+        domain === "gmail.com" || domain === "googlemail.com"
+            ? local.split("+")[0]
+            : local;
+
+    return `${cleanLocal}@${domain}`;
+}
+
 export async function POST(req: NextRequest) {
     try {
         const { email } = await req.json();
@@ -12,55 +28,39 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // 🔹 Vérifie s’il a déjà joué aujourd’hui
-        const todayStart = new Date();
-        todayStart.setHours(0, 0, 0, 0);
+        // 🔹 Normalisation
+        const cleanEmail = normalizeEmail(email);
+        const today = new Date().toISOString().slice(0, 10);
 
-        const todayEnd = new Date();
-        todayEnd.setHours(23, 59, 59, 999);
-
-        const { data: todayPlay } = await supabaseAdmin
+        // 🔹 Récupère les infos du joueur (une seule ligne par email)
+        const { data: player, error } = await supabaseAdmin
             .from("roue_plays")
-            .select("*")
-            .eq("email", email)
-            .gte("played_at", todayStart.toISOString())
-            .lte("played_at", todayEnd.toISOString())
+            .select("played_date, last_result")
+            .eq("email", cleanEmail)
             .maybeSingle();
 
-        if (todayPlay) {
+        if (error) throw error;
+
+        // Cas 1 : jamais joué → peut jouer et potentiellement gagner
+        if (!player) {
+            return NextResponse.json({ canPlay: true, canWin: true });
+        }
+
+        // Cas 2 : déjà joué aujourd’hui → interdit
+        if (player.played_date === today) {
             return NextResponse.json({
                 canPlay: false,
                 message: "Vous avez déjà joué aujourd'hui. Revenez demain !",
             });
         }
 
-        // 🔹 Vérifie s’il a gagné hier
-        const yesterdayStart = new Date();
-        yesterdayStart.setDate(yesterdayStart.getDate() - 1);
-        yesterdayStart.setHours(0, 0, 0, 0);
-
-        const yesterdayEnd = new Date();
-        yesterdayEnd.setDate(yesterdayEnd.getDate() - 1);
-        yesterdayEnd.setHours(23, 59, 59, 999);
-
-        const { data: yesterdayWin } = await supabaseAdmin
-            .from("roue_plays")
-            .select("*")
-            .eq("email", email)
-            .eq("is_win", true)
-            .gte("played_at", yesterdayStart.toISOString())
-            .lte("played_at", yesterdayEnd.toISOString())
-            .maybeSingle();
-
-        if (yesterdayWin) {
-            return NextResponse.json({
-                canPlay: false,
-                message: "Vous avez gagné hier 🎉 Attendez demain pour rejouer.",
-            });
+        // Cas 3 : il a gagné la dernière fois → doit perdre avant de regagner
+        if (player.last_result === "win") {
+            return NextResponse.json({ canPlay: true, canWin: false });
         }
 
-        // ✅ Sinon, il peut jouer
-        return NextResponse.json({ canPlay: true });
+        // Sinon il peut jouer et potentiellement gagner
+        return NextResponse.json({ canPlay: true, canWin: true });
     } catch (err) {
         console.error("Erreur /api/roue/check:", err);
         return NextResponse.json(

@@ -2,85 +2,106 @@ import { NextRequest, NextResponse } from "next/server";
 import { generateTickets } from "@/lib/generateTicket";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
+
+
+type ResultType = "win" | "lose";
+
+interface RouePlay {
+    id?: number;
+    email: string;
+    total_wins: number;
+    total_losses: number;
+    last_result: ResultType;
+    played_at: string;
+    played_date?: string;
+}
+
+
+
+function normalizeEmail(email: string): string {
+    const trimmed = email.trim().toLowerCase();
+    const [local, domain] = trimmed.split("@");
+    if (!local || !domain) return trimmed;
+    const cleanLocal =
+        domain === "gmail.com" || domain === "googlemail.com"
+            ? local.split("+")[0]
+            : local;
+    return `${cleanLocal}@${domain}`;
+}
+
 export async function POST(req: NextRequest) {
     try {
         const { full_name, email, is_win } = await req.json();
 
-        if (!full_name || !email) {
-            return NextResponse.json(
-                { success: false, error: "Nom complet et email obligatoires" },
-                { status: 400 }
-            );
+        if (!email) {
+            return NextResponse.json({ success: false, error: "Email obligatoire" }, { status: 400 });
         }
 
-        // 🔹 Vérification : a-t-il déjà joué aujourd'hui ?
-        const todayStart = new Date();
-        todayStart.setHours(0, 0, 0, 0);
+        const cleanEmail = normalizeEmail(email);
+        const today = new Date().toISOString().slice(0, 10);
 
-        const todayEnd = new Date();
-        todayEnd.setHours(23, 59, 59, 999);
-
-        const { data: existingPlay } = await supabaseAdmin
+        // 🔹 Récupère le joueur existant
+        const { data: existing, error: fetchError } = await supabaseAdmin
             .from("roue_plays")
             .select("*")
-            .eq("email", email)
-            .gte("played_at", todayStart.toISOString())
-            .lte("played_at", todayEnd.toISOString())
+            .eq("email", cleanEmail)
             .maybeSingle();
 
-        if (existingPlay) {
+        if (fetchError) throw fetchError;
+
+        let canWin = is_win;
+        let totalWins = existing?.total_wins ?? 0;
+        let totalLosses = existing?.total_losses ?? 0;
+
+        // 🕒 Empêche de jouer deux fois le même jour
+        if (existing?.played_date === today) {
             return NextResponse.json(
                 { success: false, error: "Vous avez déjà joué aujourd'hui. Revenez demain !" },
                 { status: 403 }
             );
         }
 
-        // 🔹 Vérification : a-t-il gagné hier ?
-        const yesterdayStart = new Date();
-        yesterdayStart.setDate(yesterdayStart.getDate() - 1);
-        yesterdayStart.setHours(0, 0, 0, 0);
-
-        const yesterdayEnd = new Date();
-        yesterdayEnd.setDate(yesterdayEnd.getDate() - 1);
-        yesterdayEnd.setHours(23, 59, 59, 999);
-
-        const { data: yesterdayWin } = await supabaseAdmin
-            .from("roue_plays")
-            .select("*")
-            .eq("email", email)
-            .eq("is_win", true)
-            .gte("played_at", yesterdayStart.toISOString())
-            .lte("played_at", yesterdayEnd.toISOString())
-            .maybeSingle();
-
-        if (yesterdayWin && is_win) {
-            // Il a gagné hier et retente une victoire → forcer perte
-            return NextResponse.json({
-                success: false,
-                error: "Pas de double gain consécutif 😉 Vous pourrez rejouer demain !",
-            });
+        // 🚫 Empêche deux gains consécutifs
+        if (existing?.last_result === "win" && is_win) {
+            canWin = false;
         }
 
-        //  Enregistre le tirage (qu’il gagne ou non)
-        const { error: insertError } = await supabaseAdmin
+        // 🔹 Mise à jour des stats
+        const now = new Date().toISOString();
+        const newData: Partial<RouePlay> = {
+            email: cleanEmail,
+            played_at: now,
+            last_result: canWin ? "win" : "lose",
+        };
+
+        if (canWin) {
+            totalWins += 1;
+            newData.total_wins = totalWins;
+        } else {
+            totalLosses += 1;
+            newData.total_losses = totalLosses;
+        }
+
+        // 🔹 Upsert (une seule ligne par joueur)
+        const { error: upsertError } = await supabaseAdmin
             .from("roue_plays")
-            .insert([{ email, is_win }]);
+            .upsert([newData], { onConflict: "email" });
 
-        if (insertError) throw insertError;
+        if (upsertError) throw upsertError;
 
-        // 🔹 Si perte → on ne génère rien
-        if (!is_win) {
+        // 🔹 Si perdu
+        if (!canWin) {
             return NextResponse.json({
                 success: true,
-                message: "Perdu, réessayez demain !",
                 is_win: false,
+                message: "Dommage, réessayez demain !",
             });
         }
 
-        // 🔹 Génération du ticket (gain)
+        // 🔹 Si gagné
         const result = await generateTickets({
             full_name,
-            email,
+            email: cleanEmail,
             quantity: 1,
         });
 
@@ -91,11 +112,9 @@ export async function POST(req: NextRequest) {
             ticketNumbers: result.ticketNumbers,
             accessToken: result.accessToken,
         });
-    } catch (err: unknown) {
-        console.error("Erreur roue:", err);
-        if (err instanceof Error) {
-            return NextResponse.json({ success: false, error: err.message }, { status: 500 });
-        }
-        return NextResponse.json({ success: false, error: "Erreur inconnue" }, { status: 500 });
+    } catch (err) {
+        console.error("Erreur /api/roue:", err);
+        const message = err instanceof Error ? err.message : "Erreur serveur inconnue";
+        return NextResponse.json({ success: false, error: message }, { status: 500 });
     }
 }

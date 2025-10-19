@@ -93,17 +93,17 @@ export default function TicketsPage() {
     async function handleDelete(id: number) {
         try {
             const res = await fetch(`/api/admin/tickets-vendus/${id}`, { method: "DELETE" });
+            const data = await res.json().catch(() => ({})); // évite crash "Unexpected end of JSON input"
+
             if (!res.ok) {
-                console.error("Erreur HTTP", res.status, await res.text());
+                console.error("Erreur HTTP", res.status, data);
+                setMessage(`❌ Erreur HTTP ${res.status}`);
                 return;
             }
-            const data = await res.json();
 
             if (data.success) {
                 setTickets(prev => prev.filter(t => t.id !== id));
-                setMessage(`✅ Le ticket suivant est supprimé : ID: ${selectedTicket!.id}, Numéro: ${selectedTicket!.ticket_number}, Email: ${selectedTicket!.email}`);
-                setModalOpen(false);      // ← ferme le modal ici
-                setSelectedTicket(null);  // ← réinitialise le ticket sélectionné
+                setMessage(`✅ Le ticket suivant a été supprimé : Id: ${selectedTicket!.id}, Numéro: ${selectedTicket!.ticket_number}, Email: ${selectedTicket!.email}`);
             }
             else {
                 setMessage(`❌ Erreur : ${data.error}`);
@@ -112,6 +112,8 @@ export default function TicketsPage() {
             console.error(err);
             setMessage(`❌ Erreur lors de la suppression du ticket`);
         } finally {
+            setModalOpen(false);
+            setSelectedTicket(null);
             window.scrollTo({ top: 0, behavior: "smooth" });
         }
 
@@ -143,7 +145,7 @@ export default function TicketsPage() {
 
     return (
         <section className="min-h-screen flex flex-col items-center justify-start pt-16 px-4 md:px-6 bg-gray-50">
-            <div className="w-full max-w-4xl mx-auto rounded-2xl bg-white p-6 md:p-8 shadow-md mb-12">
+            <div className="w-full max-w-5xl mx-auto rounded-2xl bg-white p-6 md:p-8 shadow-md mb-12">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
                     <div className="flex items-center space-x-3">
@@ -163,7 +165,7 @@ export default function TicketsPage() {
                 </div>
 
                 {/* Barre de recherche */}
-                <div className="flex items-center gap-2 border rounded-lg px-3 py-2 mb-6 max-w-md mx-auto text-gray-700">
+                <div className="flex items-center gap-2 border rounded-lg px-3 py-2 my-12 max-w-md mx-auto text-gray-700">
                     <Search className="w-5 h-5 text-gray-500" />
                     <input
                         type="text"
@@ -203,18 +205,18 @@ export default function TicketsPage() {
                             <table className="w-full border-collapse rounded-lg shadow text-gray-700">
                                 <thead className="bg-gray-100 text-left">
                                 <tr>
-                                    <th className="px-4 py-2 text-left">#</th>
-                                    <th className="px-4 py-2 text-center">Nom complet</th>
-                                    <th className="px-4 py-2 text-center">Email</th>
-                                    <th className="px-4 py-2 text-center">Numéro du ticket</th>
+                                    <th className="px-4 py-2 align-middle">#</th>
+                                    <th className="px-4 py-2 align-middle text-center">Nom complet</th>
+                                    <th className="px-4 py-2 align-middle text-center">Email</th>
+                                    <th className="px-4 py-2 align-middle text-center">Numéro du ticket</th>
                                     <th
-                                        className="px-4 py-2 cursor-pointer select-none text-center"
+                                        className="px-4 py-2 cursor-pointer select-none align-middle text-center"
                                         onClick={() => setSortOrder(prev => (prev === "asc" ? "desc" : "asc"))}
                                     >
                                         Date achat {sortOrder === "asc" ? "⬇️" : "⬆️"}
                                     </th>
 
-                                    <th className="px-4 py-2 text-right">Supprimer</th>
+                                    <th className="px-4 py-2 align-middle text-center">Supprimer</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -224,17 +226,17 @@ export default function TicketsPage() {
                                         key={ticket.id}
                                         className="border-b hover:bg-gray-50 transition"
                                     >
-                                        <td className="px-4 py-2 text-left">{ticket.id}</td>
-                                        <td className="px-4 py-2 text-center">{ticket.full_name}</td>
-                                        <td className="px-4 py-2 text-center">{ticket.email}</td>
-                                        <td className="px-4 py-2 text-center">{ticket.ticket_number}</td>
-                                        <td className="px-4 py-2 text-center">
+                                        <td className="px-4 py-2 align-middle">{ticket.id}</td>
+                                        <td className="px-4 py-2 align-middle text-center">{ticket.full_name}</td>
+                                        <td className="px-4 py-2 align-middle text-center">{ticket.email}</td>
+                                        <td className="px-4 py-2 align-middle text-center">{ticket.ticket_number}</td>
+                                        <td className="px-4 py-2 align-middle text-center">
                                             {new Date(ticket.created_at).toLocaleString("fr-FR", {
                                                 dateStyle: "short",
                                                 timeStyle: "short",
                                             })}
                                         </td>
-                                        <td className="px-4 py-2 text-right">
+                                        <td className="px-4 py-2 align-middle text-center">
                                             <button
                                                 onClick={() => openModal(ticket)}
                                                 className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-white font-medium hover:bg-red-600 transition cursor-pointer"
@@ -242,7 +244,6 @@ export default function TicketsPage() {
                                                 <Trash2 size={16} />
                                                 Supprimer
                                             </button>
-
                                         </td>
                                     </tr>
                                 ))}
@@ -257,7 +258,7 @@ export default function TicketsPage() {
                             <div className="flex justify-center mb-4">
                                 <button
                                     onClick={() => setSortOrder(prev => (prev === "asc" ? "desc" : "asc"))}
-                                    className="flex items-center gap-2 rounded-lg bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 transition"
+                                    className="flex items-center gap-2 rounded-lg mb-4 bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-300 transition"
                                 >
                                     Trier par date {sortOrder === "asc" ? "⬇️" : "⬆️"}
                                 </button>
@@ -288,13 +289,15 @@ export default function TicketsPage() {
                                                 timeStyle: "short",
                                             })}
                                         </p>
-                                        <button
-                                            onClick={() => openModal(ticket)}
-                                            className="mt-3 flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
-                                        >
-                                            <Trash2 size={16} />
-                                            Supprimer
-                                        </button>
+                                        <div className="flex justify-end mt-3">
+                                            <button
+                                                onClick={() => openModal(ticket)}
+                                                className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-white font-medium hover:bg-red-700 transition cursor-pointer"
+                                            >
+                                                <Trash2 size={16} />
+                                                Supprimer
+                                            </button>
+                                        </div>
                                     </div>
                                 ))}
                             </div>

@@ -41,6 +41,23 @@ export default function RouePage() {
         fetchProbability();
     }, []);
 
+
+    // 🔹 Prévenir l'utilisateur si actualisation pendant rotation ou modal ouvert
+    useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (spinning || showFormModal || showResult) {
+                e.preventDefault();
+                e.returnValue = "Une action est en cours (roue ou modal). Voulez-vous vraiment quitter ?";
+            }
+        };
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+        return () => {
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [spinning, showFormModal, showResult]);
+
+
     // 🔹 Son de clic + arrêt propre au départ
     useEffect(() => {
         const loadSound = async () => {
@@ -69,6 +86,7 @@ export default function RouePage() {
         };
     }, []);
 
+    // Bloquer le scroll s'il y a un modal ouvert
     useLockBodyScroll(showResult || showFormModal);
 
     const playTickSound = () => {
@@ -115,33 +133,60 @@ export default function RouePage() {
         );
     };
 
+    const normalizeEmail = (email: string) => {
+        const trimmed = email.trim().toLowerCase();
+        const [local, domain] = trimmed.split("@");
+
+        // Vérifie qu'il y a bien une partie locale et un domaine
+        if (!local || !domain) return trimmed;
+
+        // Supprime le +quelquechose uniquement pour Gmail et Googlemail
+        const cleanLocal =
+            domain === "gmail.com" || domain === "googlemail.com"
+                ? local.split("+")[0]
+                : local;
+
+        return `${cleanLocal}@${domain}`;
+    };
+
     const insertResult = async (isWin: boolean) => {
         try {
             await fetch("/api/roue", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ full_name: fullName || "Anonyme", email, is_win: isWin }),
+                body: JSON.stringify({ full_name: isWin ? fullName : undefined, email: normalizeEmail(email), is_win: isWin }),
             });
         } catch (e) {
             console.warn("Erreur insertion :", e);
         }
     };
 
+
+
     const spinWheel = async () => {
         if (spinning) return;
-        if (!email) {
-            setMessage("⚠️ Entrez votre adresse mail avant de jouer !");
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        // Vérifie format d'email
+        if (!emailRegex.test(email)) {
+            setMessage("⚠️ Entrez une adresse email valide (ex : nom@exemple.com) !");
             setTimeout(() => setMessage(""), 5000);
             return;
         }
+
+        // Nettoyage Email
+        const cleanEmail = normalizeEmail(email);
+
+        let data: { canPlay?: boolean; canWin?: boolean; message?: string } = {};
 
         try {
             const res = await fetch("/api/roue/check", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email }),
+                body: JSON.stringify({ email: cleanEmail }),
             });
-            const data = await res.json();
+            data = await res.json();
             if (!data.canPlay) {
                 setMessage(`❌ ${data.message}`);
                 setTimeout(() => setMessage(""), 5000);
@@ -157,7 +202,9 @@ export default function RouePage() {
 
         const totalSegments = segments.length;
         const segmentAngle = 360 / totalSegments;
-        const willWin = Math.random() < winProbability;
+        const forceLose = data.canWin === false;
+        const willWin = !forceLose && Math.random() < winProbability;
+
         const winners = segments.map((s, i) => (s.isWinner ? i : -1)).filter((i) => i >= 0);
         const losers = segments.map((s, i) => (!s.isWinner ? i : -1)).filter((i) => i >= 0);
         const targetIndex = willWin
@@ -202,7 +249,10 @@ export default function RouePage() {
                 setResult(targetSegment.label);
                 setShowResult(true);
                 lastWasWinRef.current = targetSegment.isWinner;
-                insertResult(targetSegment.isWinner);
+
+                if (!targetSegment.isWinner) {
+                    insertResult(false);
+                }
             }
         };
         animationFrameRef.current = requestAnimationFrame(step);
@@ -219,22 +269,29 @@ export default function RouePage() {
                 </div>
 
                 {/* Email + bouton Jouer */}
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        spinWheel();
+                    }}
+                    className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6"
+                >
                     <input
                         type="email"
                         placeholder="Adresse mail"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="px-4 py-2 border rounded-lg w-64 text-center"
+                        className="px-4 py-2 border rounded-lg w-64 text-left"
                     />
                     <button
-                        onClick={spinWheel}
+                        type="submit"
                         disabled={spinning}
                         className="px-6 py-2 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700 transition cursor-pointer"
                     >
                         Jouer
                     </button>
-                </div>
+                </form>
+
 
                 {message && (
                     <div
@@ -261,7 +318,7 @@ export default function RouePage() {
                     <svg
                         width={radius * 2}
                         height={radius * 2}
-                        className="cursor-pointer shadow-lg rounded-full z-0"
+                        className="shadow-lg rounded-full z-0"
                         style={{ transform: `rotate(${rotation}deg)` }}
                     >
                         {segments.map((seg, i) => {
@@ -292,7 +349,7 @@ export default function RouePage() {
 
                     {/* Bouton SPIN qui tourne avec la roue */}
                     <div
-                        className="absolute top-1/2 left-1/2 cursor-pointer select-none"
+                        className="absolute top-1/2 left-1/2 select-none"
                         style={{
                             transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
                             transition: spinning ? "none" : "transform 0.3s ease-out",
@@ -346,9 +403,18 @@ export default function RouePage() {
                                 e.preventDefault();
                                 setLoadingButton(true);
 
+                                // Vérification du nom complet : pas de chiffres
+                                const nameHasNumbers = /\d/.test(fullName);
+                                if (nameHasNumbers) {
+                                    setMessage("❌ Le nom complet ne doit pas contenir de chiffres.");
+                                    setLoadingButton(false);
+                                    return;
+                                }
+
                                 try {
                                     await insertResult(isWin);
                                     setMessage(`✅ Ticket enregistré, envoyé à ${email}`);
+                                    setTimeout(() => setMessage(""), 5000);
                                 } catch (err) {
                                     setMessage(`❌ Erreur lors de l'enregistrement : ${err}`);
                                     console.error("Erreur lors de l'enregistrement :", err);
@@ -361,7 +427,7 @@ export default function RouePage() {
 
                             className="bg-white w-full max-w-md px-8 py-8 rounded-3xl shadow-2xl border text-center"
                         >
-                            <h2 className="text-2xl font-bold mb-8">Entrez vos informations</h2>
+                            <h2 className="text-2xl font-bold mb-8">Entrez votre Nom et Prénom</h2>
                             <input
                                 type="text"
                                 placeholder="Nom Prénom"
@@ -373,7 +439,7 @@ export default function RouePage() {
                             <button
                                 type="submit"
                                 disabled={loadingButton}
-                                className="mt-4 w-full flex items-center justify-center gap-2 px-6 py-3 bg-green-700 text-white font-bold rounded-lg hover:bg-green-800 transition disabled:opacity-50 cursor-pointer"
+                                className="mt-4 w-full flex items-center justify-center gap-2 px-4 py-2 bg-green-700 text-white font-bold rounded-lg hover:bg-green-800 transition disabled:opacity-50 cursor-pointer"
                             >
                                 <Save size={18} />
                                 {loadingButton ? "Enregistrement..." : "Enregistrer"}
