@@ -165,7 +165,7 @@ CREATE TABLE settings (
             key TEXT PRIMARY KEY,
             value NUMERIC CHECK (value BETWEEN 0 AND 1)
 );
-INSERT INTO settings (key, value) VALUES ('win_probability', 0.15);
+INSERT INTO settings (key, value) VALUES ('win_probability', 0.10);
 
 
 

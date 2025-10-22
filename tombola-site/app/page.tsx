@@ -82,7 +82,7 @@ export default function Home() {
                         }`}
                     >
                         <br />
-                        Nous sommes 3 étudiantes : Ménissa 🤍, Manon 🫶🏻 et Sarah ✌🏼. Nous effectuons des études d&apos;éducatrice de jeunes enfants au centre de formation Saint-Honoré et nous avons l&apos;opportunité d&apos;effectuer un voyage pédagogique de 5 jours en mars 2026.<br /><br />
+                        Nous sommes 2 étudiantes : Ménissa 🤍 et Sarah ✌🏼. Nous effectuons des études d&apos;éducatrice de jeunes enfants au centre de formation Saint-Honoré et nous avons l&apos;opportunité d&apos;effectuer un voyage pédagogique de 5 jours en mars 2026.<br /><br />
                         A cette occasion, nous avons monté un projet pour rencontrer différents professionnels du domaine social à l&apos;étranger afin de découvrir une nouvelle culture et de nouvelles pratiques professionnelles.<br /><br />
                         Nous sommes également intéressées par la rencontre de jeunes en situation de grande difficulté (ou non), et nous avons porté notre intérêt sur la visite d&apos;un refuge situé à Rabat au Maroc.<br /><br />
                         Cette structure propose un refuge pour les jeunes en difficulté et des séjours thérapeutiques dans des environnements naturels tels que le désert, la montagne et la mer.<br /><br />
@@ -92,7 +92,7 @@ export default function Home() {
                         Tout l&apos;argent non utilisé sera reversé à l&apos;association.<br /><br />
                         Si vous ne pouvez pas participer financièrement, un simple partage peut grandement nous aider.<br /><br />
                         Merci infiniment 🫱🏻‍🫲🏾<br />
-                        Ménissa, Manon et Sarah !! 🥰
+                        Ménissa et Sarah ! 🥰
                     </p>
 
                     <button
