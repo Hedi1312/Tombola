@@ -16,9 +16,9 @@ export const PRIZES: Prize[] = [
     {
         id: 1,
         title: "Lot n°1",
-        description: "Carte cadeau",
+        description: "Chèque culture",
         img: "/img/lots/lot1.png",
-        items: [{ name: "Carte cadeau 20€", quantity: 1 }],
+        items: [{ name: "Chèque culture de 30€", quantity: 1 }],
     },
 
     {
