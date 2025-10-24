@@ -187,7 +187,3 @@ CREATE TABLE roue_plays (
 
 -- Empêche plusieurs jeux dans la même journée
 CREATE UNIQUE INDEX unique_play_per_day_idx ON roue_plays (email, played_date);
-
-
-
-

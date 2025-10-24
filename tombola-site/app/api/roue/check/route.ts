@@ -28,11 +28,11 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        // 🔹 Normalisation
+        // Normalisation
         const cleanEmail = normalizeEmail(email);
         const today = new Date().toISOString().slice(0, 10);
 
-        // 🔹 Récupère les infos du joueur (une seule ligne par email)
+        // Récupère les infos du joueur (une seule ligne par email)
         const { data: player, error } = await supabaseAdmin
             .from("roue_plays")
             .select("played_date, last_result")
@@ -41,9 +41,20 @@ export async function POST(req: NextRequest) {
 
         if (error) throw error;
 
+        // Récupère la probabilité de gain une seule fois
+        const { data: prob } = await supabaseAdmin
+            .from("settings")
+            .select("value")
+            .eq("key", "win_probability")
+            .maybeSingle();
+
+        const winProbability = Number(prob?.value ?? 0.1);
+
+
         // Cas 1 : jamais joué → peut jouer et potentiellement gagner
         if (!player) {
-            return NextResponse.json({ canPlay: true, canWin: true });
+            const willWin = Math.random() < winProbability;
+            return NextResponse.json({ canPlay: true, canWin: willWin });
         }
 
         // Cas 2 : déjà joué aujourd’hui → interdit
@@ -60,7 +71,8 @@ export async function POST(req: NextRequest) {
         }
 
         // Sinon il peut jouer et potentiellement gagner
-        return NextResponse.json({ canPlay: true, canWin: true });
+        const willWin = Math.random() < winProbability;
+        return NextResponse.json({ canPlay: true, canWin: willWin });
     } catch (err) {
         console.error("Erreur /api/roue/check:", err);
         return NextResponse.json(

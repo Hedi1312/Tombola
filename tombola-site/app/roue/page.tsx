@@ -15,7 +15,6 @@ export default function RouePage() {
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState<string | null>(null);
     const [loadingButton, setLoadingButton] = useState(false);
-    const [winProbability, setWinProbability] = useState(0);
 
     const radius = 170;
     const center = radius;
@@ -27,22 +26,8 @@ export default function RouePage() {
     const bufferRef = useRef<AudioBuffer | null>(null);
     const lastWasWinRef = useRef(false);
 
-    // 🔹 Récupère la probabilité
-    useEffect(() => {
-        async function fetchProbability() {
-            try {
-                const res = await fetch("/api/admin/roue-probabilite");
-                const data = await res.json();
-                if (data.success && typeof data.value === "number") setWinProbability(data.value);
-            } catch {
-                console.warn("Erreur chargement probabilité.");
-            }
-        }
-        fetchProbability();
-    }, []);
 
-
-    // 🔹 Prévenir l'utilisateur si actualisation pendant rotation ou modal ouvert
+    // Prévenir l'utilisateur si actualisation pendant rotation ou modal ouvert
     useEffect(() => {
         const handleBeforeUnload = (e: BeforeUnloadEvent) => {
             if (spinning || showFormModal || showResult) {
@@ -58,7 +43,7 @@ export default function RouePage() {
     }, [spinning, showFormModal, showResult]);
 
 
-    // 🔹 Son de clic + arrêt propre au départ
+    // Son de clic + arrêt propre au départ
     useEffect(() => {
         const loadSound = async () => {
             try {
@@ -202,8 +187,10 @@ export default function RouePage() {
 
         const totalSegments = segments.length;
         const segmentAngle = 360 / totalSegments;
-        const forceLose = data.canWin === false;
-        const willWin = !forceLose && Math.random() < winProbability;
+
+        // Le serveur décide déjà si le joueur gagne
+        const willWin = data.canWin === true;
+
 
         const winners = segments.map((s, i) => (s.isWinner ? i : -1)).filter((i) => i >= 0);
         const losers = segments.map((s, i) => (!s.isWinner ? i : -1)).filter((i) => i >= 0);
@@ -428,6 +415,12 @@ export default function RouePage() {
                             className="bg-white w-full max-w-md px-8 py-8 rounded-3xl shadow-2xl border text-center"
                         >
                             <h2 className="text-2xl font-bold mb-8">Entrez votre Nom et Prénom</h2>
+                            {message && message.startsWith("❌") && (
+                                <div className="p-3 rounded-lg mb-6 text-center bg-red-100 text-red-700">
+                                    {message}
+                                </div>
+                            )}
+
                             <input
                                 type="text"
                                 placeholder="Nom Prénom"
