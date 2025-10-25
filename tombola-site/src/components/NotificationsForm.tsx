@@ -72,7 +72,7 @@ export default function NotificationsForm({onClose,}: { onClose: () => void; }) 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                     <input
                         type="text"
-                        placeholder="Nom Prénom"
+                        placeholder="Prénom NOM"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         required

@@ -145,7 +145,7 @@ export default function Contact() {
                         </div>
                     )}
 
-                    <input type="text" placeholder="Nom Prénom" value={name} onChange={(e) => setName(e.target.value)} required className="p-3 border rounded-lg" />
+                    <input type="text" placeholder="Prénom NOM" value={name} onChange={(e) => setName(e.target.value)} required className="p-3 border rounded-lg" />
                     <input type="email" placeholder="Adresse mail" value={email} onChange={(e) => setEmail(e.target.value)} required className="p-3 border rounded-lg" />
                     <textarea placeholder="Votre message" value={message} onChange={(e) => setMessage(e.target.value)} required rows={5} className="p-3 border rounded-lg resize-none" />
 

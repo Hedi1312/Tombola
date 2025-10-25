@@ -414,7 +414,7 @@ export default function RouePage() {
 
                             className="bg-white w-full max-w-md px-8 py-8 rounded-3xl shadow-2xl border text-center"
                         >
-                            <h2 className="text-2xl font-bold mb-8">Entrez votre Nom et Prénom</h2>
+                            <h2 className="text-2xl font-bold mb-8">Entrez votre Prénom et votre Nom</h2>
                             {message && message.startsWith("❌") && (
                                 <div className="p-3 rounded-lg mb-6 text-center bg-red-100 text-red-700">
                                     {message}
@@ -423,7 +423,7 @@ export default function RouePage() {
 
                             <input
                                 type="text"
-                                placeholder="Nom Prénom"
+                                placeholder="Prénom NOM"
                                 value={fullName}
                                 required
                                 onChange={(e) => setFullName(e.target.value)}
