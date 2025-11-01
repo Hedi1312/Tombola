@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
             if (!match) {
                 return NextResponse.json({
                     success: false,
-                    error: `Le couple (Prénom: ${w.name}, Email: ${w.email}, Ticket: ${w.ticket}) n'existe pas dans la base.`,
+                    error: `Le couple (Nom: ${w.name}, Email: ${w.email}, Ticket: ${w.ticket}) n'existe pas dans la base.`,
                 });
             }
         }

@@ -29,8 +29,6 @@ export async function POST(req: NextRequest) {
         }
 
 
-
-
         const supportEmail = process.env.GMAIL_USER;
         if (!supportEmail) {
             console.error("❌ GMAIL_USER non défini !");
@@ -40,10 +38,9 @@ export async function POST(req: NextRequest) {
             );
         }
 
-
         let emailSubject = "";
         let emailContent = `
-            <p><strong>Nom :</strong> ${name}</p>
+            <p><strong>NOM Prénom :</strong> ${name}</p>
             <p><strong>Email :</strong> ${email}</p>
         `;
 

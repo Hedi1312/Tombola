@@ -125,5 +125,16 @@ export const PRIZES: Prize[] = [
             { name: "Gel douche (Yves Rocher)", quantity: 2 },
         ],
     },
+    {
+        id: 11,
+        title: "Lot n°11",
+        description: "Produits pour cheveux et mains",
+        img: "/img/lots/lot11.png",
+        items: [
+            { name: "Crème pour les mains (CeraVe)", quantity: 1 },
+            { name: "Masque pour les mains (Rituals)", quantity: 1 },
+            { name: "Savon pour les mains (Rituals)", quantity: 1 },
+        ],
+    },
 
 ];

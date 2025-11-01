@@ -472,7 +472,7 @@ export default function ChoixGagnantPage() {
 
                             <input
                                 type="text"
-                                placeholder="Prénom NOM"
+                                placeholder="NOM Prénom"
                                 value={winner.name}
                                 onChange={(e) => handleChange(index, "name", e.target.value)}
                                 disabled={winner.persisted}

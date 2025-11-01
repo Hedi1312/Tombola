@@ -95,7 +95,7 @@ export default function AddTicketForm() {
                 >
                     <input
                         type="text"
-                        placeholder="Prénom NOM"
+                        placeholder="NOM Prénom"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         required
