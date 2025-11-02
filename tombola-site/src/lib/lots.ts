@@ -116,7 +116,7 @@ export const PRIZES: Prize[] = [
     {
         id: 10,
         title: "Lot n°10",
-        description: "Produits pour cheveux et mains",
+        description: "Produits de soin pour les cheveux et les mains",
         img: "/img/lots/lot10.png",
         items: [
             { name: "Masque cheveux (Sephora)", quantity: 1 },
@@ -128,7 +128,7 @@ export const PRIZES: Prize[] = [
     {
         id: 11,
         title: "Lot n°11",
-        description: "Produits pour cheveux et mains",
+        description: "Produits de soin pour les mains",
         img: "/img/lots/lot11.png",
         items: [
             { name: "Crème pour les mains (CeraVe)", quantity: 1 },
