@@ -36,8 +36,16 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        const todayParis = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Europe/Paris',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+        }).format(new Date());
+
+
         const cleanEmail = normalizeEmail(email);
-        const today = new Date().toISOString().slice(0, 10);
+        const today = todayParis;
 
         // On vérifie si le joueur existe déjà
         const { data: existing, error: fetchError } = await supabaseAdmin

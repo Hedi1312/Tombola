@@ -28,9 +28,17 @@ export async function POST(req: NextRequest) {
             );
         }
 
+        const todayParis = new Intl.DateTimeFormat('en-CA', {
+            timeZone: 'Europe/Paris',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+        }).format(new Date());
+
+
         // Normalisation
         const cleanEmail = normalizeEmail(email);
-        const today = new Date().toISOString().slice(0, 10);
+        const today = todayParis;
 
         // Récupère les infos du joueur (une seule ligne par email)
         const { data: player, error } = await supabaseAdmin
